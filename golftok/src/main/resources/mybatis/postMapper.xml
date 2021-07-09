@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.golfzon.golftok.mapper.PostMapper">
+
+	<resultMap id="usersResult" type="com.golfzon.golftok.model.TokUsers">
+		<id property="userId" column="user_id"/>
+		<result property="userName" column="user_name" />
+		<result property="userNickname" column="user_nickname" />
+		<result property="userPassword" column="user_password" />
+		<result property="userIcon" column="user_icon" />
+		<result property="friendCount" column="friend_count" />
+		<result property="introductionMessage" column="introduction_message" />
+		<result property="accountAccess" column="account_access" />
+		<result property="birthDate" column="birth_date" />
+	</resultMap>
+
+	<resultMap id="postsResult" type="com.golfzon.golftok.model.TokPosts">
+		<id property="postId" column="post_id"/>
+		<result property="userId" column="user_id" />
+		<result property="postContent" column="post_content" />
+		<result property="videoRoot" column="video_root" />
+		<result property="uploadDate" column="upload_date" />
+		<result property="postAccess" column="post_access" />
+		<result property="likeCount" column="like_count" />
+		<result property="commentCount" column="comment_count" />
+		<result property="locations" column="locations" />
+	</resultMap>
+	
+	<resultMap id="nasmoResult" type="com.golfzon.golftok.model.Nasmo">
+		<id property="nasmoId" column="nasmo_id"/>
+		<result property="userId" column="user_id" />
+		<result property="videoRoot" column="video_root" />
+	</resultMap>
+	
+	
+	<!-- 모든 게시물 가져오기 -->
+	<select id="getAllPosts" resultMap="postsResult">
+		select * from tok_posts
+		where post_access!='private'
+		order by like_count DESC,comment_count DESC
+	</select>
+	
+	<!-- 모든 유저 조회 -->
+	<select id="getAllUsers" resultMap="usersResult">
+		select * from tok_users
+	</select>
+
+	<!-- 내 나스모 영상 보기 -->
+	<select id="showNasmo" parameterType="int" resultType="HashMap">
+		select nasmo_id as nasmoId, video_root as videoRoot from nasmo
+		where user_id=#{userId}
+	</select>
+	
+	<!-- 동영상(게시물) 올리기 -->
+	<insert id="insertPost" parameterType="HashMap">
+		<selectKey resultType="integer" keyProperty="postId" order="BEFORE">
+			select MAX(post_id)+1 from tok_posts
+		</selectKey>
+		insert into tok_posts values
+		(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),#{postAccess},0,0,#{locations})
+	</insert>
+	
+	<!-- 게시물(동영상) 상세보기 -->
+	<select id="getDetailPost" parameterType="int" resultMap="postsResult">
+		select * from tok_posts
+		where post_id=#{postId}
+	</select>
+
+	<!-- 게시물 수정 -->
+	<update id="editPost" parameterType="HashMap">
+		update tok_posts
+		set post_content=#{postContent}, video_root=#{videoRoot}, locations=#{locations}, post_access=#{postAccess}
+		where post_id=#{postId}
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<delete id="deletePost" parameterType="int">
+		delete from tok_posts
+		where post_id=#{postId}
+	</delete>
+	
+	<!-- 좋아요 -->
+	<update id="likePost" parameterType="int">
+		update tok_posts
+		set like_count+=1
+		where post_id=#{postId}
+	</update>
+	
+	<!-- 좋아요 취소 -->
+	<update id="unlikePost" parameterType="int">
+		update tok_posts
+		set like_count-=1
+		where post_id=#{postId}
+	</update>
+</mapper>

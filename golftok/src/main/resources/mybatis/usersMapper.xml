@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.golfzon.golftok.mapper.UsersMapper">
+
+	<resultMap id="usersResult" type="com.golfzon.golftok.model.TokUsers">
+		<id property="userId" column="user_id"/>
+		<result property="userName" column="user_name" />
+		<result property="userNickname" column="user_nickname" />
+		<result property="userPassword" column="user_password" />
+		<result property="userIcon" column="user_icon" />
+		<result property="friendCount" column="friend_count" />
+		<result property="introductionMessage" column="introduction_message" />
+		<result property="accountAccess" column="account_access" />
+		<result property="birthDate" column="birth_date" />
+	</resultMap>
+	
+	<resultMap id="golfFriendsResult" type="com.golfzon.golftok.model.GolfFriends">
+		<id property="golfFriendId" column="golf_friend_id"/>
+		<result property="userId" column="user_id" />
+		<result property="friendId" column="friend_id" />
+	</resultMap>
+
+	<!-- 내 골프 친구 보기 -->
+	<select id="getMyFriends" parameterType="int" resultType="HashMap">
+		select u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
+		from golf_friends as f, tok_users as u
+		where f.user_id=#{userId} and f.friend_id=u.user_id
+	</select>
+	
+	<!-- 추천 계정 보기 (나이대 별 골프 친구 많은 사람 추천) -->
+	<select id="getRecommendedFriedns" parameterType="int" resultType="HashMap">
+		select user_id as userId, user_name as userName,user_nickname as userNickname, user_icon as userIcon
+		from tok_users
+		where (
+			SELECT LEFT(user_age,1)
+			from tok_users
+			where user_id=#{userId}
+			)=LEFT(user_age,1)
+		order by friend_count DESC
+	</select>
+</mapper>
