@@ -78,4 +78,22 @@
 		where group_order='-1'
 	</update>
 	
+	<!-- 댓글 수정 -->
+	<update id="editComment" parameterType="HashMap">
+		update comments
+		set comment_text=#{commentText}
+		where comment_id=#{commentId}
+	</update>
+	
+	<!-- commentId로 postId 가져오기 -->
+	<select id="getPostIdByCommentId" parameterType="int" resultType="int">
+		select post_id from comments
+		where comment_id=#{commentId}
+	</select>
+
+	<!-- 댓글 삭제 -->
+	<delete id="deleteComment" parameterType="int">
+		delete from comments
+		where comment_id=#{commentId}
+	</delete>
 </mapper>

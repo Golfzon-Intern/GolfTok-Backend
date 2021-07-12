@@ -13,16 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.golfzon.golftok.model.GolfFriends;
 import com.golfzon.golftok.model.TokPosts;
-import com.golfzon.golftok.model.TokUsers;
 import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
@@ -50,6 +47,7 @@ public class MainController {
 		return map;
 	}
 	
+	/*
 	@GetMapping("video/{videoName:.+}")
 	public String stream(@PathVariable("videoName") String videoName, HttpServletRequest request, HttpServletResponse response) 
 			throws UnsupportedEncodingException, IOException { 
@@ -126,4 +124,5 @@ public class MainController {
 		}
 		return null; 
 	}
+	*/
 }

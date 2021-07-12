@@ -11,12 +11,11 @@ import com.golfzon.golftok.model.Comments;
 @Mapper
 @Repository
 public interface CommentMapper {
-
 	public List<Comments> getAllComments(int postId);
-
 	public int inputComment(HashMap<String, Object> map);
-
 	public int getCommentCount(String commentGroup);
-
 	public int updateGroupOrder(String commentCount);
+	public int editComment(HashMap<String, Object> map);
+	public int getPostIdByCommentId(int commentId);
+	public int deleteComment(int commentId);
 }

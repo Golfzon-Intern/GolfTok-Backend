@@ -71,4 +71,19 @@ public class CommentServiceImple implements CommentService{
 			return commentMapper.updateGroupOrder(commentCount);
 		}
 	}
+
+	@Override
+	public int editComment(HashMap<String, Object> map) {
+		return commentMapper.editComment(map);
+	}
+
+	@Override
+	public int getPostIdByCommentId(int commentId) {
+		return commentMapper.getPostIdByCommentId(commentId);
+	}
+
+	@Override
+	public int deleteComment(int commentId) {
+		return commentMapper.deleteComment(commentId);
+	}
 }
