@@ -10,6 +10,7 @@ import lombok.ToString;
 public class Comments {
 	private int commentId;
 	private int postId;
+	private int userId;
 	private String commentText;
 	private String uploadDate;
 	private int likeCount;

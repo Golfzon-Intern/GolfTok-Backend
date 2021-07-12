@@ -33,6 +33,7 @@
 	<resultMap id="commentsResult" type="com.golfzon.golftok.model.Comments">
 		<id property="commentId" column="comment_id"/>
 		<result property="postId" column="post_id" />
+		<result property="userId" column="user_id" />
 		<result property="commentText" column="comment_text" />
 		<result property="uploadDate" column="upload_date" />
 		<result property="likeCount" column="like_count" />
@@ -45,5 +46,36 @@
 	<select id="getAllComments" parameterType="int" resultMap="commentsResult">
 		select * from comments where post_id=#{postId}
 	</select>
+		
+	<!-- 댓글 작성 -->
+	<insert id="inputComment" parameterType="HashMap">
+		<selectKey resultType="integer" keyProperty="commentId" order="BEFORE">
+			select MAX(comment_id)+1 from comments
+		</selectKey>
+		insert into comments values
+			(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,
+			<if test="commentGroup==0">#{commentId}</if><if test="commentGroup!=0">#{commentGroup}</if>,
+			#{groupOrder},#{groupLayer})
+	</insert>
 
+	<!-- commentGroup의 댓글 총 개수 구하기 -->
+	<select id="getCommentCount" parameterType="String" resultType="int">
+		select count(*) from comments
+		where comment_group=#{commentGroup}
+	</select>
+	
+	<!-- 게시글 수정 -->
+	<update id="editPost" parameterType="HashMap">
+		update tok_posts
+		set post_content=#{postContent}, video_root=#{videoRoot}, locations=#{locations}, post_access=#{postAccess}
+		where post_id=#{postId}
+	</update>
+	
+	<!-- 임시로 넣었던 groupOrder 다시 맞게 수정 -->
+	<update id="updateGroupOrder" parameterType="String">
+		update comments
+		set group_order=#{groupOrder}
+		where group_order='-1'
+	</update>
+	
 </mapper>

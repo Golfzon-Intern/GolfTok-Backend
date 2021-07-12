@@ -1,6 +1,7 @@
 package com.golfzon.golftok.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,4 +47,28 @@ public class CommentServiceImple implements CommentService{
 		return newCommentList;
 	}
 
+	@Override
+	public int inputComment(HashMap<String, Object> map) {
+		int groupLayer=(int) map.get("groupLayer");
+		
+		// 댓글 입력
+		if (groupLayer==0) {
+			map.put("groupOrder","0");
+			return commentMapper.inputComment(map);
+		}else { // 대댓글 입력
+
+			String commentGroup = (String) map.get("commentGroup");
+			System.out.println("commentGroup:"+commentGroup);
+			// id값을 설정하기 위해 groupOrder값을 임시로 넣는다
+			map.put("groupOrder","-1");
+			commentMapper.inputComment(map);
+			
+			String commentCount = Integer.toString(commentMapper.getCommentCount(commentGroup)-1);
+			System.out.println("commentCount:"+commentCount);
+			
+			// 임시 저장되어있던 -1을 알맞은 값으로 변경
+			map.put("groupOrder",commentCount);
+			return commentMapper.updateGroupOrder(commentCount);
+		}
+	}
 }

@@ -50,7 +50,7 @@ public class PostController {
 		return map;
 	}
 
-	// 게시물 (동영상) 상세보기
+	// 게시물 (동영상) 상세보기 (게시물+댓글)
 	@GetMapping("getDetailPost")
 	public HashMap<String, Object> getDetailPost(@RequestParam(value = "postId") int postId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
