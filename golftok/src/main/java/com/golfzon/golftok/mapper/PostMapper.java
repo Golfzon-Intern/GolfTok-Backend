@@ -22,6 +22,8 @@ public interface PostMapper {
 	public List<Comments> getAllComments(int postId);
 	public int editPost(HashMap<String, Object> map);
 	public int deletePost(int postId);
-	public void likePost(int postId);
+	public int likePost(int postId);
 	public void unlikePost(int postId);
+	public void likeComment(int commentId);
+	public void unlikeComment(int commentId);
 }

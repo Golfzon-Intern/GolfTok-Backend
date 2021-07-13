@@ -115,4 +115,14 @@ public class CommentServiceImple implements CommentService{
 	public int getGroupLayerByCommentId(int commentId) {
 		return commentMapper.getGroupLayerByCommentId(commentId);
 	}
+
+	@Override
+	public int likeComment(int commentId) {
+		return commentMapper.likeComment(commentId);
+	}
+
+	@Override
+	public int unlikeComment(int commentId) {
+		return commentMapper.unlikeComment(commentId);
+	}
 }

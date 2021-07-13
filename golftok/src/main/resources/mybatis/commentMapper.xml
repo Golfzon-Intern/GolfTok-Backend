@@ -131,4 +131,19 @@
 		set group_order-=1
 		where comment_group=#{commentGroup} and group_layer=1 and group_order <![CDATA[ > ]]> #{groupOrder}
 	</update>
+
+
+	<!-- 댓글, 대댓글 좋아요 -->
+	<update id="likeComment" parameterType="int">
+		update comments
+		set like_count+=1
+		where comment_id=#{commentId}
+	</update>
+	
+	<!-- 댓글, 대댓글 좋아요 취소 -->
+	<update id="unlikeComment" parameterType="int">
+		update comments
+		set like_count-=1
+		where comment_id=#{commentId}
+	</update>
 </mapper>

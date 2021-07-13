@@ -24,4 +24,6 @@ public interface CommentMapper {
 	public Object getGroupOrderByCommentId(int commentId);
 	public int orderChildrenComment(HashMap<String, Object> map);
 	public int getCommentGroupByCommentId(int commentId);
+	public int likeComment(int commentId);
+	public int unlikeComment(int commentId);
 }

@@ -12,4 +12,6 @@ public interface CommentService {
 	int getPostIdByCommentId(int commentId);
 	int deleteComment(int commentId);
 	int getGroupLayerByCommentId(int commentId);
+	int likeComment(int commentId);
+	int unlikeComment(int commentId);
 }

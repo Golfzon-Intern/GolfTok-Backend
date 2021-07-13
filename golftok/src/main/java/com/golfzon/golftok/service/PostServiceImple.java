@@ -61,5 +61,4 @@ public class PostServiceImple implements PostService{
 	public void unlikePost(int postId) {
 		postMapper.unlikePost(postId);
 	}
-
 }

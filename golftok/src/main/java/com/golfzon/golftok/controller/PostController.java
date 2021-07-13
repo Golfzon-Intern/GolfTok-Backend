@@ -87,7 +87,7 @@ public class PostController {
 	
 	// 게시물 좋아요, 좋아요 취소
 	@PutMapping("likePost")
-	public void likePost(@RequestBody HashMap<String, Object> map) {
+	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map) {
 		// 좋아요 : 1, 좋아요 취소 : 0
 		int flag = (int) map.get("flag");
 		int postId = (int) map.get("postId");
@@ -98,6 +98,13 @@ public class PostController {
 			postService.unlikePost(postId);
 		}
 		
-		// 좋아요 수 변경된거니까 front로 또 보내주긴 해야 함
+		HashMap<String, Object> detailMap = new HashMap<String, Object>();
+		List<TokPosts> postList = postService.getDetailPost(postId);
+		List<Comments> commentList = commentService.getAllComments(postId);
+
+		detailMap.put("postList", postList);
+		detailMap.put("commentList", commentList);
+
+		return detailMap;
 	}
 }
