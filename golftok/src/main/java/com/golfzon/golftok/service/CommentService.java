@@ -11,4 +11,5 @@ public interface CommentService {
 	int editComment(HashMap<String, Object> map);
 	int getPostIdByCommentId(int commentId);
 	int deleteComment(int commentId);
+	int getGroupLayerByCommentId(int commentId);
 }

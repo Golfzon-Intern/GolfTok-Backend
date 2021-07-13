@@ -42,6 +42,7 @@
 		<result property="groupLayer" column="group_layer" />
 	</resultMap>
 
+
 	<!-- postId에 해당하는 모든 댓글 가져오기 -->
 	<select id="getAllComments" parameterType="int" resultMap="commentsResult">
 		select * from comments where post_id=#{postId}
@@ -53,9 +54,9 @@
 			select MAX(comment_id)+1 from comments
 		</selectKey>
 		insert into comments values
-			(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,
-			<if test="commentGroup==0">#{commentId}</if><if test="commentGroup!=0">#{commentGroup}</if>,
-			#{groupOrder},#{groupLayer})
+		(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,
+		<if test="commentGroup==0">#{commentId}</if><if test="commentGroup!=0">#{commentGroup}</if>,
+		#{groupOrder},#{groupLayer})
 	</insert>
 
 	<!-- commentGroup의 댓글 총 개수 구하기 -->
@@ -63,13 +64,6 @@
 		select count(*) from comments
 		where comment_group=#{commentGroup}
 	</select>
-	
-	<!-- 게시글 수정 -->
-	<update id="editPost" parameterType="HashMap">
-		update tok_posts
-		set post_content=#{postContent}, video_root=#{videoRoot}, locations=#{locations}, post_access=#{postAccess}
-		where post_id=#{postId}
-	</update>
 	
 	<!-- 임시로 넣었던 groupOrder 다시 맞게 수정 -->
 	<update id="updateGroupOrder" parameterType="String">
@@ -85,15 +79,56 @@
 		where comment_id=#{commentId}
 	</update>
 	
+	
 	<!-- commentId로 postId 가져오기 -->
 	<select id="getPostIdByCommentId" parameterType="int" resultType="int">
 		select post_id from comments
 		where comment_id=#{commentId}
 	</select>
+	
+	<!-- commentId로 groupLayer 가져오기 -->
+	<select id="getGroupLayerByCommentId" parameterType="int" resultType="int">
+		select group_layer from comments
+		where comment_id=#{commentId}
+	</select>
+	
+	<!-- commentId로 groupOrder 가져오기 -->
+	<select id="getGroupOrderByCommentId" parameterType="int" resultType="int">
+		select group_order from comments
+		where comment_id=#{commentId}
+	</select>
+	
+	<!-- commentId로 commentGroup 가져오기 -->
+	<select id="getCommentGroupByCommentId" parameterType="int" resultType="int">
+		select comment_group from comments
+		where comment_id=#{commentId}
+	</select>
 
-	<!-- 댓글 삭제 -->
+
+	<!-- 댓글 삭제 => 대댓글도 모두 삭제 -->
 	<delete id="deleteComment" parameterType="int">
 		delete from comments
-		where comment_id=#{commentId}
+		where comment_group=#{commentGroup}
 	</delete>
+	
+	<!-- 대댓글 삭제 1 : 상위 대댓글 개수 구하기 -->
+	<!-- 
+	<select id="countUpperChildrenComment" parameterType="HashMap" resultType="int">
+		select count(*) from comments
+		where group_order <![CDATA[ <= ]]> #{groupOrder} and comment_group=#{commentGroup} and group_layer=1
+	</select>
+	 -->
+	
+	<!-- 대댓글 삭제 1 : 대댓글 삭제 -->
+	<delete id="deleteChildrenComment" parameterType="HashMap">
+		delete from comments
+		where group_order=#{groupOrder} and comment_group=#{commentGroup} and group_layer=1
+	</delete>
+	
+	<!-- 대댓글 삭제 2 : 대댓글 순서 정렬 -->
+	<update id="orderChildrenComment" parameterType="HashMap">
+		update comments
+		set group_order-=1
+		where comment_group=#{commentGroup} and group_layer=1 and group_order <![CDATA[ > ]]> #{groupOrder}
+	</update>
 </mapper>

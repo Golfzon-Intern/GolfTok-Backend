@@ -84,6 +84,35 @@ public class CommentServiceImple implements CommentService{
 
 	@Override
 	public int deleteComment(int commentId) {
-		return commentMapper.deleteComment(commentId);
+		// 댓글인지, 대댓글인지 확인 필요
+		// 댓글이 삭제되면, 그에 포함 된 모든 대댓글 삭제되야 함
+		// 대댓글 삭제 -> 삭제 한 대댓글보다 groupOrder 큰 대댓글의 groupOrder 다 1씩 -1 해야 함
+		int groupLayer = commentMapper.getGroupLayerByCommentId(commentId);
+		int commentGroup = commentMapper.getCommentGroupByCommentId(commentId);
+		System.out.println("groupLayer:"+groupLayer);
+		System.out.println("commentGroup:"+commentGroup);
+		
+		// 댓글 삭제
+		if(groupLayer==0) {
+			return commentMapper.deleteComment(commentGroup);
+		}else { // 대댓글 삭제
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("groupOrder",commentMapper.getGroupOrderByCommentId(commentId));
+			map.put("commentGroup", commentGroup);
+			
+			// 현재 댓글 + 상위 대댓글의 개수 구하기
+			//int deleteCommentCount = commentMapper.countUpperChildrenComment(map);
+			//System.out.println("deleteCommentCount:"+deleteCommentCount);
+			
+			// 대댓글 삭제
+			commentMapper.deleteChildrenComment(map);
+			// 대댓글 정렬
+			return commentMapper.orderChildrenComment(map);
+		}
+	}
+
+	@Override
+	public int getGroupLayerByCommentId(int commentId) {
+		return commentMapper.getGroupLayerByCommentId(commentId);
 	}
 }

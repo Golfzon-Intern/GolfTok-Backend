@@ -71,20 +71,22 @@ public class CommentController {
 	// 댓글 삭제
 	@DeleteMapping("deleteComment")
 	public HashMap<String, Object> deleteComment(@RequestParam(value="commentId") int commentId) {
+		
 		// 댓글 삭제 전, 미리 댓글id를 이용 해 게시물 정보 얻어오기
 		int postId = commentService.getPostIdByCommentId(commentId);
-		List<TokPosts> postList = postService.getDetailPost(postId);
-		List<Comments> commentList = commentService.getAllComments(postId);
-
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("postList", postList);
-		map.put("commentList", commentList);
 		
 		if (commentService.deleteComment(commentId) == 0) {
 			System.out.println("deleting comment cannot be done!");
 		} else {
 			System.out.println("Success!!!");
 		}
+		
+		List<TokPosts> postList = postService.getDetailPost(postId);
+		List<Comments> commentList = commentService.getAllComments(postId);
+
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("postList", postList);
+		map.put("commentList", commentList);
 		
 		return map;
 	}

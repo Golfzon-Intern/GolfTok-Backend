@@ -18,4 +18,10 @@ public interface CommentMapper {
 	public int editComment(HashMap<String, Object> map);
 	public int getPostIdByCommentId(int commentId);
 	public int deleteComment(int commentId);
+	public int getGroupLayerByCommentId(int commentId);
+	public int deleteChildrenComment(HashMap<String, Object> map);
+	public int countUpperChildrenComment(HashMap<String, Object> map);
+	public Object getGroupOrderByCommentId(int commentId);
+	public int orderChildrenComment(HashMap<String, Object> map);
+	public int getCommentGroupByCommentId(int commentId);
 }
