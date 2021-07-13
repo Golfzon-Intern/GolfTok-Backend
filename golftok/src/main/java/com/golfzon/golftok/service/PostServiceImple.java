@@ -18,15 +18,6 @@ public class PostServiceImple implements PostService{
 	@Autowired
 	private PostMapper postMapper;
 
-	public List<TokUsers> getAllUsers() {
-		return postMapper.getAllUsers();
-	}
-
-	@Override
-	public List<TokPosts> getAllPosts() {
-		return postMapper.getAllPosts();
-	}
-
 	@Override
 	public int insertPost(HashMap<String, Object> map) {
 		return postMapper.insertPost(map);
@@ -60,5 +51,20 @@ public class PostServiceImple implements PostService{
 	@Override
 	public void unlikePost(int postId) {
 		postMapper.unlikePost(postId);
+	}
+
+	@Override
+	public List<TokPosts> getTodayAllPosts() {
+		return postMapper.getTodayAllPosts();
+	}
+
+	@Override
+	public List<TokPosts> getOtherDayAllPosts() {
+		return postMapper.getOtherDayAllPosts();
+	}
+
+	@Override
+	public List<TokPosts> getZeroPosts() {
+		return postMapper.getZeroPosts();
 	}
 }

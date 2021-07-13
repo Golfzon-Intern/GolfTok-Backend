@@ -37,11 +37,18 @@ public class MainController {
 	@GetMapping("main")
 	public HashMap<String, Object> getMain(@RequestParam(value="userId") int userId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		List<TokPosts> postList = postService.getAllPosts();
+		// 하루동안의 게시물 가져오기(좋아요, 댓글 순)
+		List<TokPosts> todayPostList = postService.getTodayAllPosts();
+		// 하루이상 ~ 일주일 이내의 게시물 (좋아요, 댓글 순)
+		List<TokPosts> otherPostList = postService.getOtherDayAllPosts();
+		// 좋아요, 댓글이 0개인 게시물 (맨 아래 배치)
+		List<TokPosts> zeroPostList = postService.getZeroPosts();
 		List<HashMap<String, Object>> friendList = userService.getMyFriends(userId);
 		List<HashMap<String, Object>> recommendList = userService.getRecommendedFriedns(userId);
 		
-		map.put("postList", postList);
+		map.put("todayPostList", todayPostList);
+		map.put("otherPostList", otherPostList);
+		map.put("zeroPostList", zeroPostList);
 		map.put("friendList", friendList);
 		map.put("recommendList", recommendList);
 		return map;

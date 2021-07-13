@@ -14,8 +14,6 @@ import com.golfzon.golftok.model.TokUsers;
 @Mapper
 @Repository
 public interface PostMapper {
-	public List<TokUsers> getAllUsers();
-	public List<TokPosts> getAllPosts();
 	public int insertPost(HashMap<String, Object> map);
 	public List<HashMap<String, Object>> showNasmo(int userId);
 	public List<TokPosts> getDetailPost(int postId);
@@ -26,4 +24,7 @@ public interface PostMapper {
 	public void unlikePost(int postId);
 	public void likeComment(int commentId);
 	public void unlikeComment(int commentId);
+	public List<TokPosts> getTodayAllPosts();
+	public List<TokPosts> getOtherDayAllPosts();
+	public List<TokPosts> getZeroPosts();
 }
