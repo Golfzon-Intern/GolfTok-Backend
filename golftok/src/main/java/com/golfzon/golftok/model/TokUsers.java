@@ -18,4 +18,5 @@ public class TokUsers {
 	private String introductionMessage;
 	private String accountAccess;
 	private String birthDate;
+	private String userGrade;
 }
