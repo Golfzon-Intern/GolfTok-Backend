@@ -45,7 +45,7 @@ public class MainController {
 		List<TokPosts> zeroPostList = postService.getZeroPosts();
 		List<HashMap<String, Object>> friendList = userService.getMyFriends(userId);
 		List<HashMap<String, Object>> recommendList = userService.getRecommendedFriedns(userId);
-		
+	
 		map.put("todayPostList", todayPostList);
 		map.put("otherPostList", otherPostList);
 		map.put("zeroPostList", zeroPostList);
