@@ -54,17 +54,17 @@ public class PostServiceImple implements PostService{
 	}
 
 	@Override
-	public List<TokPosts> getTodayAllPosts() {
+	public List<HashMap<String, Object>> getTodayAllPosts() {
 		return postMapper.getTodayAllPosts();
 	}
 
 	@Override
-	public List<TokPosts> getOtherDayAllPosts() {
+	public List<HashMap<String, Object>> getOtherDayAllPosts() {
 		return postMapper.getOtherDayAllPosts();
 	}
 
 	@Override
-	public List<TokPosts> getZeroPosts() {
+	public List<HashMap<String, Object>> getZeroPosts() {
 		return postMapper.getZeroPosts();
 	}
 }

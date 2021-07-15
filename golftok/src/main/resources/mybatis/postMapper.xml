@@ -44,7 +44,7 @@
 	
 	
 	<!-- 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순) -->
-	<select id="getTodayAllPosts" resultMap="postsResult">
+	<select id="getTodayAllPosts" resultType="HashMap">
 		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
 		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
 		from tok_posts p, tok_users u
@@ -57,7 +57,7 @@
 	</select>
 
 	<!-- 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
-	<select id="getOtherDayAllPosts" resultMap="postsResult">
+	<select id="getOtherDayAllPosts" resultType="HashMap">
 		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
 		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
 		from tok_posts p, tok_users u
@@ -72,7 +72,7 @@
 	</select>
 	
 	<!-- 좋아요, 댓글 0개인 게시물 가져오기 -->
-	<select id="getZeroPosts" resultMap="postsResult">
+	<select id="getZeroPosts" resultType="HashMap">
 		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
 		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
 		from tok_posts p, tok_users u

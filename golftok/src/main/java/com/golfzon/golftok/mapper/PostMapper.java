@@ -24,7 +24,7 @@ public interface PostMapper {
 	public void unlikePost(int postId);
 	public void likeComment(int commentId);
 	public void unlikeComment(int commentId);
-	public List<TokPosts> getTodayAllPosts();
-	public List<TokPosts> getOtherDayAllPosts();
-	public List<TokPosts> getZeroPosts();
+	public List<HashMap<String, Object>> getTodayAllPosts();
+	public List<HashMap<String, Object>> getOtherDayAllPosts();
+	public List<HashMap<String, Object>> getZeroPosts();
 }
