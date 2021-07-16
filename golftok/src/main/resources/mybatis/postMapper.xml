@@ -44,42 +44,99 @@
 	
 	
 	<!-- 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순) -->
+	<select id="getTodayAllPosts" parameterType="int" resultType="HashMap">
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p, tok_users u
+		where
+			post_access='public' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+			
+		UNION
+		
+		select
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate,u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p with(nolock)
+			inner join tok_users u with(nolock) on p.user_id = u.user_id
+			inner join golf_friends f with(nolock) on p.user_id = f.user_id
+		where
+			f.friend_id =#{userId} and 
+			p.post_access = 'protected' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate()))
+		order by like_count DESC,comment_count DESC
+	</select>
+	
+	<!-- 
 	<select id="getTodayAllPosts" resultType="HashMap">
 		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
 		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
 		from tok_posts p, tok_users u
-		where post_access!='private' and 
+		where post_access='public' and 
 		(like_count!=0 or comment_count!=0) and 
-		upload_date<![CDATA[ >= ]]>(
-			select DATEADD(dd,-1,getdate())
-		)and p.user_id=u.user_id
+		upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate()))and
+		p.user_id=u.user_id
 		order by like_count DESC,comment_count DESC
 	</select>
-
+	 -->
+	 
 	<!-- 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
-	<select id="getOtherDayAllPosts" resultType="HashMap">
+	<select id="getOtherDayAllPosts" parameterType="int" resultType="HashMap">
+		<!-- 
 		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
 		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
 		from tok_posts p, tok_users u
-		where post_access!='private' and (like_count!=0 or comment_count!=0) and
-		upload_date<![CDATA[ >= ]]>(
-			select DATEADD(dd,-7,getdate())
-		)and
-		upload_date<![CDATA[ < ]]>(
-			select DATEADD(dd,-1,getdate())
-		)and p.user_id=u.user_id
+		where post_access='public' and 
+		(like_count!=0 or comment_count!=0) and
+		upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))and
+		upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate()))and
+		p.user_id=u.user_id
+		order by like_count DESC,comment_count DESC
+		 -->
+		
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p, tok_users u
+		where
+			post_access='public' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
+			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+			
+		UNION
+		
+		select
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate,u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p with(nolock)
+			inner join tok_users u with(nolock) on p.user_id = u.user_id
+			inner join golf_friends f with(nolock) on p.user_id = f.user_id
+		where
+			f.friend_id =#{userId} and 
+			p.post_access = 'protected' and
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
+			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate()))
 		order by like_count DESC,comment_count DESC
 	</select>
 	
 	<!-- 좋아요, 댓글 0개인 게시물 가져오기 -->
+	<!-- 
 	<select id="getZeroPosts" resultType="HashMap">
 		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
 		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
 		from tok_posts p, tok_users u
-		where like_count=0 and comment_count=0 and post_access!='private' and p.user_id=u.user_id
+		where like_count=0 and comment_count=0 and post_access='public' and p.user_id=u.user_id
 		order by upload_date DESC
 	</select>
-
+	 -->
+	 
 	<!-- 내 나스모 영상 보기 -->
 	<select id="showNasmo" parameterType="int" resultType="HashMap">
 		select nasmo_id as nasmoId, video_root as videoRoot from nasmo

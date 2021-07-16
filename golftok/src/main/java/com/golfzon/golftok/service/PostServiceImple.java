@@ -14,7 +14,7 @@ import com.golfzon.golftok.model.TokUsers;
 
 @Service
 @Transactional
-public class PostServiceImple implements PostService{
+public class PostServiceImple implements PostService {
 	@Autowired
 	private PostMapper postMapper;
 
@@ -54,17 +54,12 @@ public class PostServiceImple implements PostService{
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getTodayAllPosts() {
-		return postMapper.getTodayAllPosts();
+	public List<HashMap<String, Object>> getTodayAllPosts(int userId) {
+		return postMapper.getTodayAllPosts(userId);
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getOtherDayAllPosts() {
-		return postMapper.getOtherDayAllPosts();
-	}
-
-	@Override
-	public List<HashMap<String, Object>> getZeroPosts() {
-		return postMapper.getZeroPosts();
+	public List<HashMap<String, Object>> getOtherDayAllPosts(int userId) {
+		return postMapper.getOtherDayAllPosts(userId);
 	}
 }
