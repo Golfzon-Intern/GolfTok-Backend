@@ -18,7 +18,7 @@ import com.golfzon.golftok.service.CommentService;
 import com.golfzon.golftok.service.PostService;
 
 @RestController
-@RequestMapping("/golftok")
+@RequestMapping("/golftok/comment")
 public class CommentController {
 	@Autowired
 	private PostService postService;

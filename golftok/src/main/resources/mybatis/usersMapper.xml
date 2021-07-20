@@ -42,4 +42,16 @@
 			)=LEFT(user_age,1)
 		order by friend_count DESC
 	</select>
+	
+	<!-- 로그인 체크 -->
+	<select id="checkLogin" parameterType="HashMap" resultMap="usersResult">
+		select * from tok_users
+		where user_name=#{userName} and user_password=#{userPassword}
+	</select>
+	
+	<!-- userName으로 user 객체 가져오기 -->
+	<select id="getUserByUserName" parameterType="String" resultMap="usersResult">
+		select * from tok_users
+		where user_name=#{userName}
+	</select>
 </mapper>
