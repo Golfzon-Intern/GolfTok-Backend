@@ -16,4 +16,12 @@ public interface UsersService {
 	TokUsers getUserByUserName(String userName);
 
 	int getUserNameByUserId(String userName);
+
+	int requestGolfFriend(HashMap<String, Object> map);
+
+	int approveFriendRequest(HashMap<String, Object> map);
+
+	int deleteFriendRequset(int requestId);
+
+	int getUserIdByRequestId(int requestId);
 }

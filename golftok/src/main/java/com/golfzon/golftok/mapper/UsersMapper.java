@@ -19,5 +19,10 @@ public interface UsersMapper {
 	TokUsers checkLogin(HashMap<String, Object> map);
 	TokUsers getUserByUserName(String userName);
 	int getUserNameByUserId(String userName);
+	int requestGolfFriend(HashMap<String, Object> map);
+	int approveFriendRequest(HashMap<String, Object> map);
+	int getFriendIdByRequestId(int requestId);
+	int deleteFriendRequset(int requestId);
+	int getUserIdByRequestId(int requestId);
 
 }

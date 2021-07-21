@@ -24,6 +24,13 @@
 		<result property="friendId" column="friend_id" />
 	</resultMap>
 
+	<resultMap id="requestResult" type="com.golfzon.golftok.model.Request">
+		<id property="requestId" column="request_id"/>
+		<result property="userId" column="user_id" />
+		<result property="requestedId" column="requested_id" />
+		<result property="requestDate" column="request_date" />
+	</resultMap>
+
 	<!-- 내 골프 친구 보기 -->
 	<select id="getMyFriends" parameterType="int" resultType="HashMap">
 		select u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
@@ -53,5 +60,35 @@
 	<select id="getUserNameByUserId" parameterType="String" resultType="int">
 		select user_id from tok_users
 		where user_name=#{userName}
+	</select>
+		
+	<!-- 골프 친구 신청 -->
+	<insert id="requestGolfFriend" parameterType="HashMap">
+		<selectKey resultType="integer" keyProperty="requestId" order="BEFORE">
+			select MAX(request_id)+1 from friend_request
+		</selectKey>
+		insert into friend_request values
+		(#{requestId},#{userId},#{requestedId},getdate())
+	</insert>
+	
+	<!-- 골프 친구 승인 -->
+	<insert id="approveFriendRequest" parameterType="HashMap">
+		<selectKey resultType="integer" keyProperty="golfFriendId" order="BEFORE">
+			select MAX(golf_friend_id)+1 from golf_friends
+		</selectKey>
+		insert into golf_friends values
+		(#{golfFriendId},#{userId},#{friendId})
+	</insert>
+	
+	<!-- 친구 신청 처리 후, 삭제 -->
+	<delete id="deleteFriendRequset" parameterType="int">
+		delete from friend_request
+		where request_id=#{requestId}
+	</delete>
+	
+	<!-- requsetId로 friendId 가져오기 -->
+	<select id="getUserIdByRequestId" parameterType="int" resultType="int">
+		select user_id from friend_request
+		where request_id=#{requestId}
 	</select>
 </mapper>

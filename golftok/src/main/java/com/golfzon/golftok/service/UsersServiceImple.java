@@ -50,4 +50,28 @@ public class UsersServiceImple implements UsersService{
 	public int getUserNameByUserId(String userName) {
 		return userMapper.getUserNameByUserId(userName);
 	}
+
+
+	@Override
+	public int requestGolfFriend(HashMap<String, Object> map) {
+		return userMapper.requestGolfFriend(map);
+	}
+
+
+	@Override
+	public int approveFriendRequest(HashMap<String, Object> map) {
+		return userMapper.approveFriendRequest(map);
+	}
+
+
+	@Override
+	public int deleteFriendRequset(int requestId) {
+		return userMapper.deleteFriendRequset(requestId);
+	}
+
+
+	@Override
+	public int getUserIdByRequestId(int requestId) {
+		return userMapper.getUserIdByRequestId(requestId);
+	}
 }
