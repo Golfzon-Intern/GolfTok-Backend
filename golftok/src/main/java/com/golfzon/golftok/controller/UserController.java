@@ -15,18 +15,12 @@ import com.golfzon.golftok.jwt.JwtUtil;
 @RestController
 @RequestMapping("/golftok")
 public class UserController {
-	// @Autowired
-	// private JwtUtil jwtUtil;
-
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	// @Autowired
-	// private JwtUtils jwtUtils;
-	
 	@PostMapping("user/login")
 	public String generateToken(@RequestBody HashMap<String, Object> map) throws Exception {
 		String userName=(String) map.get("userName");

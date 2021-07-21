@@ -22,7 +22,11 @@ public interface PostService {
 
 	public void unlikePost(int postId);
 
-	public List<HashMap<String, Object>> getTodayAllPosts(int userId);
+	public List<HashMap<String, Object>> getTodayAllPosts();
 
-	public List<HashMap<String, Object>> getOtherDayAllPosts(int userId);
+	public List<HashMap<String, Object>> getOtherDayAllPosts();
+
+	public List<HashMap<String, Object>> getTodayAllPostsByUserId(int userId);
+
+	public List<HashMap<String, Object>> getOtherDayAllPostsByUserId(int userId);
 }

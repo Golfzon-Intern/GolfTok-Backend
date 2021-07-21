@@ -18,5 +18,6 @@ public interface UsersMapper {
 	List<HashMap<String, Object>> getRecommendedFriedns(int userId);
 	TokUsers checkLogin(HashMap<String, Object> map);
 	TokUsers getUserByUserName(String userName);
+	int getUserNameByUserId(String userName);
 
 }

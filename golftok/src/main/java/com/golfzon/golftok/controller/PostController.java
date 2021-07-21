@@ -1,5 +1,6 @@
 package com.golfzon.golftok.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import com.golfzon.golftok.model.Comments;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.service.CommentService;
 import com.golfzon.golftok.service.PostService;
+import com.golfzon.golftok.service.UsersService;
 
 @RestController
 @RequestMapping("/golftok")
@@ -26,10 +28,16 @@ public class PostController {
 
 	@Autowired
 	private CommentService commentService;
+	
+	@Autowired
+	private UsersService userService;
 
 	// 나스모 영상 올리기 클릭 -> 나의 나스모 영상 보기
 	@GetMapping("showNasmo")
-	public HashMap<String, Object> showNasmo(@RequestParam(value = "userId") int userId) {
+	public HashMap<String, Object> showNasmo(Principal principal) {
+		String userName = principal.getName();
+		int userId = userService.getUserNameByUserId(userName);
+		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> nasmoList = postService.showNasmo(userId);
 		map.put("nasmoList", nasmoList);
@@ -39,7 +47,12 @@ public class PostController {
 
 	// 동영상 게시물 업로드
 	@PostMapping("uploadPost")
-	public HashMap<String, Object> insertPost(@RequestBody HashMap<String, Object> map) {
+	public HashMap<String, Object> insertPost(@RequestBody HashMap<String, Object> map,Principal principal) {
+		String userName = principal.getName();
+		int userId = userService.getUserNameByUserId(userName);
+		
+		map.put("userId", userId);
+		
 		if (postService.insertPost(map) == 0) {
 			System.out.println("inputing post cannot be done!");
 		} else {

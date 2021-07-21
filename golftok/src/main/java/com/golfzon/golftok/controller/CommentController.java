@@ -1,5 +1,6 @@
 package com.golfzon.golftok.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.golfzon.golftok.model.Comments;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.service.CommentService;
 import com.golfzon.golftok.service.PostService;
+import com.golfzon.golftok.service.UsersService;
 
 @RestController
 @RequestMapping("/golftok/comment")
@@ -25,10 +27,17 @@ public class CommentController {
 
 	@Autowired
 	private CommentService commentService;
+	
+	@Autowired
+	private UsersService userService;
 
 	// 댓글 작성
 	@PostMapping("inputComment")
-	public HashMap<String, Object> inputComment(@RequestBody HashMap<String, Object> map) {
+	public HashMap<String, Object> inputComment(@RequestBody HashMap<String, Object> map,Principal principal) {
+		String userName = principal.getName();
+		int userId = userService.getUserNameByUserId(userName);
+		
+		map.put("userId", userId);
 		if (commentService.inputComment(map) == 0) {
 			System.out.println("inputing comment cannot be done!");
 		} else {

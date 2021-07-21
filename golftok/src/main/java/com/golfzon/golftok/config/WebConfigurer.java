@@ -47,7 +47,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
-			.antMatchers("/golftok/main","/golftok/user/login").permitAll()
+			.antMatchers("/golftok/main","/golftok/user/login","/golftok/getDetailPost").permitAll()
 			.anyRequest().authenticated()
 				.and().exceptionHandling().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

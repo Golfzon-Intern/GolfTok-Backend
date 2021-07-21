@@ -14,4 +14,6 @@ public interface UsersService {
 	List<HashMap<String, Object>> getRecommendedFriedns(int userId);
 
 	TokUsers getUserByUserName(String userName);
+
+	int getUserNameByUserId(String userName);
 }

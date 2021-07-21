@@ -3,16 +3,14 @@ package com.golfzon.golftok.jwt;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.golfzon.golftok.model.TokUsers;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.function.Function;
 
 @Service
 // token을 생성, 정보를 추출, 유효성을 검사하는 역할

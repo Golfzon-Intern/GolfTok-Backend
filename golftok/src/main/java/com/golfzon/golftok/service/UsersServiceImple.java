@@ -42,7 +42,12 @@ public class UsersServiceImple implements UsersService{
 		TokUsers encodedUser = new TokUsers();
 		encodedUser.setUserName(user.getUserName());
 		encodedUser.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-		System.out.println("encodedUser----"+encodedUser.toString());
 		return encodedUser;
+	}
+
+
+	@Override
+	public int getUserNameByUserId(String userName) {
+		return userMapper.getUserNameByUserId(userName);
 	}
 }

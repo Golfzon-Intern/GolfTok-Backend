@@ -15,8 +15,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.golfzon.golftok.model.TokUsers;
-
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 	@Autowired
@@ -36,12 +34,11 @@ public class JwtFilter extends OncePerRequestFilter {
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			token = authorizationHeader.substring(7);
 			userName = jwtUtil.extractUsername(token);
-			//System.out.println("token, userName:"+token+"-------"+userName);
 		}
 		
+		// 유효한 토큰인지 확인
 		if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = userDetailsServiceImple.loadUserByUsername(userName);
-			//System.out.println("userDetail:"+userDetails);
 			if (jwtUtil.validateToken(token, userDetails)) {
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
 						new UsernamePasswordAuthenticationToken(userDetails, null,userDetails.getAuthorities());
