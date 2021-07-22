@@ -11,34 +11,35 @@
 		<result property="userNickname" column="user_nickname" />
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
-		<result property="friendCount" column="friend_count" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="accountAccess" column="account_access" />
-		<result property="birthDate" column="birth_date" />
+		<result property="userAge" column="userAge" />
 		<result property="userGrade" column="user_grade" />
+		<result property="followingCount" column="following_count" />
+		<result property="followerCount" column="follower_count" />
 	</resultMap>
 	
-	<resultMap id="golfFriendsResult" type="com.golfzon.golftok.model.GolfFriends">
-		<id property="golfFriendId" column="golf_friend_id"/>
+	<resultMap id="followResult" type="com.golfzon.golftok.model.Follow">
+		<id property="followId" column="follow_id"/>
 		<result property="userId" column="user_id" />
 		<result property="friendId" column="friend_id" />
 	</resultMap>
 
-	<resultMap id="requestResult" type="com.golfzon.golftok.model.Request">
+	<!-- <resultMap id="requestResult" type="com.golfzon.golftok.model.Request">
 		<id property="requestId" column="request_id"/>
 		<result property="userId" column="user_id" />
 		<result property="requestedId" column="requested_id" />
 		<result property="requestDate" column="request_date" />
-	</resultMap>
+	</resultMap> -->
+	
 
 	<!-- 내 골프 친구 보기 -->
-	<select id="getMyFriends" parameterType="int" resultType="HashMap">
+	<select id="getMyFollowing" parameterType="int" resultType="HashMap">
 		select u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
-		from golf_friends as f, tok_users as u
+		from follow as f, tok_users as u
 		where f.user_id=#{userId} and f.friend_id=u.user_id
 	</select>
 	
-	<!-- 추천 계정 보기 (나이대 별 골프 친구 많은 사람 추천) -->
+	<!-- 추천 계정 보기 (나이대 별 팔로우 많은 사람 추천) -->
 	<select id="getRecommendedFriedns" parameterType="int" resultType="HashMap">
 		select user_id as userId, user_name as userName,user_nickname as userNickname, user_icon as userIcon
 		from tok_users
@@ -47,7 +48,7 @@
 			from tok_users
 			where user_id=#{userId}
 			)=LEFT(user_age,1)
-		order by friend_count DESC
+		order by follower_count DESC
 	</select>
 	
 	<!-- userName으로 user 객체 가져오기 -->
@@ -61,34 +62,59 @@
 		select user_id from tok_users
 		where user_name=#{userName}
 	</select>
+	
+	<!-- 팔로잉 -->
+	<insert id="following" parameterType="HashMap">
+		<selectKey resultType="integer" keyProperty="followId" order="BEFORE">
+			select MAX(follow_id)+1 from follow
+		</selectKey>
+		insert into follow values
+		(#{followId},#{userId},#{friendId})
+	</insert>
+	
+	
+	<!-- 팔로워 수 +1 -->
+	<update id="increaseFollower" parameterType="int">
+		update tok_users
+		set follower_count+=1
+		where user_id=#{friendId}
+	</update>
+	
+	<!-- 팔로잉 수 +1 -->
+	<update id="increaseFollowing" parameterType="int">
+		update tok_users
+		set following_count+=1
+		where user_id=#{userId}
+	</update>
+	
 		
 	<!-- 골프 친구 신청 -->
-	<insert id="requestGolfFriend" parameterType="HashMap">
+	<!-- <insert id="requestGolfFriend" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="requestId" order="BEFORE">
 			select MAX(request_id)+1 from friend_request
 		</selectKey>
 		insert into friend_request values
 		(#{requestId},#{userId},#{requestedId},getdate())
-	</insert>
+	</insert> -->
 	
 	<!-- 골프 친구 승인 -->
-	<insert id="approveFriendRequest" parameterType="HashMap">
+	<!-- <insert id="approveFriendRequest" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="golfFriendId" order="BEFORE">
 			select MAX(golf_friend_id)+1 from golf_friends
 		</selectKey>
 		insert into golf_friends values
 		(#{golfFriendId},#{userId},#{friendId})
 	</insert>
-	
+	 -->
 	<!-- 친구 신청 처리 후, 삭제 -->
-	<delete id="deleteFriendRequset" parameterType="int">
+	<!-- <delete id="deleteFriendRequset" parameterType="int">
 		delete from friend_request
 		where request_id=#{requestId}
-	</delete>
+	</delete> -->
 	
 	<!-- requsetId로 friendId 가져오기 -->
-	<select id="getUserIdByRequestId" parameterType="int" resultType="int">
+	<!-- <select id="getUserIdByRequestId" parameterType="int" resultType="int">
 		select user_id from friend_request
 		where request_id=#{requestId}
-	</select>
+	</select> -->
 </mapper>

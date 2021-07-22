@@ -11,11 +11,11 @@
 		<result property="userNickname" column="user_nickname" />
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
-		<result property="friendCount" column="friend_count" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="accountAccess" column="account_access" />
-		<result property="birthDate" column="birth_date" />
+		<result property="userAge" column="userAge" />
 		<result property="userGrade" column="user_grade" />
+		<result property="followingCount" column="following_count" />
+		<result property="followerCount" column="follower_count" />
 	</resultMap>
 
 	<resultMap id="postsResult" type="com.golfzon.golftok.model.TokPosts">
@@ -24,7 +24,6 @@
 		<result property="postContent" column="post_content" />
 		<result property="videoRoot" column="video_root" />
 		<result property="uploadDate" column="upload_date" />
-		<result property="postAccess" column="post_access" />
 		<result property="likeCount" column="like_count" />
 		<result property="commentCount" column="comment_count" />
 		<result property="locations" column="locations" />
@@ -36,108 +35,39 @@
 		<result property="videoRoot" column="video_root" />
 	</resultMap>
 
-	<resultMap id="golfFriendResult" type="com.golfzon.golftok.model.GolfFriends">
-		<id property="golfFriendId" column="golf_friendId"/>
+	<resultMap id="followResult" type="com.golfzon.golftok.model.Follow">
+		<id property="followId" column="follow_id"/>
 		<result property="userId" column="user_id" />
 		<result property="friendId" column="friend_id" />
 	</resultMap>
 	
-	<!-- 로그인 안 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->
+	<!-- 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->
 	<select id="getTodayAllPosts" resultType="HashMap">
 		select 
 			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
 			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
 		from tok_posts p, tok_users u
 		where
-			post_access='public' and 
 			(like_count!=0 or comment_count!=0) and
 			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate())) and
 			p.user_id=u.user_id
+		order by like_count DESC,comment_count DESC
 	</select>
 	
-	<!-- 로그인 안 된 경우 : 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
+	<!-- 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
 	<select id="getOtherDayAllPosts" resultType="HashMap">
 		select 
 			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
 			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
 		from tok_posts p, tok_users u
 		where
-			post_access='public' and 
 			(like_count!=0 or comment_count!=0) and
 			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
 			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate())) and
 			p.user_id=u.user_id
-	</select>
-	
-	
-	<!-- 로그인 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순) -->
-	<select id="getTodayAllPostsByUserId" parameterType="int" resultType="HashMap">
-		select 
-			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
-			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
-		from tok_posts p, tok_users u
-		where
-			post_access='public' and 
-			(like_count!=0 or comment_count!=0) and
-			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate())) and
-			p.user_id=u.user_id
-			
-		UNION
-		
-		select
-			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
-			upload_date as uploadDate,u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
-		from tok_posts p with(nolock)
-			inner join tok_users u with(nolock) on p.user_id = u.user_id
-			inner join golf_friends f with(nolock) on p.user_id = f.user_id
-		where
-			f.friend_id =#{userId} and 
-			p.post_access = 'protected' and 
-			(like_count!=0 or comment_count!=0) and
-			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate()))
-		order by like_count DESC,comment_count DESC
-	</select>
-	 
-	<!-- 로그인 된 경우 : 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
-	<select id="getOtherDayAllPostsByUserId" parameterType="int" resultType="HashMap">
-		select 
-			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
-			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
-		from tok_posts p, tok_users u
-		where
-			post_access='public' and 
-			(like_count!=0 or comment_count!=0) and
-			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
-			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate())) and
-			p.user_id=u.user_id
-			
-		UNION
-		
-		select
-			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
-			upload_date as uploadDate,u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
-		from tok_posts p with(nolock)
-			inner join tok_users u with(nolock) on p.user_id = u.user_id
-			inner join golf_friends f with(nolock) on p.user_id = f.user_id
-		where
-			f.friend_id =#{userId} and 
-			p.post_access = 'protected' and
-			(like_count!=0 or comment_count!=0) and
-			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
-			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate()))
 		order by like_count DESC,comment_count DESC
 	</select>
 	
-	<!-- 좋아요, 댓글 0개인 게시물 가져오기 -->
-	<!-- 
-	<select id="getZeroPosts" resultType="HashMap">
-		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
-		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
-		from tok_posts p, tok_users u
-		where like_count=0 and comment_count=0 and post_access='public' and p.user_id=u.user_id
-		order by upload_date DESC
-	</select>
-	 -->
 	 
 	<!-- 내 나스모 영상 보기 -->
 	<select id="showNasmo" parameterType="int" resultType="HashMap">
@@ -151,7 +81,7 @@
 			select MAX(post_id)+1 from tok_posts
 		</selectKey>
 		insert into tok_posts values
-		(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),#{postAccess},0,0,#{locations})
+		(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations})
 	</insert>
 	
 	<!-- 게시물(동영상) 상세보기 -->
@@ -163,7 +93,7 @@
 	<!-- 게시물 수정 -->
 	<update id="editPost" parameterType="HashMap">
 		update tok_posts
-		set post_content=#{postContent}, video_root=#{videoRoot}, locations=#{locations}, post_access=#{postAccess}
+		set post_content=#{postContent}, video_root=#{videoRoot}, locations=#{locations}
 		where post_id=#{postId}
 	</update>
 	
@@ -186,5 +116,104 @@
 		set like_count-=1
 		where post_id=#{postId}
 	</update>
+	
+	
+	<!-- 로그인 안 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->
+	<!-- <select id="getTodayAllPosts" resultType="HashMap">
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p, tok_users u
+		where
+			post_access='public' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+	</select> -->
+	
+	<!-- 로그인 안 된 경우 : 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
+	<!-- <select id="getOtherDayAllPosts" resultType="HashMap">
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p, tok_users u
+		where
+			post_access='public' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
+			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+	</select>
+	 -->
+	
+	<!-- 로그인 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순) -->
+	<!-- <select id="getTodayAllPostsByUserId" parameterType="int" resultType="HashMap">
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p, tok_users u
+		where
+			post_access='public' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+			
+		UNION
+		
+		select
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate,u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p with(nolock)
+			inner join tok_users u with(nolock) on p.user_id = u.user_id
+			inner join follow f with(nolock) on p.user_id = f.user_id
+		where
+			f.friend_id =#{userId} and 
+			p.post_access = 'protected' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate()))
+		order by like_count DESC,comment_count DESC
+	</select>
+	  -->
+	<!-- 로그인 된 경우 : 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
+	<!-- <select id="getOtherDayAllPostsByUserId" parameterType="int" resultType="HashMap">
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p, tok_users u
+		where
+			post_access='public' and 
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
+			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+			
+		UNION
+		
+		select
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
+			upload_date as uploadDate,u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+		from tok_posts p with(nolock)
+			inner join tok_users u with(nolock) on p.user_id = u.user_id
+			inner join follow f with(nolock) on p.user_id = f.user_id
+		where
+			f.friend_id =#{userId} and 
+			p.post_access = 'protected' and
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
+			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate()))
+		order by like_count DESC,comment_count DESC
+	</select>
+	 -->
+	
+	<!-- 좋아요, 댓글 0개인 게시물 가져오기 -->
+	<!-- 
+	<select id="getZeroPosts" resultType="HashMap">
+		select post_id as postId, post_content as postContent, video_root as videoRoot, u.user_id as userId,u.user_name as userName,
+		u.user_nickname as userNickname, like_count as likeCount, comment_count as commentCount, upload_date as uploadDate
+		from tok_posts p, tok_users u
+		where like_count=0 and comment_count=0 and p.user_id=u.user_id
+		order by upload_date DESC
+	</select>
+	 -->
 	
 </mapper>

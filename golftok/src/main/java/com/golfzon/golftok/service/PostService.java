@@ -26,7 +26,4 @@ public interface PostService {
 
 	public List<HashMap<String, Object>> getOtherDayAllPosts();
 
-	public List<HashMap<String, Object>> getTodayAllPostsByUserId(int userId);
-
-	public List<HashMap<String, Object>> getOtherDayAllPostsByUserId(int userId);
 }

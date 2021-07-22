@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.golfzon.golftok.model.GolfFriends;
+import com.golfzon.golftok.model.Follow;
 import com.golfzon.golftok.model.TokUsers;
 
 public interface UsersService {
-	List<HashMap<String, Object>> getMyFriends(int userId);
+	List<HashMap<String, Object>> getMyFollowing(int userId);
 
 	List<HashMap<String, Object>> getRecommendedFriedns(int userId);
 
@@ -24,4 +24,10 @@ public interface UsersService {
 	int deleteFriendRequset(int requestId);
 
 	int getUserIdByRequestId(int requestId);
+
+	int following(HashMap<String, Object> map);
+
+	int increaseFollower(int friendId);
+
+	int increaseFollowing(int userId);
 }

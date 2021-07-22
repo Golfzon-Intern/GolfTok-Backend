@@ -24,8 +24,8 @@ public class UsersServiceImple implements UsersService{
 
 	// 내 골프 친구 보기 
 	@Override
-	public List<HashMap<String, Object>> getMyFriends(int userId) {
-		return userMapper.getMyFriends(userId);
+	public List<HashMap<String, Object>> getMyFollowing(int userId) {
+		return userMapper.getMyFollowing(userId);
 	}
 
 
@@ -73,5 +73,23 @@ public class UsersServiceImple implements UsersService{
 	@Override
 	public int getUserIdByRequestId(int requestId) {
 		return userMapper.getUserIdByRequestId(requestId);
+	}
+
+
+	@Override
+	public int following(HashMap<String, Object> map) {
+		return userMapper.following(map);
+	}
+
+
+	@Override
+	public int increaseFollower(int friendId) {
+		return userMapper.increaseFollower(friendId);
+	}
+
+
+	@Override
+	public int increaseFollowing(int userId) {
+		return userMapper.increaseFollowing(userId);
 	}
 }

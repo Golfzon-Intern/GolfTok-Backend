@@ -48,9 +48,15 @@ public class PostController {
 	// 동영상 게시물 업로드
 	@PostMapping("uploadPost")
 	public HashMap<String, Object> insertPost(@RequestBody HashMap<String, Object> map,Principal principal) {
+		int userId;
+		// if문은 임시 코드
+		if(principal==null) {
+			//System.out.println("principal null!!!");
+			userId=3;
+		}else {
 		String userName = principal.getName();
-		int userId = userService.getUserNameByUserId(userName);
-		
+		userId = userService.getUserNameByUserId(userName);
+		}
 		map.put("userId", userId);
 		
 		if (postService.insertPost(map) == 0) {

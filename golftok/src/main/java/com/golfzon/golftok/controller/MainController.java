@@ -23,29 +23,29 @@ public class MainController {
 
 	@GetMapping("main")
 	public HashMap<String, Object> getMain(Principal principal) {
-		String userName = principal.getName();
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		List<HashMap<String, Object>> todayPostList = null;
-		List<HashMap<String, Object>> otherPostList= null;
-		List<HashMap<String, Object>> recommendList=null;
+		System.out.println("principal:"+principal);
+		
+		List<HashMap<String, Object>> todayPostList = postService.getTodayAllPosts();
+		List<HashMap<String, Object>> otherPostList = postService.getOtherDayAllPosts();
+		List<HashMap<String, Object>> recommendList = null;
+		List<HashMap<String, Object>> followingList = null;
 
-		// 로그인하지 않은 경우
-		if (userName == null) {
-			todayPostList = postService.getTodayAllPosts();
-			otherPostList = postService.getOtherDayAllPosts();
-			// recommendList 논의 후, 추가 해햐 함
-		} else { // 로그인 한 경우
+		// 로그인 됐을 때
+		if (principal != null) {
+			String userName = principal.getName();
 			int userId = userService.getUserNameByUserId(userName);
-			
-			todayPostList = postService.getTodayAllPostsByUserId(userId);
-			otherPostList = postService.getOtherDayAllPostsByUserId(userId);
-			List<HashMap<String, Object>> friendList = userService.getMyFriends(userId);
+			followingList = userService.getMyFollowing(userId);
 			recommendList = userService.getRecommendedFriedns(userId);
-			
-			map.put("friendList", friendList);
-			map.put("recommendList", recommendList);
-		}
 
+			map.put("followingList", followingList);
+			map.put("recommendList", recommendList);
+		}else { // 로그인 안됐을 때
+			map.put("followingList", null);
+			// recommendList 보내기!!
+			// 일주일 간 누적 좋아요가 많은 사람
+		}
+		
 		map.put("todayPostList", todayPostList);
 		map.put("otherPostList", otherPostList);
 

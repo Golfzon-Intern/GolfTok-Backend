@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,6 +22,7 @@ import com.golfzon.golftok.jwt.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -35,7 +37,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService);
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean(name = BeanIds.AUTHENTICATION_MANAGER)
@@ -47,7 +49,8 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
-			.antMatchers("/golftok/main","/golftok/user/login","/golftok/getDetailPost").permitAll()
+			//.antMatchers("/golftok/main","/golftok/user/login","/golftok/getDetailPost").permitAll()
+			.antMatchers("/golftok/**/**").permitAll()
 			.anyRequest().authenticated()
 				.and().exceptionHandling().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

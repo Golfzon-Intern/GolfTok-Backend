@@ -11,11 +11,11 @@
 		<result property="userNickname" column="user_nickname" />
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
-		<result property="friendCount" column="friend_count" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="accountAccess" column="account_access" />
-		<result property="birthDate" column="birth_date" />
+		<result property="userAge" column="userAge" />
 		<result property="userGrade" column="user_grade" />
+		<result property="followingCount" column="following_count" />
+		<result property="followerCount" column="follower_count" />
 	</resultMap>
 
 	<resultMap id="postsResult" type="com.golfzon.golftok.model.TokPosts">
@@ -24,7 +24,6 @@
 		<result property="postContent" column="post_content" />
 		<result property="videoRoot" column="video_root" />
 		<result property="uploadDate" column="upload_date" />
-		<result property="postAccess" column="post_access" />
 		<result property="likeCount" column="like_count" />
 		<result property="commentCount" column="comment_count" />
 		<result property="viewCount" column="view_count" />

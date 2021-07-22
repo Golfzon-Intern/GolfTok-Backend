@@ -13,7 +13,6 @@ public class TokPosts {
 	private String postContent;
 	private String videoRoot;
 	private String uploadDate;
-	private String postAccess;
 	private int likeCount;
 	private int commentCount;
 	private String locations;

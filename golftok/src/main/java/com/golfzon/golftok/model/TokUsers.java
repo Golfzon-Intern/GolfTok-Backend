@@ -18,9 +18,9 @@ public class TokUsers {
 	private String userNickname;
 	private String userPassword;
 	private String userIcon;
-	private int friendCount;
 	private String introductionMessage;
-	private String accountAccess;
-	private String birthDate;
+	private String userAge;
 	private String userGrade;
+	private int followingCount;
+	private int followerCount;
 }

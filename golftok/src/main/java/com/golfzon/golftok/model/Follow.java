@@ -7,9 +7,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Request {
-	private int requestId;
+public class Follow {
+	private int followId;
 	private int userId;
-	private int requestedId;
-	private String requestDate;
+	private int friendId;
 }
