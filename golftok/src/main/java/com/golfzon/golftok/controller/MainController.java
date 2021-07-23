@@ -36,14 +36,14 @@ public class MainController {
 			String userName = principal.getName();
 			int userId = userService.getUserNameByUserId(userName);
 			followingList = userService.getMyFollowing(userId);
-			recommendList = userService.getRecommendedFriedns(userId);
+			recommendList = userService.getRecommendedFriednsByOrders(userId);
 
 			map.put("followingList", followingList);
 			map.put("recommendList", recommendList);
 		}else { // 로그인 안됐을 때
+			recommendList = userService.getRecommendedFriednsByLikeCount();
 			map.put("followingList", null);
-			// recommendList 보내기!!
-			// 일주일 간 누적 좋아요가 많은 사람
+			map.put("recommendList", recommendList);
 		}
 		
 		map.put("todayPostList", todayPostList);

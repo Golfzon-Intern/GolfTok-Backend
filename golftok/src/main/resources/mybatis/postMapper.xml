@@ -27,6 +27,7 @@
 		<result property="likeCount" column="like_count" />
 		<result property="commentCount" column="comment_count" />
 		<result property="locations" column="locations" />
+		<result property="thumbnail" column="thumbnail" />
 	</resultMap>
 	
 	<resultMap id="nasmoResult" type="com.golfzon.golftok.model.Nasmo">

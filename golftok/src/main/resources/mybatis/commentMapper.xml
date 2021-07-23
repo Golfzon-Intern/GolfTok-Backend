@@ -28,6 +28,7 @@
 		<result property="commentCount" column="comment_count" />
 		<result property="viewCount" column="view_count" />
 		<result property="locations" column="locations" />
+		<result property="thumbnail" column="thumbnail" />
 	</resultMap>
 
 	<resultMap id="commentsResult" type="com.golfzon.golftok.model.Comments">

@@ -16,4 +16,5 @@ public class TokPosts {
 	private int likeCount;
 	private int commentCount;
 	private String locations;
+	private String thumbnail;
 }

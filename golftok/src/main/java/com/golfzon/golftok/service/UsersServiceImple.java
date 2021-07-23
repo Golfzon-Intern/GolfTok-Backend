@@ -31,8 +31,8 @@ public class UsersServiceImple implements UsersService{
 
 	// 추천 계정 보기 (나이대 별 골프 친구 많은 사람 추천)
 	@Override
-	public List<HashMap<String, Object>> getRecommendedFriedns(int userId) {
-		return userMapper.getRecommendedFriedns(userId);
+	public List<HashMap<String, Object>> getRecommendedFriednsByOrders(int userId) {
+		return userMapper.getRecommendedFriednsByOrders(userId);
 	}
 
 
@@ -91,5 +91,23 @@ public class UsersServiceImple implements UsersService{
 	@Override
 	public int increaseFollowing(int userId) {
 		return userMapper.increaseFollowing(userId);
+	}
+
+
+	@Override
+	public int registerUser(HashMap<String, Object> userMap) {
+		return userMapper.registerUser(userMap);
+	}
+
+
+	@Override
+	public String getPasswordByUserName(String userName) {
+		return userMapper.getPasswordByUserName(userName);
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> getRecommendedFriednsByLikeCount() {
+		return userMapper.getRecommendedFriednsByLikeCount();
 	}
 }
