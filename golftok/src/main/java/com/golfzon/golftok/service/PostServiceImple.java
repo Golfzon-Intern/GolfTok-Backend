@@ -63,4 +63,9 @@ public class PostServiceImple implements PostService {
 		return postMapper.getOtherDayAllPosts();
 	}
 
+	@Override
+	public List<HashMap<String, Object>> getAllUserPosts(int userId) {
+		return postMapper.getAllUserPosts(userId);
+	}
+
 }

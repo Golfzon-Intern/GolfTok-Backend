@@ -36,7 +36,7 @@ public class PostController {
 	@GetMapping("showNasmo")
 	public HashMap<String, Object> showNasmo(Principal principal) {
 		String userName = principal.getName();
-		int userId = userService.getUserNameByUserId(userName);
+		int userId = userService.getUserIdByUserName(userName);
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> nasmoList = postService.showNasmo(userId);
@@ -55,7 +55,7 @@ public class PostController {
 			userId=3;
 		}else {
 		String userName = principal.getName();
-		userId = userService.getUserNameByUserId(userName);
+		userId = userService.getUserIdByUserName(userName);
 		}
 		map.put("userId", userId);
 		

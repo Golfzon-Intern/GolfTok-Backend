@@ -47,8 +47,8 @@ public class UsersServiceImple implements UsersService{
 
 
 	@Override
-	public int getUserNameByUserId(String userName) {
-		return userMapper.getUserNameByUserId(userName);
+	public int getUserIdByUserName(String userName) {
+		return userMapper.getUserIdByUserName(userName);
 	}
 
 
@@ -109,5 +109,11 @@ public class UsersServiceImple implements UsersService{
 	@Override
 	public List<HashMap<String, Object>> getRecommendedFriednsByLikeCount() {
 		return userMapper.getRecommendedFriednsByLikeCount();
+	}
+
+
+	@Override
+	public HashMap<String, Object> getUserByUserId(int userId) {
+		return userMapper.getUserByUserId(userId);
 	}
 }

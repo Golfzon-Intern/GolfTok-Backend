@@ -12,7 +12,7 @@
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="userAge" column="userAge" />
+		<result property="userAge" column="user_age" />
 		<result property="userGrade" column="user_grade" />
 		<result property="followingCount" column="following_count" />
 		<result property="followerCount" column="follower_count" />
@@ -43,14 +43,16 @@
 
 	<!-- 내 골프 친구 보기 -->
 	<select id="getMyFollowing" parameterType="int" resultType="HashMap">
-		select u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
+		select 
+			u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
 		from follow as f, tok_users as u
 		where f.user_id=#{userId} and f.friend_id=u.user_id
 	</select>
 	
 	<!-- 로그인 했을 경우-추천 계정 보기 : 자신의 나이대가 많이 팔로우 한 사람 추천 -->
 	<select id="getRecommendedFriednsByOrders" parameterType="int" resultType="HashMap">
-		select user_id as userId, user_name as userName,user_nickname as userNickname, user_icon as userIcon
+		select 
+			user_id as userId, user_name as userName,user_nickname as userNickname, user_icon as userIcon
 		from tok_users
 		where (
 			SELECT LEFT(user_age,1)
@@ -78,8 +80,18 @@
 		where user_name=#{userName}
 	</select>
 	
+	<!-- userId로 user 객체 가져오기 -->
+	<select id="getUserByUserId" parameterType="int" resultMap="usersResult">
+		select
+			user_id as userId, user_name as userName, user_nickname as userNickname, user_icon as userIcon, 
+			introduction_message as introductionMessage, user_age as userAge, user_grade as userGrade, 
+			following_count as followingCount, follower_count as followerCount
+		from tok_users
+		where user_id=#{userId}
+	</select>
+	
 	<!-- userName으로 userId 가져오기 -->
-	<select id="getUserNameByUserId" parameterType="String" resultType="int">
+	<select id="getUserIdByUserName" parameterType="String" resultType="int">
 		select user_id from tok_users
 		where user_name=#{userName}
 	</select>

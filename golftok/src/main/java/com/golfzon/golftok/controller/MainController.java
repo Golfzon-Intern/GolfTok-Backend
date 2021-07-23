@@ -34,7 +34,7 @@ public class MainController {
 		// 로그인 됐을 때
 		if (principal != null) {
 			String userName = principal.getName();
-			int userId = userService.getUserNameByUserId(userName);
+			int userId = userService.getUserIdByUserName(userName);
 			followingList = userService.getMyFollowing(userId);
 			recommendList = userService.getRecommendedFriednsByOrders(userId);
 

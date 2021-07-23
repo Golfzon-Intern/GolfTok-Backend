@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.golfzon.golftok.jwt.JwtUtil;
 import com.golfzon.golftok.model.TokUsers;
+import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
 @RestController
@@ -28,6 +30,9 @@ public class UserController {
 
 	@Autowired
 	private UsersService userService;
+
+	@Autowired
+	private PostService postService;
 
 	@Autowired
 	private JwtUtil jwtUtil;
@@ -52,26 +57,51 @@ public class UserController {
 
 	// 로그인
 	@PostMapping("user/login")
-	public String generateToken(@RequestBody HashMap<String, Object> map) throws Exception {
+	public HashMap<String, Object> generateToken(@RequestBody HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> loginMap = new HashMap<String, Object>();
 		pwdEncoder = new BCryptPasswordEncoder();
 
 		String userName = (String) map.get("userName");
 		String userPassword = (String) map.get("userPassword");
+		int userId = userService.getUserIdByUserName(userName);
+		
 		try {
 			// UsernamePasswordAuthenticationToken : AuthenticationFilter의 구현체
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		
+		// token 생성
+		String accessToken = jwtUtil.generateToken(userName);
+		
+		loginMap.put("accessToken", accessToken);
+		loginMap.put("userId", userId);
+		loginMap.put("userName", userName);
 
-		return jwtUtil.generateToken(userName);
+		return loginMap;
 	}
+	
+	/*
+	 * @PostMapping("user/login") public String generateToken(@RequestBody
+	 * HashMap<String, Object> map) throws Exception { pwdEncoder = new
+	 * BCryptPasswordEncoder();
+	 * 
+	 * String userName = (String) map.get("userName"); String userPassword =
+	 * (String) map.get("userPassword"); try { //
+	 * UsernamePasswordAuthenticationToken : AuthenticationFilter의 구현체
+	 * authenticationManager.authenticate(new
+	 * UsernamePasswordAuthenticationToken(userName, userPassword)); } catch
+	 * (Exception e) { System.out.println(e); }
+	 * 
+	 * return jwtUtil.generateToken(userName); }
+	 */
 
 	// 팔로잉
 	@PostMapping("following")
 	public HashMap<String, Object> following(@RequestBody HashMap<String, Object> map, Principal principal) {
 		String userName = principal.getName();
-		int userId = userService.getUserNameByUserId(userName);
+		int userId = userService.getUserIdByUserName(userName);
 		int friendId = (int) map.get("friendId");
 
 		map.put("userId", userId);
@@ -88,11 +118,42 @@ public class UserController {
 	@GetMapping("getMyFollowing")
 	public HashMap<String, Object> getMyFollowing(Principal principal) {
 		String userName = principal.getName();
-		int userId = userService.getUserNameByUserId(userName);
+		int userId = userService.getUserIdByUserName(userName);
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		List<HashMap<String, Object>> followingList = userService.getMyFollowing(userId);
 		map.put("followingList", followingList);
+
+		return map;
+	}
+
+	// 프로필 페이지보기
+	@GetMapping("getProfilePage")
+	public HashMap<String, Object> getProfilePage(@RequestParam(value = "userId") int userId, Principal principal) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		List<HashMap<String, Object>> recommendList = null;
+		List<HashMap<String, Object>> followingList = null;
+
+		HashMap<String, Object> user = userService.getUserByUserId(userId);
+		List<HashMap<String, Object>> postList = postService.getAllUserPosts(userId);
+
+		map.put("user", user);
+		map.put("postList", postList);
+
+		// 로그인 됐을 때
+		if (principal != null) {
+			String userName = principal.getName();
+			int loginUserId = userService.getUserIdByUserName(userName);
+			followingList = userService.getMyFollowing(loginUserId);
+			recommendList = userService.getRecommendedFriednsByOrders(loginUserId);
+
+			map.put("followingList", followingList);
+			map.put("recommendList", recommendList);
+		} else { // 로그인 안됐을 때
+			recommendList = userService.getRecommendedFriednsByLikeCount();
+			map.put("followingList", null);
+			map.put("recommendList", recommendList);
+		}
 
 		return map;
 	}

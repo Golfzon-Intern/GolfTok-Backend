@@ -35,7 +35,7 @@ public class CommentController {
 	@PostMapping("inputComment")
 	public HashMap<String, Object> inputComment(@RequestBody HashMap<String, Object> map,Principal principal) {
 		String userName = principal.getName();
-		int userId = userService.getUserNameByUserId(userName);
+		int userId = userService.getUserIdByUserName(userName);
 		
 		map.put("userId", userId);
 		if (commentService.inputComment(map) == 0) {

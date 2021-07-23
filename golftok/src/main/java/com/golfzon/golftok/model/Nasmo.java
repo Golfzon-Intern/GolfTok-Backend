@@ -11,4 +11,5 @@ public class Nasmo {
 	private int nasmoId;
 	private int userId;
 	private String videoRoot;
+	private String nasmoThumbnail;
 }

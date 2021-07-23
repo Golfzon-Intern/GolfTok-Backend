@@ -12,7 +12,7 @@
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="userAge" column="userAge" />
+		<result property="userAge" column="user_age" />
 		<result property="userGrade" column="user_grade" />
 		<result property="followingCount" column="following_count" />
 		<result property="followerCount" column="follower_count" />
@@ -27,13 +27,14 @@
 		<result property="likeCount" column="like_count" />
 		<result property="commentCount" column="comment_count" />
 		<result property="locations" column="locations" />
-		<result property="thumbnail" column="thumbnail" />
+		<result property="postThumbnail" column="post_thumbnail" />
 	</resultMap>
 	
 	<resultMap id="nasmoResult" type="com.golfzon.golftok.model.Nasmo">
 		<id property="nasmoId" column="nasmo_id"/>
 		<result property="userId" column="user_id" />
 		<result property="videoRoot" column="video_root" />
+		<result property="nasmoThumbnail" column="nasmo_thumbnail" />
 	</resultMap>
 
 	<resultMap id="followResult" type="com.golfzon.golftok.model.Follow">
@@ -46,7 +47,7 @@
 	<select id="getTodayAllPosts" resultType="HashMap">
 		select 
 			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
-			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname, post_thumbnail as postThumbnail
 		from tok_posts p, tok_users u
 		where
 			(like_count!=0 or comment_count!=0) and
@@ -59,7 +60,7 @@
 	<select id="getOtherDayAllPosts" resultType="HashMap">
 		select 
 			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, comment_count as commentCount,
-			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname
+			upload_date as uploadDate, u.user_id as userId,u.user_name as userName,u.user_nickname as userNickname, post_thumbnail as postThumbnail
 		from tok_posts p, tok_users u
 		where
 			(like_count!=0 or comment_count!=0) and
@@ -72,7 +73,9 @@
 	 
 	<!-- 내 나스모 영상 보기 -->
 	<select id="showNasmo" parameterType="int" resultType="HashMap">
-		select nasmo_id as nasmoId, video_root as videoRoot from nasmo
+		select 
+			nasmo_id as nasmoId, video_root as videoRoot, nasmo_thumbnail as nasmoThumbnail
+		from nasmo
 		where user_id=#{userId}
 	</select>
 	
@@ -82,7 +85,7 @@
 			select MAX(post_id)+1 from tok_posts
 		</selectKey>
 		insert into tok_posts values
-		(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations})
+		(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations},#{postThumbnail})
 	</insert>
 	
 	<!-- 게시물(동영상) 상세보기 -->
@@ -94,7 +97,8 @@
 	<!-- 게시물 수정 -->
 	<update id="editPost" parameterType="HashMap">
 		update tok_posts
-		set post_content=#{postContent}, video_root=#{videoRoot}, locations=#{locations}
+		set post_content=#{postContent}, video_root=#{videoRoot}, 
+			locations=#{locations}, post_thumbnail=#{postThumbnail}
 		where post_id=#{postId}
 	</update>
 	
@@ -117,6 +121,15 @@
 		set like_count-=1
 		where post_id=#{postId}
 	</update>
+	
+
+	<!-- userId로 모든 게시물 가져오기 -->
+	<select id="getAllUserPosts" parameterType="int" resultType="HashMap">
+		select 
+			post_id as postId, post_thumbnail as postThumbnail
+		from tok_posts
+		where user_id=#{userId}
+	</select>
 	
 	
 	<!-- 로그인 안 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->

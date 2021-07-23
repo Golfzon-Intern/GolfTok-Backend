@@ -12,7 +12,7 @@
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="userAge" column="userAge" />
+		<result property="userAge" column="user_age" />
 		<result property="userGrade" column="user_grade" />
 		<result property="followingCount" column="following_count" />
 		<result property="followerCount" column="follower_count" />
@@ -28,7 +28,7 @@
 		<result property="commentCount" column="comment_count" />
 		<result property="viewCount" column="view_count" />
 		<result property="locations" column="locations" />
-		<result property="thumbnail" column="thumbnail" />
+		<result property="postThumbnail" column="post_thumbnail" />
 	</resultMap>
 
 	<resultMap id="commentsResult" type="com.golfzon.golftok.model.Comments">
