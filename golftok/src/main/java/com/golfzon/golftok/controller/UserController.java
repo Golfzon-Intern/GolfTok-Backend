@@ -4,7 +4,10 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.golfzon.golftok.jwt.JwtUtil;
@@ -21,7 +25,7 @@ import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
 @RestController
-@RequestMapping("/golftok")
+@RequestMapping("user")
 public class UserController {
 	// 인증에 대한 부분 처리
 	// 인증이 성공하면 isAuthenticated=true 인 객체를 생성하여 SecurityContext에 저장
@@ -40,7 +44,8 @@ public class UserController {
 	private BCryptPasswordEncoder pwdEncoder;
 
 	// 회원가입
-	@PostMapping("user/register")
+	@PostMapping("register")
+	@ResponseStatus(code = HttpStatus.OK)
 	public HashMap<String, Object> userRegister(@RequestBody HashMap<String, Object> userMap) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		String userPassword = (String) userMap.get("userPassword");
@@ -56,46 +61,37 @@ public class UserController {
 	}
 
 	// 로그인
-	@PostMapping("user/login")
-	public HashMap<String, Object> generateToken(@RequestBody HashMap<String, Object> map) throws Exception {
+	@PostMapping("login")
+	public HashMap<String, Object> generateToken(@RequestBody HashMap<String, Object> map, HttpServletResponse response)
+			throws Exception {
 		HashMap<String, Object> loginMap = new HashMap<String, Object>();
 		pwdEncoder = new BCryptPasswordEncoder();
 
 		String userName = (String) map.get("userName");
 		String userPassword = (String) map.get("userPassword");
-		int userId = userService.getUserIdByUserName(userName);
+		Integer userId = userService.getUserIdByUserName(userName);
 		
-		try {
-			// UsernamePasswordAuthenticationToken : AuthenticationFilter의 구현체
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
-		} catch (Exception e) {
-			System.out.println(e);
+		if (userId != null) {
+			try {
+				// UsernamePasswordAuthenticationToken : AuthenticationFilter의 구현체
+				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
+			} catch (Exception e) { // 비밀번호 틀렸을 시
+				System.out.println(e);
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED); // 401 에러
+			}
+			
+			// token 생성
+			String accessToken = jwtUtil.generateToken(userName);
+
+			loginMap.put("accessToken", accessToken);
+			loginMap.put("userId", userId);
+			loginMap.put("userName", userName);
+		}else { // 아이디가 틀리거나 존재하지 않을 시
+			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404 에러
 		}
 		
-		// token 생성
-		String accessToken = jwtUtil.generateToken(userName);
-		
-		loginMap.put("accessToken", accessToken);
-		loginMap.put("userId", userId);
-		loginMap.put("userName", userName);
-
 		return loginMap;
 	}
-	
-	/*
-	 * @PostMapping("user/login") public String generateToken(@RequestBody
-	 * HashMap<String, Object> map) throws Exception { pwdEncoder = new
-	 * BCryptPasswordEncoder();
-	 * 
-	 * String userName = (String) map.get("userName"); String userPassword =
-	 * (String) map.get("userPassword"); try { //
-	 * UsernamePasswordAuthenticationToken : AuthenticationFilter의 구현체
-	 * authenticationManager.authenticate(new
-	 * UsernamePasswordAuthenticationToken(userName, userPassword)); } catch
-	 * (Exception e) { System.out.println(e); }
-	 * 
-	 * return jwtUtil.generateToken(userName); }
-	 */
 
 	// 팔로잉
 	@PostMapping("following")
@@ -115,7 +111,7 @@ public class UserController {
 	}
 
 	// 내가 팔로잉 중인 계정 모두 보기
-	@GetMapping("getMyFollowing")
+	@GetMapping("myFollowing")
 	public HashMap<String, Object> getMyFollowing(Principal principal) {
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
@@ -128,7 +124,7 @@ public class UserController {
 	}
 
 	// 프로필 페이지보기
-	@GetMapping("getProfilePage")
+	@GetMapping("profile")
 	public HashMap<String, Object> getProfilePage(@RequestParam(value = "userId") int userId, Principal principal) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> recommendList = null;

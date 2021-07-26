@@ -47,7 +47,7 @@ public class UsersServiceImple implements UsersService{
 
 
 	@Override
-	public int getUserIdByUserName(String userName) {
+	public Integer getUserIdByUserName(String userName) {
 		return userMapper.getUserIdByUserName(userName);
 	}
 

@@ -46,7 +46,9 @@
 		select 
 			u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
 		from follow as f, tok_users as u
-		where f.user_id=#{userId} and f.friend_id=u.user_id
+		where 
+			f.user_id=#{userId} 
+			and f.friend_id=u.user_id
 	</select>
 	
 	<!-- 로그인 했을 경우-추천 계정 보기 : 자신의 나이대가 많이 팔로우 한 사람 추천 -->
@@ -55,9 +57,9 @@
 			user_id as userId, user_name as userName,user_nickname as userNickname, user_icon as userIcon
 		from tok_users
 		where (
-			SELECT LEFT(user_age,1)
-			from tok_users
-			where user_id=#{userId}
+				SELECT LEFT(user_age,1)
+				from tok_users
+				where user_id=#{userId}
 			)=LEFT(user_age,1)
 		order by follower_count DESC
 	</select>
@@ -146,6 +148,7 @@
 		(#{golfFriendId},#{userId},#{friendId})
 	</insert>
 	 -->
+	 
 	<!-- 친구 신청 처리 후, 삭제 -->
 	<!-- <delete id="deleteFriendRequset" parameterType="int">
 		delete from friend_request

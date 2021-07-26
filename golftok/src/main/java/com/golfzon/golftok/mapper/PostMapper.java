@@ -22,7 +22,7 @@ public interface PostMapper {
 
 	public List<Comments> getAllComments(int postId);
 
-	public int editPost(HashMap<String, Object> map);
+	public int updatePost(HashMap<String, Object> map);
 
 	public int deletePost(int postId);
 

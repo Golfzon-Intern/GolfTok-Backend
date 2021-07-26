@@ -188,6 +188,7 @@
 		order by like_count DESC,comment_count DESC
 	</select>
 	  -->
+	  
 	<!-- 로그인 된 경우 : 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
 	<!-- <select id="getOtherDayAllPostsByUserId" parameterType="int" resultType="HashMap">
 		select 

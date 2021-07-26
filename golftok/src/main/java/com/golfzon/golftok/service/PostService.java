@@ -14,7 +14,7 @@ public interface PostService {
 
 	public List<TokPosts> getDetailPost(int postId);
 
-	public int editPost(HashMap<String, Object> map);
+	public int updatePost(HashMap<String, Object> map);
 
 	public int deletePost(int postId);
 

@@ -15,7 +15,7 @@ public interface UsersService {
 
 	TokUsers getUserByUserName(String userName);
 
-	int getUserIdByUserName(String userName);
+	Integer getUserIdByUserName(String userName);
 
 	int requestGolfFriend(HashMap<String, Object> map);
 

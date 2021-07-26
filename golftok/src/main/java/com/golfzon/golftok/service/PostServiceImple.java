@@ -34,8 +34,8 @@ public class PostServiceImple implements PostService {
 	}
 
 	@Override
-	public int editPost(HashMap<String, Object> map) {
-		return postMapper.editPost(map);
+	public int updatePost(HashMap<String, Object> map) {
+		return postMapper.updatePost(map);
 	}
 
 	@Override

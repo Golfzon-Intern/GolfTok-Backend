@@ -13,7 +13,7 @@ import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
 @RestController
-@RequestMapping("/golftok")
+@RequestMapping
 public class MainController {
 	@Autowired
 	private PostService postService;

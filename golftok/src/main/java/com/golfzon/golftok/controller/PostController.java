@@ -1,10 +1,14 @@
 package com.golfzon.golftok.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.golfzon.golftok.model.Comments;
@@ -21,7 +26,7 @@ import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
 @RestController
-@RequestMapping("/golftok")
+@RequestMapping("post")
 public class PostController {
 	@Autowired
 	private PostService postService;
@@ -32,8 +37,8 @@ public class PostController {
 	@Autowired
 	private UsersService userService;
 
-	// 나스모 영상 올리기 클릭 -> 나의 나스모 영상 보기
-	@GetMapping("showNasmo")
+	// 나의 나스모 영상 보기
+	@GetMapping("getNasmo")
 	public HashMap<String, Object> showNasmo(Principal principal) {
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
@@ -46,8 +51,10 @@ public class PostController {
 	}
 
 	// 동영상 게시물 업로드
-	@PostMapping("uploadPost")
-	public HashMap<String, Object> insertPost(@RequestBody HashMap<String, Object> map,Principal principal) {
+	@PostMapping("insert")
+	@ResponseStatus(HttpStatus.CREATED)
+	public HashMap<String, Object> insertPost(@RequestBody HashMap<String, Object> map,Principal principal,
+			HttpServletResponse response) throws IOException {
 		int userId;
 		// if문은 임시 코드
 		if(principal==null) {
@@ -60,7 +67,7 @@ public class PostController {
 		map.put("userId", userId);
 		
 		if (postService.insertPost(map) == 0) {
-			System.out.println("inputing post cannot be done!");
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} else {
 			System.out.println("Success!!!");
 		}
@@ -70,7 +77,7 @@ public class PostController {
 	}
 
 	// 게시물 (동영상) 상세보기 (게시물+댓글)
-	@GetMapping("getDetailPost")
+	@GetMapping("getDetail")
 	public HashMap<String, Object> getDetailPost(@RequestParam(value = "postId") int postId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<TokPosts> postList = postService.getDetailPost(postId);
@@ -83,10 +90,12 @@ public class PostController {
 	}
 
 	// 게시물 수정
-	@PutMapping("editPost")
-	public HashMap<String, Object> editPost(@RequestBody HashMap<String, Object> map) {
-		if (postService.editPost(map) == 0) {
-			System.out.println("editing post cannot be done!");
+	@PutMapping("update")
+	@ResponseStatus(code = HttpStatus.OK)
+	public HashMap<String, Object> updatePost(@RequestBody HashMap<String, Object> map, 
+			HttpServletResponse response) throws IOException{
+		if (postService.updatePost(map) == 0) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
 		} else {
 			System.out.println("Success!!!");
 		}
@@ -94,10 +103,12 @@ public class PostController {
 	}
 
 	// 게시물 삭제
-	@DeleteMapping("deletePost")
-	public HashMap<String, Object> deletePost(@RequestParam(value = "postId") int postId) {
+	@DeleteMapping("delete")
+	@ResponseStatus(code = HttpStatus.OK)
+	public HashMap<String, Object> deletePost(@RequestParam(value = "postId") int postId,
+			HttpServletResponse response) throws IOException{
 		if (postService.deletePost(postId) == 0) {
-			System.out.println("deleting post cannot be done!");
+			response.sendError(HttpServletResponse.SC_FORBIDDEN); //403 에러
 		} else {
 			System.out.println("Success!!!");
 		}
@@ -105,7 +116,7 @@ public class PostController {
 	}
 	
 	// 게시물 좋아요, 좋아요 취소
-	@PutMapping("likePost")
+	@PutMapping("like")
 	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map) {
 		// 좋아요 : 1, 좋아요 취소 : 0
 		int flag = (int) map.get("flag");

@@ -58,13 +58,13 @@ public class CommentServiceImple implements CommentService{
 		}else { // 대댓글 입력
 
 			String commentGroup = (String) map.get("commentGroup");
-			System.out.println("commentGroup:"+commentGroup);
+			//System.out.println("commentGroup:"+commentGroup);
 			// id값을 설정하기 위해 groupOrder값을 임시로 넣는다
 			map.put("groupOrder","-1");
 			commentMapper.inputComment(map);
 			
 			String commentCount = Integer.toString(commentMapper.getCommentCount(commentGroup)-1);
-			System.out.println("commentCount:"+commentCount);
+			//System.out.println("commentCount:"+commentCount);
 			
 			// 임시 저장되어있던 -1을 알맞은 값으로 변경
 			map.put("groupOrder",commentCount);
@@ -73,8 +73,8 @@ public class CommentServiceImple implements CommentService{
 	}
 
 	@Override
-	public int editComment(HashMap<String, Object> map) {
-		return commentMapper.editComment(map);
+	public int updateComment(HashMap<String, Object> map) {
+		return commentMapper.updateComment(map);
 	}
 
 	@Override

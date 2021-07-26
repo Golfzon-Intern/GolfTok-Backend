@@ -15,7 +15,7 @@ public interface CommentMapper {
 	public int inputComment(HashMap<String, Object> map);
 	public int getCommentCount(String commentGroup);
 	public int updateGroupOrder(String commentCount);
-	public int editComment(HashMap<String, Object> map);
+	public int updateComment(HashMap<String, Object> map);
 	public int getPostIdByCommentId(int commentId);
 	public int deleteComment(int commentId);
 	public int getGroupLayerByCommentId(int commentId);

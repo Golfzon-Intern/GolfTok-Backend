@@ -123,14 +123,20 @@
 	<!-- 대댓글 삭제 1 : 대댓글 삭제 -->
 	<delete id="deleteChildrenComment" parameterType="HashMap">
 		delete from comments
-		where group_order=#{groupOrder} and comment_group=#{commentGroup} and group_layer=1
+		where 
+			group_order=#{groupOrder} 
+			and comment_group=#{commentGroup} 
+			and group_layer=1
 	</delete>
 	
 	<!-- 대댓글 삭제 2 : 대댓글 순서 정렬 -->
 	<update id="orderChildrenComment" parameterType="HashMap">
 		update comments
 		set group_order-=1
-		where comment_group=#{commentGroup} and group_layer=1 and group_order <![CDATA[ > ]]> #{groupOrder}
+		where 
+			comment_group=#{commentGroup} 
+			and group_layer=1 
+			and group_order <![CDATA[ > ]]> #{groupOrder}
 	</update>
 
 
