@@ -46,7 +46,9 @@
 
 	<!-- postId에 해당하는 모든 댓글 가져오기 -->
 	<select id="getAllComments" parameterType="int" resultMap="commentsResult">
-		select * from comments where post_id=#{postId}
+		select * 
+		from comments 
+		where post_id=#{postId}
 	</select>
 		
 	<!-- 댓글 작성 -->
@@ -62,7 +64,8 @@
 
 	<!-- commentGroup의 댓글 총 개수 구하기 -->
 	<select id="getCommentCount" parameterType="String" resultType="int">
-		select count(*) from comments
+		select count(*) 
+		from comments
 		where comment_group=#{commentGroup}
 	</select>
 	
@@ -83,32 +86,37 @@
 	
 	<!-- commentId로 postId 가져오기 -->
 	<select id="getPostIdByCommentId" parameterType="int" resultType="int">
-		select post_id from comments
+		select post_id 
+		from comments
 		where comment_id=#{commentId}
 	</select>
 	
 	<!-- commentId로 groupLayer 가져오기 -->
 	<select id="getGroupLayerByCommentId" parameterType="int" resultType="int">
-		select group_layer from comments
+		select group_layer 
+		from comments
 		where comment_id=#{commentId}
 	</select>
 	
 	<!-- commentId로 groupOrder 가져오기 -->
 	<select id="getGroupOrderByCommentId" parameterType="int" resultType="int">
-		select group_order from comments
+		select group_order 
+		from comments
 		where comment_id=#{commentId}
 	</select>
 	
 	<!-- commentId로 commentGroup 가져오기 -->
 	<select id="getCommentGroupByCommentId" parameterType="int" resultType="int">
-		select comment_group from comments
+		select comment_group 
+		from comments
 		where comment_id=#{commentId}
 	</select>
 
 
 	<!-- 댓글 삭제 => 대댓글도 모두 삭제 -->
 	<delete id="deleteComment" parameterType="int">
-		delete from comments
+		delete 
+		from comments
 		where comment_group=#{commentGroup}
 	</delete>
 	
@@ -122,7 +130,8 @@
 	
 	<!-- 대댓글 삭제 1 : 대댓글 삭제 -->
 	<delete id="deleteChildrenComment" parameterType="HashMap">
-		delete from comments
+		delete 
+		from comments
 		where 
 			group_order=#{groupOrder} 
 			and comment_group=#{commentGroup} 

@@ -24,8 +24,8 @@ public class PostServiceImple implements PostService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> showNasmo(int userId) {
-		return postMapper.showNasmo(userId);
+	public List<HashMap<String, Object>> getNasmo(int userId) {
+		return postMapper.getNasmo(userId);
 	}
 
 	@Override
@@ -44,13 +44,13 @@ public class PostServiceImple implements PostService {
 	}
 
 	@Override
-	public void likePost(int postId) {
-		postMapper.likePost(postId);
+	public int likePost(int postId) {
+		return postMapper.likePost(postId);
 	}
 
 	@Override
-	public void unlikePost(int postId) {
-		postMapper.unlikePost(postId);
+	public int unlikePost(int postId) {
+		return postMapper.unlikePost(postId);
 	}
 
 	@Override

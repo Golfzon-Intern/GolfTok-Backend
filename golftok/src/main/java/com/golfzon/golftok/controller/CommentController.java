@@ -53,10 +53,8 @@ public class CommentController {
 		}
 
 		int postId = (int) map.get("postId");
-		List<TokPosts> postList = postService.getDetailPost(postId);
+		
 		List<Comments> commentList = commentService.getAllComments(postId);
-
-		commentMap.put("postList", postList);
 		commentMap.put("commentList", commentList);
 
 		// 상세보기 페이지
@@ -66,35 +64,23 @@ public class CommentController {
 	// 댓글 수정
 	@PutMapping("update")
 	@ResponseStatus(HttpStatus.OK)
-	public HashMap<String, Object> updateComment(@RequestBody HashMap<String, Object> map,
+	public void updateComment(@RequestBody HashMap<String, Object> map,
 			HttpServletResponse response) throws IOException{
-		HashMap<String, Object> commentMap = new HashMap<String, Object>();
-		int commentId = (int) map.get("commentId");
-
 		if (commentService.updateComment(map) == 0) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} else {
 			System.out.println("Success!!!");
 		}
-
-		int postId = commentService.getPostIdByCommentId(commentId);
-		List<TokPosts> postList = postService.getDetailPost(postId);
-		List<Comments> commentList = commentService.getAllComments(postId);
-
-		commentMap.put("postList", postList);
-		commentMap.put("commentList", commentList);
-
-		return commentMap;
 	}
 
 	// 댓글 삭제
 	@DeleteMapping("delete")
-	@ResponseStatus(HttpStatus.OK)
-	public HashMap<String, Object> deleteComment(@RequestParam(value = "commentId") int commentId,
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void deleteComment(@RequestParam(value = "commentId") int commentId,
 			HttpServletResponse response) throws IOException{
-		HashMap<String, Object> commentMap = new HashMap<String, Object>();
+		//HashMap<String, Object> commentMap = new HashMap<String, Object>();
 		// 댓글 삭제 전, 미리 댓글id를 이용 해 게시물 정보 얻어오기
-		int postId = commentService.getPostIdByCommentId(commentId);
+		//int postId = commentService.getPostIdByCommentId(commentId);
 
 		if (commentService.deleteComment(commentId) == 0) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN); //403 에러
@@ -102,34 +88,37 @@ public class CommentController {
 			System.out.println("Success!!!");
 		}
 
-		List<TokPosts> postList = postService.getDetailPost(postId);
-		List<Comments> commentList = commentService.getAllComments(postId);
-
-		commentMap.put("postList", postList);
-		commentMap.put("commentList", commentList);
-
-		return commentMap;
+		/*
+		 * List<Comments> commentList = commentService.getAllComments(postId);
+		 * commentMap.put("commentList", commentList);
+		 * 
+		 * return commentMap;
+		 */
 	}
 
 	// 댓글 좋아요, 좋아요 취소
 	@PutMapping("like")
-	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map) {
+	@ResponseStatus(code = HttpStatus.OK)
+	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map,
+			HttpServletResponse response) throws IOException{
 		// 좋아요 : 1, 좋아요 취소 : 0
 		int flag = (int) map.get("flag");
 		int commentId = (int) map.get("commentId");
 
 		if (flag == 1) {
-			commentService.likeComment(commentId);
+			if (commentService.likeComment(commentId)==0) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
+			}
 		} else {
-			commentService.unlikeComment(commentId);
+			if (commentService.unlikeComment(commentId)==0) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
+			}
 		}
 
 		int postId = commentService.getPostIdByCommentId(commentId);
 		HashMap<String, Object> detailMap = new HashMap<String, Object>();
-		List<TokPosts> postList = postService.getDetailPost(postId);
 		List<Comments> commentList = commentService.getAllComments(postId);
 
-		detailMap.put("postList", postList);
 		detailMap.put("commentList", commentList);
 
 		return detailMap;

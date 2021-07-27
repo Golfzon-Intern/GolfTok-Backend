@@ -10,7 +10,7 @@ import com.golfzon.golftok.model.TokUsers;
 public interface PostService {
 	public int insertPost(HashMap<String, Object> map);
 
-	public List<HashMap<String, Object>> showNasmo(int userId);
+	public List<HashMap<String, Object>> getNasmo(int userId);
 
 	public List<TokPosts> getDetailPost(int postId);
 
@@ -18,9 +18,9 @@ public interface PostService {
 
 	public int deletePost(int postId);
 
-	public void likePost(int postId);
+	public int likePost(int postId);
 
-	public void unlikePost(int postId);
+	public int unlikePost(int postId);
 
 	public List<HashMap<String, Object>> getTodayAllPosts();
 

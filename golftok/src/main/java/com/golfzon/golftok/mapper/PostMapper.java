@@ -16,7 +16,7 @@ import com.golfzon.golftok.model.TokUsers;
 public interface PostMapper {
 	public int insertPost(HashMap<String, Object> map);
 
-	public List<HashMap<String, Object>> showNasmo(int userId);
+	public List<HashMap<String, Object>> getNasmo(int userId);
 
 	public List<TokPosts> getDetailPost(int postId);
 
@@ -28,11 +28,11 @@ public interface PostMapper {
 
 	public int likePost(int postId);
 
-	public void unlikePost(int postId);
+	public int unlikePost(int postId);
 
-	public void likeComment(int commentId);
+	public int likeComment(int commentId);
 
-	public void unlikeComment(int commentId);
+	public int unlikeComment(int commentId);
 
 	public List<HashMap<String, Object>> getTodayAllPosts();
 

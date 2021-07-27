@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.golfzon.golftok.model.Follow;
+import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
 
 @Mapper
@@ -30,6 +31,8 @@ public interface UsersMapper {
 	int registerUser(HashMap<String, Object> userMap);
 	String getPasswordByUserName(String userName);
 	List<HashMap<String, Object>> getRecommendedFriednsByLikeCount();
-	HashMap<String, Object> getUserByUserId(int userId);
+	TokUsers getUserByUserId(int userId);
+	TokUsers getUserByUserNameExceptPwd(String userName);
+	List<TokPosts> getFollowingPost(int userId);
 
 }

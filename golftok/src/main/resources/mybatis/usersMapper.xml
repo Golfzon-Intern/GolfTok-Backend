@@ -23,6 +23,18 @@
 		<result property="userId" column="user_id" />
 		<result property="friendId" column="friend_id" />
 	</resultMap>
+	
+	<resultMap id="postsResult" type="com.golfzon.golftok.model.TokPosts">
+		<id property="postId" column="post_id"/>
+		<result property="userId" column="user_id" />
+		<result property="postContent" column="post_content" />
+		<result property="videoRoot" column="video_root" />
+		<result property="uploadDate" column="upload_date" />
+		<result property="likeCount" column="like_count" />
+		<result property="commentCount" column="comment_count" />
+		<result property="locations" column="locations" />
+		<result property="postThumbnail" column="post_thumbnail" />
+	</resultMap>
 
 	<!-- <resultMap id="requestResult" type="com.golfzon.golftok.model.Request">
 		<id property="requestId" column="request_id"/>
@@ -30,6 +42,7 @@
 		<result property="requestedId" column="requested_id" />
 		<result property="requestDate" column="request_date" />
 	</resultMap> -->
+
 
 	<!-- 회원가입 -->
 	<insert id="registerUser" parameterType="HashMap">
@@ -78,23 +91,35 @@
 	
 	<!-- userName으로 user 객체 가져오기 -->
 	<select id="getUserByUserName" parameterType="String" resultMap="usersResult">
-		select * from tok_users
+		select * 
+		from tok_users
 		where user_name=#{userName}
 	</select>
 	
 	<!-- userId로 user 객체 가져오기 -->
 	<select id="getUserByUserId" parameterType="int" resultMap="usersResult">
-		select
-			user_id as userId, user_name as userName, user_nickname as userNickname, user_icon as userIcon, 
-			introduction_message as introductionMessage, user_age as userAge, user_grade as userGrade, 
-			following_count as followingCount, follower_count as followerCount
+		select *
 		from tok_users
 		where user_id=#{userId}
 	</select>
 	
+	<!-- 
+	user_id as userId, user_name as userName, user_nickname as userNickname, user_icon as userIcon, 
+			introduction_message as introductionMessage, user_age as userAge, user_grade as userGrade, 
+			following_count as followingCount, follower_count as followerCount
+	 -->
+	
+	<!-- userName으로 user 객체 가져오기 (비번 제외) -->
+	<select id="getUserByUserNameExceptPwd" parameterType="String" resultMap="usersResult">
+		select *
+		from tok_users
+		where user_name=#{userName}
+	</select>
+	
 	<!-- userName으로 userId 가져오기 -->
 	<select id="getUserIdByUserName" parameterType="String" resultType="int">
-		select user_id from tok_users
+		select user_id 
+		from tok_users
 		where user_name=#{userName}
 	</select>
 	
@@ -124,8 +149,21 @@
 	
 	<!-- id로 비밀번호 얻기 -->
 	<select id="getPasswordByUserName" parameterType="String" resultType="String">
-		select user_password from tok_users
+		select user_password 
+		from tok_users
 		where user_name=#{userName}
+	</select>
+	
+	<!-- 내가 팔로우 한 계정 동영상 모아보기 -->
+	<select id="getFollowingPost" parameterType="int" resultMap="postsResult">
+		select *
+		from tok_posts
+		where user_id in (
+			select friend_id
+			from follow
+			where user_id=#{userId}
+		)
+		order by upload_date DESC
 	</select>
 	
 	

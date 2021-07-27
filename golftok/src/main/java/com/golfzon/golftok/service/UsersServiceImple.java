@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.golfzon.golftok.mapper.UsersMapper;
+import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
 
 
@@ -113,7 +114,19 @@ public class UsersServiceImple implements UsersService{
 
 
 	@Override
-	public HashMap<String, Object> getUserByUserId(int userId) {
+	public TokUsers getUserByUserId(int userId) {
 		return userMapper.getUserByUserId(userId);
+	}
+
+
+	@Override
+	public TokUsers getUserByUserNameExceptPwd(String userName) {
+		return userMapper.getUserByUserNameExceptPwd(userName);
+	}
+
+
+	@Override
+	public List<TokPosts> getFollowingPost(int userId) {
+		return userMapper.getFollowingPost(userId);
 	}
 }

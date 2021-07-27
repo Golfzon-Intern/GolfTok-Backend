@@ -36,15 +36,30 @@ public class PostController {
 	
 	@Autowired
 	private UsersService userService;
+	
+	// 게시물 리스트 보기
+	@GetMapping("postList")
+	public HashMap<String, Object> getPostList(Principal principal) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		System.out.println("principal:"+principal);
+		
+		List<HashMap<String, Object>> todayPostList = postService.getTodayAllPosts();
+		List<HashMap<String, Object>> otherPostList = postService.getOtherDayAllPosts();
+		
+		map.put("todayPostList", todayPostList);
+		map.put("otherPostList", otherPostList);
+
+		return map;
+	}
 
 	// 나의 나스모 영상 보기
-	@GetMapping("getNasmo")
-	public HashMap<String, Object> showNasmo(Principal principal) {
+	@GetMapping("nasmoList")
+	public HashMap<String, Object> getNasmo(Principal principal) {
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		List<HashMap<String, Object>> nasmoList = postService.showNasmo(userId);
+		List<HashMap<String, Object>> nasmoList = postService.getNasmo(userId);
 		map.put("nasmoList", nasmoList);
 
 		return map;
@@ -77,63 +92,62 @@ public class PostController {
 	}
 
 	// 게시물 (동영상) 상세보기 (게시물+댓글)
-	@GetMapping("getDetail")
+	@GetMapping("detail")
 	public HashMap<String, Object> getDetailPost(@RequestParam(value = "postId") int postId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<TokPosts> postList = postService.getDetailPost(postId);
-		List<Comments> commentList = commentService.getAllComments(postId);
-
+		
 		map.put("postList", postList);
-		map.put("commentList", commentList);
-
+		
 		return map;
 	}
 
 	// 게시물 수정
 	@PutMapping("update")
 	@ResponseStatus(code = HttpStatus.OK)
-	public HashMap<String, Object> updatePost(@RequestBody HashMap<String, Object> map, 
+	public void updatePost(@RequestBody HashMap<String, Object> map, 
 			HttpServletResponse response) throws IOException{
 		if (postService.updatePost(map) == 0) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
 		} else {
 			System.out.println("Success!!!");
 		}
-		return map;
 	}
 
 	// 게시물 삭제
 	@DeleteMapping("delete")
-	@ResponseStatus(code = HttpStatus.OK)
-	public HashMap<String, Object> deletePost(@RequestParam(value = "postId") int postId,
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void deletePost(@RequestParam(value = "postId") int postId,
 			HttpServletResponse response) throws IOException{
 		if (postService.deletePost(postId) == 0) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN); //403 에러
 		} else {
 			System.out.println("Success!!!");
 		}
-		return null;
 	}
 	
 	// 게시물 좋아요, 좋아요 취소
 	@PutMapping("like")
-	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map) {
+	@ResponseStatus(code = HttpStatus.OK)
+	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map,
+			HttpServletResponse response) throws IOException{
 		// 좋아요 : 1, 좋아요 취소 : 0
 		int flag = (int) map.get("flag");
 		int postId = (int) map.get("postId");
 		
 		if (flag==1) {
-			postService.likePost(postId);
+			if (postService.likePost(postId)==0) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
+			}
 		}else {
-			postService.unlikePost(postId);
+			if (postService.unlikePost(postId)==0) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
+			}
 		}
 		
 		HashMap<String, Object> detailMap = new HashMap<String, Object>();
 		List<TokPosts> postList = postService.getDetailPost(postId);
-		List<Comments> commentList = commentService.getAllComments(postId);
-
 		detailMap.put("postList", postList);
-		detailMap.put("commentList", commentList);
 
 		return detailMap;
 	}
