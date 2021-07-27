@@ -28,4 +28,8 @@ public interface PostService {
 
 	public List<HashMap<String, Object>> getAllUserPosts(int userId);
 
+	public int getPostIdByContentAndId(HashMap<String, Object> postMap);
+
+	public void insertHashTag(HashMap<String, Object> postMap);
+
 }

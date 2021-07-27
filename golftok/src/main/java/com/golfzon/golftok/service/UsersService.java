@@ -32,8 +32,6 @@ public interface UsersService {
 
 	int increaseFollowing(int userId);
 
-	int registerUser(HashMap<String, Object> userMap);
-
 	String getPasswordByUserName(String userName);
 
 	List<HashMap<String, Object>> getRecommendedFriednsByLikeCount();

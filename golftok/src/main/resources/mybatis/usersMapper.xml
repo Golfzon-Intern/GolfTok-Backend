@@ -42,17 +42,7 @@
 		<result property="requestedId" column="requested_id" />
 		<result property="requestDate" column="request_date" />
 	</resultMap> -->
-
-
-	<!-- 회원가입 -->
-	<insert id="registerUser" parameterType="HashMap">
-		<selectKey resultType="integer" keyProperty="userId" order="BEFORE">
-			select MAX(user_id)+1 from tok_users
-		</selectKey>
-		insert into tok_users values
-		(#{userId},#{userName},#{userPassword},#{userNickname},#{userIcon},
-		#{introductionMessage},#{userAge},'참새',0,0)
-	</insert>
+	
 
 	<!-- 내 골프 친구 보기 -->
 	<select id="getMyFollowing" parameterType="int" resultType="HashMap">

@@ -43,6 +43,13 @@
 		<result property="friendId" column="friend_id" />
 	</resultMap>
 	
+	<resultMap id="hashtagResult" type="com.golfzon.golftok.model.Hashtag">
+		<id property="hashtagId" column="hashtag_id"/>
+		<result property="postId" column="post_id" />
+		<result property="hashtagContent" column="hashtag_content" />
+	</resultMap>
+
+	
 	<!-- 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->
 	<select id="getTodayAllPosts" resultType="HashMap">
 		select 
@@ -124,7 +131,6 @@
 		where post_id=#{postId}
 	</update>
 	
-
 	<!-- userId로 모든 게시물 가져오기 -->
 	<select id="getAllUserPosts" parameterType="int" resultType="HashMap">
 		select 
@@ -132,6 +138,25 @@
 		from tok_posts
 		where user_id=#{userId}
 	</select>
+	
+	<!-- hashtag 삽입 -->
+	<insert id="insertHashtag" parameterType="HashMap">
+		<selectKey resultType="integer" keyProperty="hashtagId" order="BEFORE">
+			select MAX(hashtag_id)+1 from hashtag
+		</selectKey>
+		insert into hashtag values
+		(#{hashtagId},#{postId},#{hashtagContent})
+	</insert>
+	
+	<!-- userId,postContent로 postId 가져오기 -->
+	<select id="getPostIdByContentAndId" parameterType="HashMap" resultType="int">
+		select post_id
+		from tok_posts
+		where 
+			post_content=#{postContent} and
+			user_id=#{userId}
+	</select>
+	
 	
 	
 	<!-- 로그인 안 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->

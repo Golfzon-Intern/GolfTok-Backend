@@ -39,4 +39,8 @@ public interface PostMapper {
 	public List<HashMap<String, Object>> getOtherDayAllPosts();
 
 	public List<HashMap<String, Object>> getAllUserPosts(int userId);
+
+	public void insertHashtag(HashMap<String, Object> map);
+
+	public int getPostIdByContentAndId(HashMap<String, Object> postMap);
 }

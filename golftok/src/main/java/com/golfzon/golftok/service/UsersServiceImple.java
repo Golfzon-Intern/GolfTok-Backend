@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.golfzon.golftok.mapper.UsersMapper;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
-
 
 @Service
 @Transactional
@@ -93,13 +91,6 @@ public class UsersServiceImple implements UsersService{
 	public int increaseFollowing(int userId) {
 		return userMapper.increaseFollowing(userId);
 	}
-
-
-	@Override
-	public int registerUser(HashMap<String, Object> userMap) {
-		return userMapper.registerUser(userMap);
-	}
-
 
 	@Override
 	public String getPasswordByUserName(String userName) {

@@ -4,13 +4,8 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,82 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.golfzon.golftok.jwt.JwtUtil;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
-import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
 @RestController
 @RequestMapping("user")
 public class UserController {
-	// 인증에 대한 부분 처리
-	// 인증이 성공하면 isAuthenticated=true 인 객체를 생성하여 SecurityContext에 저장
-	@Autowired
-	private AuthenticationManager authenticationManager;
-
 	@Autowired
 	private UsersService userService;
-
-	@Autowired
-	private PostService postService;
-
-	@Autowired
-	private JwtUtil jwtUtil;
-
-	private BCryptPasswordEncoder pwdEncoder;
-
-	// 회원가입
-	@PostMapping("register")
-	@ResponseStatus(code = HttpStatus.OK)
-	public void userRegister(@RequestBody HashMap<String, Object> userMap, HttpServletResponse response)
-			throws Exception {
-		String userPassword = (String) userMap.get("userPassword");
-
-		pwdEncoder = new BCryptPasswordEncoder();
-		String password = pwdEncoder.encode(userPassword);
-		System.out.println(password);
-		userMap.put("userPassword", password);
-
-		if (userService.registerUser(userMap) == 0) {
-			response.sendError(HttpServletResponse.SC_FORBIDDEN);
-		}
-	}
-
-	// 로그인
-	@PostMapping("login")
-	public HashMap<String, Object> generateToken(@RequestBody HashMap<String, Object> map, HttpServletResponse response)
-			throws Exception {
-		HashMap<String, Object> loginMap = new HashMap<String, Object>();
-		pwdEncoder = new BCryptPasswordEncoder();
-
-		String userName = (String) map.get("userName");
-		String userPassword = (String) map.get("userPassword");
-		Integer userId = userService.getUserIdByUserName(userName);
-
-		if (userId != null) {
-			try {
-				// UsernamePasswordAuthenticationToken : AuthenticationFilter의 구현체
-				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
-			} catch (Exception e) { // 비밀번호 틀렸을 시 -> 401
-				System.out.println(e);
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			}
-
-			// token 생성
-			String accessToken = jwtUtil.generateToken(userName);
-
-			loginMap.put("accessToken", accessToken);
-			loginMap.put("userId", userId);
-			loginMap.put("userName", userName);
-
-			System.out.println("login 성공!!" + loginMap.toString());
-		} else { // 아이디가 틀리거나 존재하지 않을 시 -> 404
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
-		}
-
-		return loginMap;
-	}
 
 	// 유저 정보 조회
 	@GetMapping("info")
@@ -160,33 +88,6 @@ public class UserController {
 		
 		return map;
 	}
-	
-
-	// 프로필 페이지보기
-	/*
-	 * @GetMapping("profile") public HashMap<String, Object>
-	 * getProfilePage(@RequestParam(value = "userId") int userId, Principal
-	 * principal) { HashMap<String, Object> map = new HashMap<String, Object>();
-	 * List<HashMap<String, Object>> recommendList = null; List<HashMap<String,
-	 * Object>> followingList = null;
-	 * 
-	 * TokUsers user = userService.getUserByUserId(userId); List<HashMap<String,
-	 * Object>> postList = postService.getAllUserPosts(userId);
-	 * 
-	 * map.put("user", user); map.put("postList", postList);
-	 * 
-	 * // 로그인 됐을 때 if (principal != null) { String userName = principal.getName();
-	 * int loginUserId = userService.getUserIdByUserName(userName); followingList =
-	 * userService.getMyFollowing(loginUserId); recommendList =
-	 * userService.getRecommendedFriednsByOrders(loginUserId);
-	 * 
-	 * map.put("followingList", followingList); map.put("recommendList",
-	 * recommendList); } else { // 로그인 안됐을 때 recommendList =
-	 * userService.getRecommendedFriednsByLikeCount(); map.put("followingList",
-	 * null); map.put("recommendList", recommendList); }
-	 * 
-	 * return map; }
-	 */
 
 	// 친구 추천
 	@GetMapping("recommend/friend")
@@ -207,6 +108,34 @@ public class UserController {
 
 		return map;
 	}
+	
+	
+	
+	// 프로필 페이지보기
+		/*
+		 * @GetMapping("profile") public HashMap<String, Object>
+		 * getProfilePage(@RequestParam(value = "userId") int userId, Principal
+		 * principal) { HashMap<String, Object> map = new HashMap<String, Object>();
+		 * List<HashMap<String, Object>> recommendList = null; List<HashMap<String,
+		 * Object>> followingList = null;
+		 * 
+		 * TokUsers user = userService.getUserByUserId(userId); List<HashMap<String,
+		 * Object>> postList = postService.getAllUserPosts(userId);
+		 * 
+		 * map.put("user", user); map.put("postList", postList);
+		 * 
+		 * // 로그인 됐을 때 if (principal != null) { String userName = principal.getName();
+		 * int loginUserId = userService.getUserIdByUserName(userName); followingList =
+		 * userService.getMyFollowing(loginUserId); recommendList =
+		 * userService.getRecommendedFriednsByOrders(loginUserId);
+		 * 
+		 * map.put("followingList", followingList); map.put("recommendList",
+		 * recommendList); } else { // 로그인 안됐을 때 recommendList =
+		 * userService.getRecommendedFriednsByLikeCount(); map.put("followingList",
+		 * null); map.put("recommendList", recommendList); }
+		 * 
+		 * return map; }
+		 */
 
 	// 골프 친구 신청
 	/*

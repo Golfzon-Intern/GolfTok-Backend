@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.golfzon.golftok.model.Comments;
 import com.golfzon.golftok.model.TokPosts;
-import com.golfzon.golftok.service.CommentService;
 import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
@@ -30,9 +28,6 @@ import com.golfzon.golftok.service.UsersService;
 public class PostController {
 	@Autowired
 	private PostService postService;
-
-	@Autowired
-	private CommentService commentService;
 	
 	@Autowired
 	private UsersService userService;
@@ -70,24 +65,27 @@ public class PostController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public HashMap<String, Object> insertPost(@RequestBody HashMap<String, Object> map,Principal principal,
 			HttpServletResponse response) throws IOException {
-		int userId;
-		// if문은 임시 코드
-		if(principal==null) {
-			//System.out.println("principal null!!!");
-			userId=3;
-		}else {
+		String postContent = (String) map.get("postContent");
 		String userName = principal.getName();
-		userId = userService.getUserIdByUserName(userName);
-		}
+		int userId = userService.getUserIdByUserName(userName);
+
 		map.put("userId", userId);
 		
 		if (postService.insertPost(map) == 0) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} else {
+			HashMap<String, Object> postMap = new HashMap<String, Object>();
+			postMap.put("postContent", postContent);
+			postMap.put("userId", userId);
+			
+			int postId = postService.getPostIdByContentAndId(postMap);
+			postMap.put("postId",postId);
+			
+			postService.insertHashTag(postMap);
+			
 			System.out.println("Success!!!");
 		}
-		
-		// 업로드 후, 프로필 페이지로!!! (프로필 페이지의 데이터 넘겨줘야 함)
+
 		return map;
 	}
 

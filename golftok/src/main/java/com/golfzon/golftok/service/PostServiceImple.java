@@ -68,4 +68,28 @@ public class PostServiceImple implements PostService {
 		return postMapper.getAllUserPosts(userId);
 	}
 
+	@Override
+	public int getPostIdByContentAndId(HashMap<String, Object> postMap) {
+		return postMapper.getPostIdByContentAndId(postMap);
+	}
+
+	@Override
+	public void insertHashTag(HashMap<String, Object> postMap) {
+		String postContent = (String) postMap.get("postContent");
+		int postId = (int) postMap.get("postId");
+		
+		String[] contentList = postContent.split(" ");
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
+		for (String content : contentList) {
+			if (content.startsWith("#")) {
+				String hashtagContent = content.substring(1);
+
+				map.put("postId", postId);
+				map.put("hashtagContent", hashtagContent);
+				
+				postMapper.insertHashtag(map);
+			}
+		}
+	}
 }

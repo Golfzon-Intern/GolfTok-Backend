@@ -17,7 +17,6 @@ public interface UsersMapper {
 
 	List<HashMap<String, Object>> getMyFollowing(int userId);
 	List<HashMap<String, Object>> getRecommendedFriednsByOrders(int userId);
-	TokUsers checkLogin(HashMap<String, Object> map);
 	TokUsers getUserByUserName(String userName);
 	Integer getUserIdByUserName(String userName);
 	int requestGolfFriend(HashMap<String, Object> map);
@@ -28,7 +27,6 @@ public interface UsersMapper {
 	int following(HashMap<String, Object> map);
 	int increaseFollower(int friendId);
 	int increaseFollowing(int userId);
-	int registerUser(HashMap<String, Object> userMap);
 	String getPasswordByUserName(String userName);
 	List<HashMap<String, Object>> getRecommendedFriednsByLikeCount();
 	TokUsers getUserByUserId(int userId);
