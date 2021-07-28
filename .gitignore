@@ -23,7 +23,7 @@
 #Ignore files
 .mvn/
 test/
-src/src/main/resources/static/
+.static/
 mvnw
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
