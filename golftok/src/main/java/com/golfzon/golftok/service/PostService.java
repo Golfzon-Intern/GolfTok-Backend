@@ -32,4 +32,6 @@ public interface PostService {
 
 	public void insertHashTag(HashMap<String, Object> postMap);
 
+	public List<TokPosts> searchPosts(String keyword);
+
 }

@@ -19,17 +19,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.golfzon.golftok.model.Comments;
-import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.service.CommentService;
-import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
 @RestController
 @RequestMapping("comment")
 public class CommentController {
-	@Autowired
-	private PostService postService;
-
 	@Autowired
 	private CommentService commentService;
 	

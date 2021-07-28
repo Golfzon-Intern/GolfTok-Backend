@@ -149,4 +149,12 @@ public class PostController {
 
 		return detailMap;
 	}
+
+	// '#'으로 게시물 검색
+	@GetMapping("search")
+	public List<TokPosts> searchPosts(@RequestParam(value = "keyword") String keyword) {
+		List<TokPosts> postList = postService.searchPosts(keyword);
+
+		return postList;
+	}
 }

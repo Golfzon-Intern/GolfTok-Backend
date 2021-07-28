@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.golfzon.golftok.mapper.PostMapper;
-import com.golfzon.golftok.model.Comments;
 import com.golfzon.golftok.model.TokPosts;
-import com.golfzon.golftok.model.TokUsers;
 
 @Service
 @Transactional
@@ -91,5 +89,10 @@ public class PostServiceImple implements PostService {
 				postMapper.insertHashtag(map);
 			}
 		}
+	}
+
+	@Override
+	public List<TokPosts> searchPosts(String keyword) {
+		return postMapper.searchPosts(keyword);
 	}
 }

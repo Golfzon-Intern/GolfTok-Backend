@@ -43,4 +43,6 @@ public interface PostMapper {
 	public void insertHashtag(HashMap<String, Object> map);
 
 	public int getPostIdByContentAndId(HashMap<String, Object> postMap);
+
+	public List<TokPosts> searchPosts(String keyword);
 }
