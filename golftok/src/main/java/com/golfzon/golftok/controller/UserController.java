@@ -26,18 +26,18 @@ public class UserController {
 
 	// 유저 정보 조회
 	@GetMapping("info")
-	public TokUsers getCurrentUserInfo(@RequestParam(value = "userId") int userId,Principal principal) {
+	public TokUsers getCurrentUserInfo(@RequestParam(value = "userId") int userId, Principal principal) {
 		TokUsers user = null;
-		
-		if(userId==0) {
+
+		if (userId == 0) {
 			if (principal != null) {
 				String userName = principal.getName();
 				user = userService.getUserByUserNameExceptPwd(userName);
 			}
-		}else {
+		} else {
 			user = userService.getUserByUserId(userId);
 		}
-		
+
 		return user;
 	}
 
@@ -57,8 +57,26 @@ public class UserController {
 		userService.increaseFollowing(userId);
 	}
 
+	// 내가 팔로잉 중인 계정 5개 보기 (사이드 메뉴)
+	@GetMapping("fiveMyFollowing")
+	public HashMap<String, Object> getFiveMyFollowing(Principal principal) {
+		String userName = principal.getName();
+		int userId = userService.getUserIdByUserName(userName);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
+		List<HashMap<String, Object>> followingList = null;
+
+		// 로그인 됐을 때
+		if (principal != null) {
+			followingList = userService.getFiveMyFollowing(userId);
+		}
+		map.put("followingList", followingList);
+
+		return map;
+	}
+
 	// 내가 팔로잉 중인 계정 모두 보기
-	@GetMapping("myFollowing")
+	@GetMapping("allMyFollowing")
 	public HashMap<String, Object> getMyFollowing(Principal principal) {
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
@@ -68,30 +86,30 @@ public class UserController {
 
 		// 로그인 됐을 때
 		if (principal != null) {
-			followingList = userService.getMyFollowing(userId);
+			followingList = userService.getAllMyFollowing(userId);
 		}
 		map.put("followingList", followingList);
 
 		return map;
 	}
-	
+
 	// 내가 팔로잉 한 게시물만 모아보기
 	@GetMapping("followingPost")
 	public HashMap<String, Object> getFollowingPost(Principal principal) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		
+
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
 		List<TokPosts> postList = userService.getFollowingPost(userId);
-		
+
 		map.put("postList", postList);
-		
+
 		return map;
 	}
 
-	// 친구 추천
-	@GetMapping("recommend/friend")
-	public HashMap<String, Object> recommendFriend(Principal principal) {
+	// 사이드 메뉴 - 추천 계정 보기 (5개 가져오기)
+	@GetMapping("recommend/fiveFollowing")
+	public HashMap<String, Object> recommend5Following(Principal principal) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		List<HashMap<String, Object>> recommendList = null;
@@ -99,43 +117,62 @@ public class UserController {
 		if (principal != null) {
 			String userName = principal.getName();
 			int userId = userService.getUserIdByUserName(userName);
-			recommendList = userService.getRecommendedFriednsByOrders(userId);
+			recommendList = userService.getRecommendedFriedns5ByOrders(userId);
 		} else { // 로그인 안됐을 때
-			recommendList = userService.getRecommendedFriednsByLikeCount();
+			recommendList = userService.getRecommendedFriedns5ByLikeCount();
 
 		}
 		map.put("recommendList", recommendList);
 
 		return map;
 	}
-	
-	
+
+	// 전체 보기 - 추천 계정 보기 (15개 가져오기)
+	@GetMapping("recommend/fifteenFollowing")
+	public HashMap<String, Object> recommend15Following(Principal principal) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
+		List<HashMap<String, Object>> recommendList = null;
+
+		if (principal != null) {
+			String userName = principal.getName();
+			int userId = userService.getUserIdByUserName(userName);
+			recommendList = userService.getRecommendedFriedns15ByOrders(userId);
+		} else { // 로그인 안됐을 때
+			recommendList = userService.getRecommendedFriedns15ByLikeCount();
+
+		}
+		map.put("recommendList", recommendList);
+
+		return map;
+	}
+
 	
 	// 프로필 페이지보기
-		/*
-		 * @GetMapping("profile") public HashMap<String, Object>
-		 * getProfilePage(@RequestParam(value = "userId") int userId, Principal
-		 * principal) { HashMap<String, Object> map = new HashMap<String, Object>();
-		 * List<HashMap<String, Object>> recommendList = null; List<HashMap<String,
-		 * Object>> followingList = null;
-		 * 
-		 * TokUsers user = userService.getUserByUserId(userId); List<HashMap<String,
-		 * Object>> postList = postService.getAllUserPosts(userId);
-		 * 
-		 * map.put("user", user); map.put("postList", postList);
-		 * 
-		 * // 로그인 됐을 때 if (principal != null) { String userName = principal.getName();
-		 * int loginUserId = userService.getUserIdByUserName(userName); followingList =
-		 * userService.getMyFollowing(loginUserId); recommendList =
-		 * userService.getRecommendedFriednsByOrders(loginUserId);
-		 * 
-		 * map.put("followingList", followingList); map.put("recommendList",
-		 * recommendList); } else { // 로그인 안됐을 때 recommendList =
-		 * userService.getRecommendedFriednsByLikeCount(); map.put("followingList",
-		 * null); map.put("recommendList", recommendList); }
-		 * 
-		 * return map; }
-		 */
+	/*
+	 * @GetMapping("profile") public HashMap<String, Object>
+	 * getProfilePage(@RequestParam(value = "userId") int userId, Principal
+	 * principal) { HashMap<String, Object> map = new HashMap<String, Object>();
+	 * List<HashMap<String, Object>> recommendList = null; List<HashMap<String,
+	 * Object>> followingList = null;
+	 * 
+	 * TokUsers user = userService.getUserByUserId(userId); List<HashMap<String,
+	 * Object>> postList = postService.getAllUserPosts(userId);
+	 * 
+	 * map.put("user", user); map.put("postList", postList);
+	 * 
+	 * // 로그인 됐을 때 if (principal != null) { String userName = principal.getName();
+	 * int loginUserId = userService.getUserIdByUserName(userName); followingList =
+	 * userService.getMyFollowing(loginUserId); recommendList =
+	 * userService.getRecommendedFriednsByOrders(loginUserId);
+	 * 
+	 * map.put("followingList", followingList); map.put("recommendList",
+	 * recommendList); } else { // 로그인 안됐을 때 recommendList =
+	 * userService.getRecommendedFriednsByLikeCount(); map.put("followingList",
+	 * null); map.put("recommendList", recommendList); }
+	 * 
+	 * return map; }
+	 */
 
 	// 골프 친구 신청
 	/*

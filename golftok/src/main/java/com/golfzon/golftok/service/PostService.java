@@ -34,4 +34,6 @@ public interface PostService {
 
 	public List<TokPosts> searchPosts(String keyword);
 
+	public List<HashMap<String, Object>> getAllPosts();
+
 }

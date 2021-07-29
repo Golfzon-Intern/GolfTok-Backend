@@ -16,7 +16,6 @@ import com.golfzon.golftok.model.TokUsers;
 public interface UsersMapper {
 
 	List<HashMap<String, Object>> getMyFollowing(int userId);
-	List<HashMap<String, Object>> getRecommendedFriednsByOrders(int userId);
 	TokUsers getUserByUserName(String userName);
 	Integer getUserIdByUserName(String userName);
 	int requestGolfFriend(HashMap<String, Object> map);
@@ -28,9 +27,14 @@ public interface UsersMapper {
 	int increaseFollower(int friendId);
 	int increaseFollowing(int userId);
 	String getPasswordByUserName(String userName);
-	List<HashMap<String, Object>> getRecommendedFriednsByLikeCount();
 	TokUsers getUserByUserId(int userId);
 	TokUsers getUserByUserNameExceptPwd(String userName);
 	List<TokPosts> getFollowingPost(int userId);
+	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId);
+	List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount();
+	List<HashMap<String, Object>> getRecommendedFriedns15ByOrders(int userId);
+	List<HashMap<String, Object>> getRecommendedFriedns15ByLikeCount();
+	List<HashMap<String, Object>> getFiveMyFollowing(int userId);
+	List<HashMap<String, Object>> getAllMyFollowing(int userId);
 
 }

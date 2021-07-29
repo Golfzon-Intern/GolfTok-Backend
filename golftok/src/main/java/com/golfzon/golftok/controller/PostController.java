@@ -38,11 +38,8 @@ public class PostController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		System.out.println("principal:"+principal);
 		
-		List<HashMap<String, Object>> todayPostList = postService.getTodayAllPosts();
-		List<HashMap<String, Object>> otherPostList = postService.getOtherDayAllPosts();
-		
-		map.put("todayPostList", todayPostList);
-		map.put("otherPostList", otherPostList);
+		List<HashMap<String, Object>> allPostList = postService.getAllPosts();
+		map.put("allPostList", allPostList);
 
 		return map;
 	}
@@ -152,9 +149,12 @@ public class PostController {
 
 	// '#'으로 게시물 검색
 	@GetMapping("search")
-	public List<TokPosts> searchPosts(@RequestParam(value = "keyword") String keyword) {
+	public HashMap<String, Object> searchPosts(@RequestParam(value = "keyword") String keyword) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<TokPosts> postList = postService.searchPosts(keyword);
-
-		return postList;
+		
+		map.put("postList", postList);
+		
+		return map;
 	}
 }

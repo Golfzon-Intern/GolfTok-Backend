@@ -15,7 +15,29 @@ import com.golfzon.golftok.model.TokPosts;
 public class PostServiceImple implements PostService {
 	@Autowired
 	private PostMapper postMapper;
+	
+	@Override
+	public List<HashMap<String, Object>> getTodayAllPosts() {
+		return postMapper.getTodayAllPosts();
+	}
 
+	@Override
+	public List<HashMap<String, Object>> getOtherDayAllPosts() {
+		return postMapper.getOtherDayAllPosts();
+	}
+	
+	// 모든 게시물 가져오기 (하루 + 2일~7일 게시물 병합 후 반환)
+	@Override
+	public List<HashMap<String, Object>> getAllPosts() {
+		List<HashMap<String, Object>> todayPostList = postMapper.getTodayAllPosts();
+		List<HashMap<String, Object>> otherPostList = postMapper.getOtherDayAllPosts();
+
+		todayPostList.addAll(otherPostList);
+
+		return todayPostList;
+	}
+
+	
 	@Override
 	public int insertPost(HashMap<String, Object> map) {
 		return postMapper.insertPost(map);
@@ -51,15 +73,6 @@ public class PostServiceImple implements PostService {
 		return postMapper.unlikePost(postId);
 	}
 
-	@Override
-	public List<HashMap<String, Object>> getTodayAllPosts() {
-		return postMapper.getTodayAllPosts();
-	}
-
-	@Override
-	public List<HashMap<String, Object>> getOtherDayAllPosts() {
-		return postMapper.getOtherDayAllPosts();
-	}
 
 	@Override
 	public List<HashMap<String, Object>> getAllUserPosts(int userId) {
@@ -95,4 +108,5 @@ public class PostServiceImple implements PostService {
 	public List<TokPosts> searchPosts(String keyword) {
 		return postMapper.searchPosts(keyword);
 	}
+
 }

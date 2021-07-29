@@ -21,20 +21,6 @@ public class UsersServiceImple implements UsersService{
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	// 내 골프 친구 보기 
-	@Override
-	public List<HashMap<String, Object>> getMyFollowing(int userId) {
-		return userMapper.getMyFollowing(userId);
-	}
-
-
-	// 추천 계정 보기 (나이대 별 골프 친구 많은 사람 추천)
-	@Override
-	public List<HashMap<String, Object>> getRecommendedFriednsByOrders(int userId) {
-		return userMapper.getRecommendedFriednsByOrders(userId);
-	}
-
-
 	@Override
 	public TokUsers getUserByUserName(String userName) {
 		TokUsers user = userMapper.getUserByUserName(userName);
@@ -99,12 +85,6 @@ public class UsersServiceImple implements UsersService{
 
 
 	@Override
-	public List<HashMap<String, Object>> getRecommendedFriednsByLikeCount() {
-		return userMapper.getRecommendedFriednsByLikeCount();
-	}
-
-
-	@Override
 	public TokUsers getUserByUserId(int userId) {
 		return userMapper.getUserByUserId(userId);
 	}
@@ -119,5 +99,41 @@ public class UsersServiceImple implements UsersService{
 	@Override
 	public List<TokPosts> getFollowingPost(int userId) {
 		return userMapper.getFollowingPost(userId);
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId) {
+		return userMapper.getRecommendedFriedns5ByOrders(userId);
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount() {
+		return userMapper.getRecommendedFriedns5ByLikeCount();
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> getRecommendedFriedns15ByOrders(int userId) {
+		return userMapper.getRecommendedFriedns15ByOrders(userId);
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> getRecommendedFriedns15ByLikeCount() {
+		return userMapper.getRecommendedFriedns15ByLikeCount();
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> getFiveMyFollowing(int userId) {
+		return userMapper.getFiveMyFollowing(userId);
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> getAllMyFollowing(int userId) {
+		return userMapper.getAllMyFollowing(userId);
 	}
 }
