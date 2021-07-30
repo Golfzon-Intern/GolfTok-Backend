@@ -175,7 +175,7 @@
 	</select>
 	
 	<!-- 내가 팔로우 한 계정 동영상 모아보기 -->
-	<select id="getFollowingPost" parameterType="int" resultMap="postsResult">
+	<select id="getFollowingPost" parameterType="com.golfzon.golftok.model.Criteria" resultMap="postsResult">
 		select *
 		from tok_posts
 		where user_id in (
@@ -184,6 +184,7 @@
 			where user_id=#{userId}
 		)
 		order by upload_date DESC
+		OFFSET #{startIndex} ROW FETCH NEXT #{recordsPerPage} ROW ONLY
 	</select>
 	
 	

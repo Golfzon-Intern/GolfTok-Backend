@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.golfzon.golftok.mapper.PostMapper;
+import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.TokPosts;
 
 @Service
@@ -16,25 +17,17 @@ public class PostServiceImple implements PostService {
 	@Autowired
 	private PostMapper postMapper;
 	
-	@Override
-	public List<HashMap<String, Object>> getTodayAllPosts() {
-		return postMapper.getTodayAllPosts();
-	}
-
-	@Override
-	public List<HashMap<String, Object>> getOtherDayAllPosts() {
-		return postMapper.getOtherDayAllPosts();
-	}
-	
 	// 모든 게시물 가져오기 (하루 + 2일~7일 게시물 병합 후 반환)
 	@Override
-	public List<HashMap<String, Object>> getAllPosts() {
-		List<HashMap<String, Object>> todayPostList = postMapper.getTodayAllPosts();
-		List<HashMap<String, Object>> otherPostList = postMapper.getOtherDayAllPosts();
-
-		todayPostList.addAll(otherPostList);
-
-		return todayPostList;
+	public List<HashMap<String, Object>> getAllPosts(Criteria criteria) {
+		//List<HashMap<String, Object>> todayPostList = postMapper.getTodayAllPosts(criteria);
+		//List<HashMap<String, Object>> otherPostList = postMapper.getOtherDayAllPosts(criteria);
+		
+		List<HashMap<String, Object>> allPosts = postMapper.getAllPosts(criteria);
+		//todayPostList.addAll(otherPostList);
+		//return todayPostList;
+		
+		return allPosts;
 	}
 
 	

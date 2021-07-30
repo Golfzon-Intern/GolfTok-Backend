@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import com.golfzon.golftok.model.Comments;
+import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.TokPosts;
-import com.golfzon.golftok.model.TokUsers;
 
 @Mapper
 @Repository
@@ -26,9 +25,9 @@ public interface PostMapper {
 
 	public int deletePost(int postId);
 
-	public List<HashMap<String, Object>> getTodayAllPosts();
+	public List<HashMap<String, Object>> getTodayAllPosts(Criteria criteria);
 
-	public List<HashMap<String, Object>> getOtherDayAllPosts();
+	public List<HashMap<String, Object>> getOtherDayAllPosts(Criteria criteria);
 
 	public List<HashMap<String, Object>> getAllUserPosts(int userId);
 
@@ -39,4 +38,6 @@ public interface PostMapper {
 	public List<TokPosts> searchPosts(String keyword);
 
 	public Object getPostLikeCount(int postId);
+
+	public List<HashMap<String, Object>> getAllPosts(Criteria criteria);
 }

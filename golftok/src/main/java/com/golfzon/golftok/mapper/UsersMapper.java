@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
+import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.Follow;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
@@ -29,7 +30,7 @@ public interface UsersMapper {
 	String getPasswordByUserName(String userName);
 	TokUsers getUserByUserId(int userId);
 	TokUsers getUserByUserNameExceptPwd(String userName);
-	List<TokPosts> getFollowingPost(int userId);
+	List<TokPosts> getFollowingPost(Criteria criteria);
 	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId);
 	List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount();
 	List<HashMap<String, Object>> getRecommendedFriedns15ByOrders(int userId);

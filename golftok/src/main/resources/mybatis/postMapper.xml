@@ -3,10 +3,10 @@
    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.golfzon.golftok.mapper.PostMapper">
 
+<mapper namespace="com.golfzon.golftok.mapper.PostMapper">
 	<resultMap id="usersResult" type="com.golfzon.golftok.model.TokUsers">
-		<id property="userId" column="user_id"/>
+		<id property="userId" column="user_id" />
 		<result property="userName" column="user_name" />
 		<result property="userNickname" column="user_nickname" />
 		<result property="userPassword" column="user_password" />
@@ -19,7 +19,7 @@
 	</resultMap>
 
 	<resultMap id="postsResult" type="com.golfzon.golftok.model.TokPosts">
-		<id property="postId" column="post_id"/>
+		<id property="postId" column="post_id" />
 		<result property="userId" column="user_id" />
 		<result property="postContent" column="post_content" />
 		<result property="videoRoot" column="video_root" />
@@ -29,56 +29,42 @@
 		<result property="locations" column="locations" />
 		<result property="postThumbnail" column="post_thumbnail" />
 	</resultMap>
-	
+
 	<resultMap id="nasmoResult" type="com.golfzon.golftok.model.Nasmo">
-		<id property="nasmoId" column="nasmo_id"/>
+		<id property="nasmoId" column="nasmo_id" />
 		<result property="userId" column="user_id" />
 		<result property="videoRoot" column="video_root" />
 		<result property="nasmoThumbnail" column="nasmo_thumbnail" />
 	</resultMap>
 
 	<resultMap id="followResult" type="com.golfzon.golftok.model.Follow">
-		<id property="followId" column="follow_id"/>
+		<id property="followId" column="follow_id" />
 		<result property="userId" column="user_id" />
 		<result property="friendId" column="friend_id" />
 	</resultMap>
-	
-	<resultMap id="hashtagResult" type="com.golfzon.golftok.model.Hashtag">
-		<id property="hashtagId" column="hashtag_id"/>
+
+	<resultMap id="hashtagResult"
+		type="com.golfzon.golftok.model.Hashtag">
+		<id property="hashtagId" column="hashtag_id" />
 		<result property="postId" column="post_id" />
 		<result property="hashtagContent" column="hashtag_content" />
 	</resultMap>
 
-	
-	<!-- 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->
-	<select id="getTodayAllPosts" resultType="HashMap">
+
+	<select id="getAllPosts" parameterType="com.golfzon.golftok.model.Criteria" resultType="HashMap">
 		select 
 			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, 
-			comment_count as commentCount,upload_date as uploadDate, u.user_id as userId,u.user_name as userName,
-			u.user_icon as userIcon, u.user_nickname as userNickname, post_thumbnail as postThumbnail
-		from tok_posts p, tok_users u
-		where
-			(like_count!=0 or comment_count!=0) and
-			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate())) and
-			p.user_id=u.user_id
-		order by like_count DESC,comment_count DESC
-	</select>
-	
-	<!-- 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
-	<select id="getOtherDayAllPosts" resultType="HashMap">
-		select 
-			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, 
-			comment_count as commentCount, upload_date as uploadDate, u.user_id as userId,u.user_name as userName,
-			u.user_icon as userIcon, u.user_nickname as userNickname, post_thumbnail as postThumbnail
+			comment_count as commentCount,upload_date as uploadDate, post_thumbnail as postThumbnail, locations,
+			u.user_id as userId,u.user_name as userName, u.user_icon as userIcon, u.user_nickname as userNickname
 		from tok_posts p, tok_users u
 		where
 			(like_count!=0 or comment_count!=0) and
 			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
-			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate())) and
 			p.user_id=u.user_id
 		order by like_count DESC,comment_count DESC
+		OFFSET #{startIndex} ROW FETCH NEXT #{recordsPerPage} ROW ONLY
 	</select>
-	
+
 	 
 	<!-- 내 나스모 영상 보기 -->
 	<select id="getNasmo" parameterType="int" resultType="HashMap">
@@ -163,7 +149,39 @@
 		from tok_posts
 		where post_id=#{postId}
 	</select>
+
+
 	
+	<!-- 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->
+	<!-- <select id="getTodayAllPosts" resultType="HashMap">
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, 
+			comment_count as commentCount,upload_date as uploadDate, u.user_id as userId,u.user_name as userName,
+			u.user_icon as userIcon, u.user_nickname as userNickname, post_thumbnail as postThumbnail
+		from tok_posts p, tok_users u
+		where
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+		order by like_count DESC,comment_count DESC
+	</select> -->
+	
+	<!-- 2일차 ~ 일주일 내 모든 게시물 가져오기 (좋아요, 댓글 순) -->
+	<!-- <select id="getOtherDayAllPosts" resultType="HashMap">
+		select 
+			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, 
+			comment_count as commentCount, upload_date as uploadDate, u.user_id as userId,u.user_name as userName,
+			u.user_icon as userIcon, u.user_nickname as userNickname, post_thumbnail as postThumbnail
+		from tok_posts p, tok_users u
+		where
+			(like_count!=0 or comment_count!=0) and
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
+			upload_date<![CDATA[ < ]]>(select DATEADD(dd,-1,getdate())) and
+			p.user_id=u.user_id
+		order by like_count DESC,comment_count DESC
+	</select> -->
+	
+
 	
 	<!-- 로그인 안 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->
 	<!-- <select id="getTodayAllPosts" resultType="HashMap">

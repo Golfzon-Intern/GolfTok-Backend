@@ -60,7 +60,6 @@ public class LoginController {
 	public HashMap<String, Object> generateToken(@RequestBody HashMap<String, Object> map, HttpServletResponse response)
 			throws Exception {
 		HashMap<String, Object> loginMap = new HashMap<String, Object>();
-		pwdEncoder = new BCryptPasswordEncoder();
 
 		String userName = (String) map.get("userName");
 		String userPassword = (String) map.get("userPassword");

@@ -3,9 +3,8 @@ package com.golfzon.golftok.service;
 import java.util.HashMap;
 import java.util.List;
 
-import com.golfzon.golftok.model.Comments;
+import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.TokPosts;
-import com.golfzon.golftok.model.TokUsers;
 
 public interface PostService {
 	public int insertPost(HashMap<String, Object> map);
@@ -18,10 +17,6 @@ public interface PostService {
 
 	public int deletePost(int postId);
 
-	public List<HashMap<String, Object>> getTodayAllPosts();
-
-	public List<HashMap<String, Object>> getOtherDayAllPosts();
-
 	public List<HashMap<String, Object>> getAllUserPosts(int userId);
 
 	public int getPostIdByContentAndId(HashMap<String, Object> postMap);
@@ -30,7 +25,7 @@ public interface PostService {
 
 	public List<TokPosts> searchPosts(String keyword);
 
-	public List<HashMap<String, Object>> getAllPosts();
+	public List<HashMap<String, Object>> getAllPosts(Criteria criteria);
 
 	public Object getPostLikeCount(int postId);
 

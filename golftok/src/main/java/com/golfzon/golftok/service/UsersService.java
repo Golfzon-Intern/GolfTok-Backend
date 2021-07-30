@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.Follow;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
@@ -35,7 +36,7 @@ public interface UsersService {
 
 	TokUsers getUserByUserNameExceptPwd(String userName);
 
-	List<TokPosts> getFollowingPost(int userId);
+	List<TokPosts> getFollowingPost(Criteria criteria);
 
 	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId);
 

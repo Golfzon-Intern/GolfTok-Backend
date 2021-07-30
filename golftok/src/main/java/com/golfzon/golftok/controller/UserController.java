@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
 import com.golfzon.golftok.service.UsersService;
@@ -26,13 +27,17 @@ public class UserController {
 
 	// 유저 정보 조회
 	@GetMapping("info")
-	public TokUsers getCurrentUserInfo(@RequestParam(value = "userId") int userId, Principal principal) {
+	public TokUsers getCurrentUserInfo(@RequestParam(value = "userId", required = false) Integer userId,
+			Principal principal) {
 		TokUsers user = null;
+		System.out.println("userId:" + userId);
 
-		if (userId == 0) {
+		if (userId == null) {
 			if (principal != null) {
 				String userName = principal.getName();
 				user = userService.getUserByUserNameExceptPwd(userName);
+				// 비밀번호 값은 보안상 보내지 않는다
+				user.setUserPassword("null");
 			}
 		} else {
 			user = userService.getUserByUserId(userId);
@@ -95,12 +100,20 @@ public class UserController {
 
 	// 내가 팔로잉 한 게시물만 모아보기
 	@GetMapping("followingPost")
-	public HashMap<String, Object> getFollowingPost(Principal principal) {
+	public HashMap<String, Object> getFollowingPost(Principal principal,
+			@RequestParam(value = "currentPageNo") int currentPageNo, Criteria criteria) {
+		// paging 설정
+		criteria.setRecordsPerPage(4);
+		criteria.setCurrentPageNo(currentPageNo);
+		// 해당페이지 시작 인덱스 설정
+		criteria.setStartIndex((currentPageNo - 1) * 5);
+
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
-		List<TokPosts> postList = userService.getFollowingPost(userId);
+		criteria.setUserId(userId);
+		List<TokPosts> postList = userService.getFollowingPost(criteria);
 
 		map.put("postList", postList);
 
@@ -147,7 +160,6 @@ public class UserController {
 		return map;
 	}
 
-	
 	// 프로필 페이지보기
 	/*
 	 * @GetMapping("profile") public HashMap<String, Object>
