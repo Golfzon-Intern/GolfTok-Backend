@@ -26,14 +26,6 @@ public interface PostMapper {
 
 	public int deletePost(int postId);
 
-	public int likePost(int postId);
-
-	public int unlikePost(int postId);
-
-	public int likeComment(int commentId);
-
-	public int unlikeComment(int commentId);
-
 	public List<HashMap<String, Object>> getTodayAllPosts();
 
 	public List<HashMap<String, Object>> getOtherDayAllPosts();
@@ -45,4 +37,6 @@ public interface PostMapper {
 	public int getPostIdByContentAndId(HashMap<String, Object> postMap);
 
 	public List<TokPosts> searchPosts(String keyword);
+
+	public Object getPostLikeCount(int postId);
 }

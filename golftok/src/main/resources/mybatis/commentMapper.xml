@@ -58,7 +58,8 @@
 		</selectKey>
 		insert into comments values
 		(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,
-		<if test="commentGroup==0">#{commentId}</if><if test="commentGroup!=0">#{commentGroup}</if>,
+		<if test="commentGroup==0">#{commentId}</if>
+		<if test="commentGroup!=0">#{commentGroup}</if>,
 		#{groupOrder},#{groupLayer})
 	</insert>
 
@@ -162,4 +163,12 @@
 		set like_count-=1
 		where comment_id=#{commentId}
 	</update>
+	
+	<!-- 댓글 좋아요 수 가져오기 -->
+	<select id="getCommentLikeCount" parameterType="int" resultType="int">
+		select like_count
+		from comments
+		where comment_id=#{commentId}
+	</select>
+	
 </mapper>

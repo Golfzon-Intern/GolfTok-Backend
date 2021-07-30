@@ -64,17 +64,6 @@ public class PostServiceImple implements PostService {
 	}
 
 	@Override
-	public int likePost(int postId) {
-		return postMapper.likePost(postId);
-	}
-
-	@Override
-	public int unlikePost(int postId) {
-		return postMapper.unlikePost(postId);
-	}
-
-
-	@Override
 	public List<HashMap<String, Object>> getAllUserPosts(int userId) {
 		return postMapper.getAllUserPosts(userId);
 	}
@@ -107,6 +96,11 @@ public class PostServiceImple implements PostService {
 	@Override
 	public List<TokPosts> searchPosts(String keyword) {
 		return postMapper.searchPosts(keyword);
+	}
+
+	@Override
+	public Object getPostLikeCount(int postId) {
+		return postMapper.getPostLikeCount(postId);
 	}
 
 }

@@ -26,4 +26,5 @@ public interface CommentMapper {
 	public int getCommentGroupByCommentId(int commentId);
 	public int likeComment(int commentId);
 	public int unlikeComment(int commentId);
+	public int getCommentLikeCount(int commentId);
 }

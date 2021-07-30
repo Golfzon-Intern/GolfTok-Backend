@@ -125,4 +125,9 @@ public class CommentServiceImple implements CommentService{
 	public int unlikeComment(int commentId) {
 		return commentMapper.unlikeComment(commentId);
 	}
+
+	@Override
+	public int getCommentLikeCount(int commentId) {
+		return commentMapper.getCommentLikeCount(commentId);
+	}
 }

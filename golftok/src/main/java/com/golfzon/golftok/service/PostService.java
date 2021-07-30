@@ -18,10 +18,6 @@ public interface PostService {
 
 	public int deletePost(int postId);
 
-	public int likePost(int postId);
-
-	public int unlikePost(int postId);
-
 	public List<HashMap<String, Object>> getTodayAllPosts();
 
 	public List<HashMap<String, Object>> getOtherDayAllPosts();
@@ -35,5 +31,7 @@ public interface PostService {
 	public List<TokPosts> searchPosts(String keyword);
 
 	public List<HashMap<String, Object>> getAllPosts();
+
+	public Object getPostLikeCount(int postId);
 
 }

@@ -90,32 +90,4 @@ public class CommentController {
 		 * return commentMap;
 		 */
 	}
-
-	// 댓글 좋아요, 좋아요 취소
-	@PutMapping("like")
-	@ResponseStatus(code = HttpStatus.OK)
-	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map,
-			HttpServletResponse response) throws IOException{
-		// 좋아요 : 1, 좋아요 취소 : 0
-		int flag = (int) map.get("flag");
-		int commentId = (int) map.get("commentId");
-
-		if (flag == 1) {
-			if (commentService.likeComment(commentId)==0) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
-			}
-		} else {
-			if (commentService.unlikeComment(commentId)==0) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
-			}
-		}
-
-		int postId = commentService.getPostIdByCommentId(commentId);
-		HashMap<String, Object> detailMap = new HashMap<String, Object>();
-		List<Comments> commentList = commentService.getAllComments(postId);
-
-		detailMap.put("commentList", commentList);
-
-		return detailMap;
-	}
 }

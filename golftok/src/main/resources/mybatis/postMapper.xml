@@ -119,19 +119,6 @@
 		where post_id=#{postId}
 	</delete>
 	
-	<!-- 게시물 좋아요 -->
-	<update id="likePost" parameterType="int">
-		update tok_posts
-		set like_count+=1
-		where post_id=#{postId}
-	</update>
-	
-	<!-- 게시물 좋아요 취소 -->
-	<update id="unlikePost" parameterType="int">
-		update tok_posts
-		set like_count-=1
-		where post_id=#{postId}
-	</update>
 	
 	<!-- userId로 모든 게시물 가져오기 -->
 	<select id="getAllUserPosts" parameterType="int" resultType="HashMap">
@@ -170,6 +157,12 @@
 			)
 	</select>
 	
+	<!-- 게시물 좋아요 수 가져오기 -->
+	<select id="getPostLikeCount" parameterType="int" resultType="int">
+		select like_count
+		from tok_posts
+		where post_id=#{postId}
+	</select>
 	
 	
 	<!-- 로그인 안 된 경우 : 하루동안의 모든 게시물 가져오기 (좋아요, 댓글 순)  -->

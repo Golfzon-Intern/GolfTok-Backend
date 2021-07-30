@@ -120,32 +120,6 @@ public class PostController {
 			System.out.println("Success!!!");
 		}
 	}
-	
-	// 게시물 좋아요, 좋아요 취소
-	@PutMapping("like")
-	@ResponseStatus(code = HttpStatus.OK)
-	public HashMap<String, Object> likePost(@RequestBody HashMap<String, Object> map,
-			HttpServletResponse response) throws IOException{
-		// 좋아요 : 1, 좋아요 취소 : 0
-		int flag = (int) map.get("flag");
-		int postId = (int) map.get("postId");
-		
-		if (flag==1) {
-			if (postService.likePost(postId)==0) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
-			}
-		}else {
-			if (postService.unlikePost(postId)==0) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
-			}
-		}
-		
-		HashMap<String, Object> detailMap = new HashMap<String, Object>();
-		List<TokPosts> postList = postService.getDetailPost(postId);
-		detailMap.put("postList", postList);
-
-		return detailMap;
-	}
 
 	// '#'으로 게시물 검색
 	@GetMapping("search")

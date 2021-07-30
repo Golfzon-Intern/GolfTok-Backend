@@ -14,4 +14,5 @@ public interface CommentService {
 	int getGroupLayerByCommentId(int commentId);
 	int likeComment(int commentId);
 	int unlikeComment(int commentId);
+	int getCommentLikeCount(int commentId);
 }
