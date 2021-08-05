@@ -38,7 +38,7 @@ public class PostController {
 	public HashMap<String, Object> getPostList(Principal principal, @RequestParam(value = "currentPageNo") int currentPageNo,
 			Criteria criteria) {
 		// paging 설정
-		criteria.setRecordsPerPage(20);
+		criteria.setRecordsPerPage(5);
 		criteria.setCurrentPageNo(currentPageNo);
 		// 해당페이지 시작 인덱스 설정
 		criteria.setStartIndex((currentPageNo - 1) * 5);

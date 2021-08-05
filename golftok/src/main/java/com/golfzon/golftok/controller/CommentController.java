@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +32,15 @@ public class CommentController {
 	
 	@Autowired
 	private UsersService userService;
+	
+	// 댓글 리스트 보기
+	@GetMapping("commentList")
+	public HashMap<String, Object> commentList(@RequestParam("postId") int postId){
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		List<Comments> commentList = commentService.getAllComments(postId);
+		map.put("commentList", commentList);
+		return map;
+	}
 
 	// 댓글 작성
 	@PostMapping("input")
