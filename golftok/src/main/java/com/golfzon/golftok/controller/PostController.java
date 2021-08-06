@@ -1,6 +1,9 @@
 package com.golfzon.golftok.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +39,9 @@ public class PostController {
 	// 게시물 리스트 보기
 	@GetMapping("postList")
 	public HashMap<String, Object> getPostList(Principal principal, @RequestParam(value = "currentPageNo") int currentPageNo,
-			Criteria criteria) {
+			Criteria criteria) throws InterruptedException, IOException {
+		List<HashMap<String, Object>> allPostList = null;
+		
 		// paging 설정
 		criteria.setRecordsPerPage(5);
 		criteria.setCurrentPageNo(currentPageNo);
@@ -46,7 +51,22 @@ public class PostController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		System.out.println("principal:" + principal);
 
-		List<HashMap<String, Object>> allPostList = postService.getAllPosts(criteria);
+		if(principal==null) {
+			allPostList = postService.getAllPosts(criteria);
+		}else {
+			ProcessBuilder pb =
+	                new ProcessBuilder("python","C://Users//owner//PycharmProjects//golftok//content_test.py","1.pdf");
+
+	        pb.redirectErrorStream(true);
+	        Process proc = pb.start();
+
+	        Reader reader = new InputStreamReader(proc.getInputStream(),"euc-kr");
+	        BufferedReader bf = new BufferedReader(reader);
+	        String s;
+	        while ((s = bf.readLine()) != null) {
+	            System.out.println(s);
+	        }
+		}
 		map.put("allPostList", allPostList);
 
 		return map;
@@ -98,7 +118,7 @@ public class PostController {
 	@GetMapping("detail")
 	public HashMap<String, Object> getDetailPost(@RequestParam(value = "postId") int postId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		List<TokPosts> postList = postService.getDetailPost(postId);
+		List<HashMap<String, Object>> postList = postService.getDetailPost(postId);
 
 		map.put("postList", postList);
 

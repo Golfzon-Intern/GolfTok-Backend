@@ -11,7 +11,7 @@ public interface PostService {
 
 	public List<HashMap<String, Object>> getNasmo(int userId);
 
-	public List<TokPosts> getDetailPost(int postId);
+	public List<HashMap<String, Object>> getDetailPost(int postId);
 
 	public int updatePost(HashMap<String, Object> map);
 

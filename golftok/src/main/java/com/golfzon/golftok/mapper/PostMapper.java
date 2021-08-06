@@ -17,7 +17,7 @@ public interface PostMapper {
 
 	public List<HashMap<String, Object>> getNasmo(int userId);
 
-	public List<TokPosts> getDetailPost(int postId);
+	public List<HashMap<String, Object>> getDetailPost(int postId);
 
 	public List<Comments> getAllComments(int postId);
 

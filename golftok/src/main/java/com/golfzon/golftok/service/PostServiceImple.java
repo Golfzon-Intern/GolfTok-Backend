@@ -42,7 +42,7 @@ public class PostServiceImple implements PostService {
 	}
 
 	@Override
-	public List<TokPosts> getDetailPost(int postId) {
+	public List<HashMap<String, Object>> getDetailPost(int postId) {
 		return postMapper.getDetailPost(postId);
 	}
 
