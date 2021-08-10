@@ -82,8 +82,8 @@
 		select
 			comment_id as commentId
 			, post_id as postId
-			, comment_text as commentText,
-			CONVERT(CHAR(10), upload_date, 23) as uploadDate
+			, comment_text as commentText
+			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
 			, like_count as likeCount
 			, comment_group as commentGroup
 			, u.user_id as userId

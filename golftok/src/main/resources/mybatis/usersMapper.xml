@@ -47,8 +47,12 @@
 	<!-- 내 골프 친구 5개 보기 (사이드 메뉴) -->
 	<select id="getFiveMyFollowing" parameterType="int" resultType="HashMap">
 		select 
-			TOP 5 u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
-		from follow as f, tok_users as u
+			TOP 5 u.user_id as userId
+			, u.user_name as userName
+			, u.user_nickname as userNickname
+			, u.user_icon as userIcon 
+		from 
+			follow as f, tok_users as u
 		where 
 			f.user_id=#{userId} 
 			and f.friend_id=u.user_id
@@ -58,22 +62,34 @@
 	<!-- 내 골프 친구 모두 보기 -->
 	<select id="getAllMyFollowing" parameterType="int" resultType="HashMap">
 		select 
-			u.user_id as userId, u.user_name as userName, u.user_nickname as userNickname, u.user_icon as userIcon 
-		from follow as f, tok_users as u
+			u.user_id as userId
+			, u.user_name as userName
+			, u.user_nickname as userNickname
+			, u.user_icon as userIcon 
+		from 
+			follow as f, tok_users as u
 		where 
-			f.user_id=#{userId} 
-			and f.friend_id=u.user_id
+			f.user_id=#{userId} and 
+			f.friend_id=u.user_id
 	</select>
 	
 	<!-- 로그인 했을 경우-추천 계정 15개 보기 : 자신의 나이대가 많이 팔로우 한 사람 추천 -->
 	<select id="getRecommendedFriedns15ByOrders" parameterType="int" resultType="HashMap">
 		select 
-			TOP 15 user_id as userId, user_name as userName,user_nickname as userNickname, user_icon as userIcon
-		from tok_users
-		where (
-				SELECT LEFT(user_age,1)
-				from tok_users
-				where user_id=#{userId}
+			TOP 15 user_id as userId
+			, user_name as userName
+			, user_nickname as userNickname
+			, user_icon as userIcon
+		from 
+			tok_users
+		where 
+			(
+				SELECT 
+					LEFT(user_age,1)
+				from 
+					tok_users
+				where 
+					user_id=#{userId}
 			)=LEFT(user_age,1)
 		order by follower_count DESC
 	</select>
@@ -81,12 +97,20 @@
 	<!-- 로그인 했을 경우-추천 계정 5개 보기 : 자신의 나이대가 많이 팔로우 한 사람 추천 -->
 	<select id="getRecommendedFriedns5ByOrders" parameterType="int" resultType="HashMap">
 		select 
-			TOP 5 user_id as userId, user_name as userName,user_nickname as userNickname, user_icon as userIcon
-		from tok_users
-		where (
-				SELECT LEFT(user_age,1)
-				from tok_users
-				where user_id=#{userId}
+			TOP 5 user_id as userId
+			, user_name as userName
+			, user_nickname as userNickname
+			, user_icon as userIcon
+		from 
+			tok_users
+		where 
+			(
+				SELECT 
+					LEFT(user_age,1)
+				from 
+					tok_users
+				where 
+					user_id=#{userId}
 			)=LEFT(user_age,1)
 		order by follower_count DESC
 	</select>
@@ -94,53 +118,75 @@
 	<!-- 로그인 안했을 경우-추천 계정 15개 보기 : 일주일 간 누적 좋아요를 많이 받은 계정 추천 -->
 	<select id="getRecommendedFriedns15ByLikeCount" parameterType="int" resultType="HashMap">
 		select 
-			TOP 15 u.user_id as userId,user_name as userName,user_icon as userIcon,sum(like_count) as allLikeCount
-		from tok_users u, tok_posts p
+			TOP 15 u.user_id as userId
+			, user_name as userName
+			, user_nickname as userNickname
+			, user_icon as userIcon
+			, sum(like_count) as allLikeCount
+		from 
+			tok_users u, tok_posts p
 		where 
 			u.user_id=p.user_id
 			and upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
-		group by u.user_id, user_name, user_icon
+		group by u.user_id, user_name, user_icon, user_nickname
 		order by allLikeCount DESC
 	</select>
 	
 	<!-- 로그인 안했을 경우-추천 계정 5개 보기 : 일주일 간 누적 좋아요를 많이 받은 계정 추천 -->
 	<select id="getRecommendedFriedns5ByLikeCount" parameterType="int" resultType="HashMap">
 		select 
-			TOP 5 u.user_id as userId,user_name as userName,user_icon as userIcon,sum(like_count) as allLikeCount
-		from tok_users u, tok_posts p
+			TOP 5 u.user_id as userId
+			, user_name as userName
+			, user_nickname as userNickname
+			, user_icon as userIcon
+			, sum(like_count) as allLikeCount
+		from 
+			tok_users u, tok_posts p
 		where 
-			u.user_id=p.user_id
-			and upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
-		group by u.user_id, user_name, user_icon
+			u.user_id=p.user_id and 
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
+		group by u.user_id, user_name, user_icon, user_nickname
 		order by allLikeCount DESC
 	</select>
 	
 	<!-- userName으로 user 객체 가져오기 -->
 	<select id="getUserByUserName" parameterType="String" resultMap="usersResult">
-		select * 
-		from tok_users
-		where user_name=#{userName}
+		select 
+			* 
+		from 
+			tok_users
+		where 
+			user_name=#{userName}
 	</select>
 	
 	<!-- userId로 user 객체 가져오기 -->
 	<select id="getUserByUserId" parameterType="int" resultMap="usersResult">
-		select *
-		from tok_users
-		where user_id=#{userId}
+		select 
+			*
+		from 
+			tok_users
+		where 
+			user_id=#{userId}
 	</select>
 
 	<!-- userName으로 user 객체 가져오기 (비번 제외) -->
 	<select id="getUserByUserNameExceptPwd" parameterType="String" resultMap="usersResult">
-		select *
-		from tok_users
-		where user_name=#{userName}
+		select 
+			*
+		from 
+			tok_users
+		where 
+			user_name=#{userName}
 	</select>
 	
 	<!-- userName으로 userId 가져오기 -->
 	<select id="getUserIdByUserName" parameterType="String" resultType="int">
-		select user_id 
-		from tok_users
-		where user_name=#{userName}
+		select 
+			user_id 
+		from 
+			tok_users
+		where 
+			user_name=#{userName}
 	</select>
 	
 	<!-- 팔로잉 -->
@@ -155,34 +201,49 @@
 	
 	<!-- 팔로워 수 +1 -->
 	<update id="increaseFollower" parameterType="int">
-		update tok_users
-		set follower_count+=1
-		where user_id=#{friendId}
+		update 
+			tok_users
+		set 
+			follower_count+=1
+		where 
+			user_id=#{friendId}
 	</update>
 	
 	<!-- 팔로잉 수 +1 -->
 	<update id="increaseFollowing" parameterType="int">
-		update tok_users
-		set following_count+=1
-		where user_id=#{userId}
+		update 
+			tok_users
+		set 
+			following_count+=1
+		where 
+			user_id=#{userId}
 	</update>
 	
 	<!-- id로 비밀번호 얻기 -->
 	<select id="getPasswordByUserName" parameterType="String" resultType="String">
-		select user_password 
-		from tok_users
-		where user_name=#{userName}
+		select 
+			user_password 
+		from 
+			tok_users
+		where 
+			user_name=#{userName}
 	</select>
 	
 	<!-- 내가 팔로우 한 계정 동영상 모아보기 -->
 	<select id="getFollowingPost" parameterType="com.golfzon.golftok.model.Criteria" resultMap="postsResult">
-		select *
-		from tok_posts
-		where user_id in (
-			select friend_id
-			from follow
-			where user_id=#{userId}
-		)
+		select 
+			*
+		from 
+			tok_posts
+		where 
+			user_id in (
+				select 
+					friend_id
+				from 
+					follow
+				where 
+					user_id=#{userId}
+			)
 		order by upload_date DESC
 		OFFSET #{startIndex} ROW FETCH NEXT #{recordsPerPage} ROW ONLY
 	</select>

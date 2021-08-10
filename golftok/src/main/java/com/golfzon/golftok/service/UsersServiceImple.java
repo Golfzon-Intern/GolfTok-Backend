@@ -111,7 +111,11 @@ public class UsersServiceImple implements UsersService{
 
 	@Override
 	public List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount() {
-		return userMapper.getRecommendedFriedns5ByLikeCount();
+		List<HashMap<String, Object>> recommendList = userMapper.getRecommendedFriedns15ByLikeCount();
+		for(HashMap<String, Object> map :recommendList) {
+			map.remove("allLikeCount");
+		}
+		return recommendList;
 	}
 
 
@@ -123,7 +127,11 @@ public class UsersServiceImple implements UsersService{
 
 	@Override
 	public List<HashMap<String, Object>> getRecommendedFriedns15ByLikeCount() {
-		return userMapper.getRecommendedFriedns15ByLikeCount();
+		List<HashMap<String, Object>> recommendList = userMapper.getRecommendedFriedns15ByLikeCount();
+		for(HashMap<String, Object> map :recommendList) {
+			map.remove("allLikeCount");
+		}
+		return recommendList;
 	}
 
 

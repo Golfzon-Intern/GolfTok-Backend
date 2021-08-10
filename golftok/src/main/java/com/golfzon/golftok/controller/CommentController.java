@@ -33,7 +33,6 @@ public class CommentController {
 	private UsersService userService;
 	
 	// 부모 댓글 리스트 보기
-	// 자식 댓글 개수 가져오는 부분 수정 필요!!
 	@GetMapping("parentList")
 	public HashMap<String, Object> commentList(@RequestParam("postId") int postId){
 		HashMap<String, Object> map = new HashMap<String, Object>();
