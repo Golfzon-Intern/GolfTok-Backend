@@ -52,13 +52,23 @@
 
 
 	<select id="getAllPosts" parameterType="com.golfzon.golftok.model.Criteria" resultType="HashMap">
-		select *
+		select 
+			*
 		from (
 			select 
-				post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, 
-				comment_count as commentCount,upload_date as uploadDate, post_thumbnail as postThumbnail, locations,
-				u.user_id as userId,u.user_name as userName, u.user_icon as userIcon, u.user_nickname as userNickname
-			from tok_posts p, tok_users u
+				post_id as postId
+				, post_content as postContent
+				, video_root as videoRoot
+				,like_count as likeCount, 
+				comment_count as commentCount
+				,CONVERT(CHAR(10), upload_date, 23) as uploadDate
+				, post_thumbnail as postThumbnail
+				, locations,u.user_id as userId
+				, u.user_name as userName
+				, u.user_icon as userIcon
+				, u.user_nickname as userNickname
+			from 
+				tok_posts p, tok_users u
 			where
 				(like_count!=0 or comment_count!=0) and
 				upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
@@ -73,9 +83,13 @@
 	<!-- 내 나스모 영상 보기 -->
 	<select id="getNasmo" parameterType="int" resultType="HashMap">
 		select 
-			nasmo_id as nasmoId, video_root as videoRoot, nasmo_thumbnail as nasmoThumbnail
-		from nasmo
-		where user_id=#{userId}
+			nasmo_id as nasmoId
+			, video_root as videoRoot
+			, nasmo_thumbnail as nasmoThumbnail
+		from 
+			nasmo
+		where 
+			user_id=#{userId}
 	</select>
 	
 	<!-- 동영상(게시물) 올리기 -->
@@ -90,10 +104,20 @@
 	<!-- 게시물(동영상) 상세보기 -->
 	<select id="getDetailPost" parameterType="int" resultType="HashMap">
 		select
-			post_id as postId, post_content as postContent, video_root as videoRoot,like_count as likeCount, 
-			comment_count as commentCount,upload_date as uploadDate, post_thumbnail as postThumbnail, locations,
-			u.user_id as userId,u.user_name as userName, u.user_icon as userIcon, u.user_nickname as userNickname
-		from tok_users u, tok_posts p
+			post_id as postId
+			, post_content as postContent
+			, video_root as videoRoot
+			, like_count as likeCount
+			, comment_count as commentCount
+			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
+			, post_thumbnail as postThumbnail
+			, locations
+			, u.user_id as userId
+			, u.user_name as userName
+			, u.user_icon as userIcon
+			, u.user_nickname as userNickname
+		from 
+			tok_users u, tok_posts p
 		where 
 			u.user_id=p.user_id and 
 			post_id=#{postId}
@@ -101,26 +125,36 @@
 
 	<!-- 게시물 수정 -->
 	<update id="updatePost" parameterType="HashMap">
-		update tok_posts
-		set post_content=#{postContent}, video_root=#{videoRoot}, 
-			locations=#{locations}, post_thumbnail=#{postThumbnail}
-		where post_id=#{postId}
+		update 
+			tok_posts
+		set 
+			post_content=#{postContent}
+			, video_root=#{videoRoot}
+			, locations=#{locations}
+			, post_thumbnail=#{postThumbnail}
+		where 
+			post_id=#{postId}
 	</update>
 	
 	<!-- 게시물 삭제 -->
 	<delete id="deletePost" parameterType="int">
 		delete 
-		from tok_posts
-		where post_id=#{postId}
+		from 
+			tok_posts
+		where 
+			post_id=#{postId}
 	</delete>
 	
 	
 	<!-- userId로 모든 게시물 가져오기 -->
 	<select id="getAllUserPosts" parameterType="int" resultType="HashMap">
 		select 
-			post_id as postId, post_thumbnail as postThumbnail
-		from tok_posts
-		where user_id=#{userId}
+			post_id as postId
+			, post_thumbnail as postThumbnail
+		from 
+			tok_posts
+		where 
+			user_id=#{userId}
 	</select>
 	
 	<!-- hashtag 삽입 -->
@@ -134,8 +168,10 @@
 	
 	<!-- userId,postContent로 postId 가져오기 -->
 	<select id="getPostIdByContentAndId" parameterType="HashMap" resultType="int">
-		select post_id
-		from tok_posts
+		select 
+			post_id
+		from 
+			tok_posts
 		where 
 			post_content=#{postContent} and
 			user_id=#{userId}
@@ -143,20 +179,29 @@
 	
 	<!-- 해시태그(#)로 게시물 검색 -->
 	<select id="searchPosts" parameterType="String" resultMap="postsResult">
-		select *
-		from tok_posts
-		where post_id in (
-				select post_id
-				from hashtag
-				where hashtag_content=#{keyword}
+		select 
+			*
+		from 
+			tok_posts
+		where 
+			post_id in (
+				select 
+					post_id
+				from 
+					hashtag
+				where 
+					hashtag_content=#{keyword}
 			)
 	</select>
 	
 	<!-- 게시물 좋아요 수 가져오기 -->
 	<select id="getPostLikeCount" parameterType="int" resultType="int">
-		select like_count
-		from tok_posts
-		where post_id=#{postId}
+		select 
+			like_count
+		from 
+			tok_posts
+		where 
+			post_id=#{postId}
 	</select>
 
 

@@ -44,81 +44,154 @@
 	</resultMap>
 
 
-	<!-- postId에 해당하는 모든 댓글 가져오기 -->
-	<select id="getAllComments" parameterType="int" resultMap="commentsResult">
-		select * 
-		from comments 
-		where post_id=#{postId}
+	<!-- postId에 해당하는 부모 댓글 가져오기 -->
+	<select id="getParentComments" parameterType="int" resultType="HashMap">
+		select
+		c.comment_id as commentId
+		, c.post_id as postId
+		, c.comment_text as commentText
+		, convert(varchar(10), c.upload_date, 23) as commentGroup
+		, like_count as likeCount
+		, comment_group as commentGroup
+		, u.[user_id] as userId
+		, u.[user_name] as userName
+		, u.user_icon as userIcon
+		, u.user_nickname as userNickname
+		, (
+			select
+				count(1)
+			from
+				mdprj.dbo.comments with(nolock)
+			where
+				post_id = c.post_id
+				and comment_group = c.comment_group
+				and group_layer = 1
+		) as childrenCount
+		from
+			mdprj.dbo.comments c with(nolock)
+		inner join
+			mdprj.dbo.tok_users u with(nolock) on c.[user_id] = u.[user_id]
+		where
+			post_id = 18
+			and group_layer = 0
 	</select>
+	
+	
+	<!-- 자식 댓글 (대댓글) 가져오기 -->
+	<select id="getChidrenComments" parameterType="int" resultType="HashMap">
+		select
+			comment_id as commentId
+			, post_id as postId
+			, comment_text as commentText,
+			CONVERT(CHAR(10), upload_date, 23) as uploadDate
+			, like_count as likeCount
+			, comment_group as commentGroup
+			, u.user_id as userId
+			, u.user_name as userName
+			, u.user_icon as userIcon
+			, u.user_nickname as userNickname
+		from 
+			tok_users u, comments c
+		where
+			group_layer=1 and
+			u.user_id=c.user_id and
+			comment_group=#{commentId}
+		order by group_order
+	</select>
+	
 		
 	<!-- 댓글 작성 -->
 	<insert id="inputComment" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="commentId" order="BEFORE">
 			select MAX(comment_id)+1 from comments
 		</selectKey>
-		insert into comments values
-		(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,
-		<if test="commentGroup==0">#{commentId}</if>
-		<if test="commentGroup!=0">#{commentGroup}</if>,
-		#{groupOrder},#{groupLayer})
+		insert 
+			into comments values
+			(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,
+			<if test="commentGroup==0">#{commentId}</if>
+			<if test="commentGroup!=0">#{commentGroup}</if>,
+			#{groupOrder},#{groupLayer})
 	</insert>
 
 	<!-- commentGroup의 댓글 총 개수 구하기 -->
 	<select id="getCommentCount" parameterType="String" resultType="int">
-		select count(*) 
-		from comments
-		where comment_group=#{commentGroup}
+		select 
+			count(*) 
+		from 
+			comments
+		where 
+			comment_group=#{commentGroup}
 	</select>
 	
 	<!-- 임시로 넣었던 groupOrder 다시 맞게 수정 -->
 	<update id="updateGroupOrder" parameterType="String">
-		update comments
-		set group_order=#{groupOrder}
-		where group_order='-1'
+		update 
+			comments
+		set 
+			group_order=#{groupOrder}
+		where 
+			group_order='-1'
 	</update>
 	
 	<!-- 댓글 수정 -->
 	<update id="editComment" parameterType="HashMap">
-		update comments
-		set comment_text=#{commentText}
-		where comment_id=#{commentId}
+		update 
+			comments
+		set 
+			comment_text=#{commentText}
+		where 
+			comment_id=#{commentId}
 	</update>
 	
 	
 	<!-- commentId로 postId 가져오기 -->
 	<select id="getPostIdByCommentId" parameterType="int" resultType="int">
-		select post_id 
-		from comments
-		where comment_id=#{commentId}
+		select 
+			post_id 
+		from 
+			comments
+		where 
+			comment_id=#{commentId}
 	</select>
 	
 	<!-- commentId로 groupLayer 가져오기 -->
 	<select id="getGroupLayerByCommentId" parameterType="int" resultType="int">
-		select group_layer 
-		from comments
-		where comment_id=#{commentId}
+		select 
+			group_layer 
+		from 
+			comments
+		where 
+			comment_id=#{commentId}
 	</select>
 	
 	<!-- commentId로 groupOrder 가져오기 -->
 	<select id="getGroupOrderByCommentId" parameterType="int" resultType="int">
-		select group_order 
-		from comments
-		where comment_id=#{commentId}
+		select 
+			group_order 
+		from 
+			comments
+		where 
+			comment_id=#{commentId}
 	</select>
 	
 	<!-- commentId로 commentGroup 가져오기 -->
 	<select id="getCommentGroupByCommentId" parameterType="int" resultType="int">
-		select comment_group 
-		from comments
-		where comment_id=#{commentId}
+		select 
+			comment_group 
+		from 
+			comments
+		where 
+			comment_id=#{commentId}
 	</select>
 
 
 	<!-- 댓글 삭제 => 대댓글도 모두 삭제 -->
 	<delete id="deleteComment" parameterType="int">
 		delete 
-		from comments
-		where comment_group=#{commentGroup}
+		from 
+			comments
+		where 
+		qcomment_group=#{commentGroup}
 	</delete>
 	
 	<!-- 대댓글 삭제 1 : 상위 대댓글 개수 구하기 -->
@@ -132,7 +205,8 @@
 	<!-- 대댓글 삭제 1 : 대댓글 삭제 -->
 	<delete id="deleteChildrenComment" parameterType="HashMap">
 		delete 
-		from comments
+		from 
+			comments
 		where 
 			group_order=#{groupOrder} 
 			and comment_group=#{commentGroup} 
@@ -141,8 +215,10 @@
 	
 	<!-- 대댓글 삭제 2 : 대댓글 순서 정렬 -->
 	<update id="orderChildrenComment" parameterType="HashMap">
-		update comments
-		set group_order-=1
+		update 
+			comments
+		set 
+			group_order-=1
 		where 
 			comment_group=#{commentGroup} 
 			and group_layer=1 
@@ -152,23 +228,32 @@
 
 	<!-- 댓글, 대댓글 좋아요 -->
 	<update id="likeComment" parameterType="int">
-		update comments
-		set like_count+=1
-		where comment_id=#{commentId}
+		update 
+			comments
+		set 
+			like_count+=1
+		where 
+			comment_id=#{commentId}
 	</update>
 	
 	<!-- 댓글, 대댓글 좋아요 취소 -->
 	<update id="unlikeComment" parameterType="int">
-		update comments
-		set like_count-=1
-		where comment_id=#{commentId}
+		update 
+			comments
+		set 
+			like_count-=1
+		where 
+			comment_id=#{commentId}
 	</update>
 	
 	<!-- 댓글 좋아요 수 가져오기 -->
 	<select id="getCommentLikeCount" parameterType="int" resultType="int">
-		select like_count
-		from comments
-		where comment_id=#{commentId}
+		select 
+			like_count
+		from 
+			comments
+		where 
+			comment_id=#{commentId}
 	</select>
 	
 </mapper>

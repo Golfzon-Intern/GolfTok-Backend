@@ -6,7 +6,7 @@ import java.util.List;
 import com.golfzon.golftok.model.Comments;
 
 public interface CommentService {
-	List<Comments> getAllComments(int postId);
+	List<HashMap<String, Object>> getParentComments(int postId);
 	int inputComment(HashMap<String, Object> map);
 	int updateComment(HashMap<String, Object> map);
 	int getPostIdByCommentId(int commentId);
@@ -15,4 +15,5 @@ public interface CommentService {
 	int likeComment(int commentId);
 	int unlikeComment(int commentId);
 	int getCommentLikeCount(int commentId);
+	List<HashMap<String, Object>> getChidrenComments(int commentId);
 }

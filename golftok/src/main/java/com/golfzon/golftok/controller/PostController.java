@@ -43,7 +43,7 @@ public class PostController {
 		List<HashMap<String, Object>> allPostList = null;
 		
 		// paging 설정
-		criteria.setRecordsPerPage(5);
+		criteria.setRecordsPerPage(15);
 		criteria.setCurrentPageNo(currentPageNo);
 		// 해당페이지 시작 인덱스 설정
 		criteria.setStartIndex((currentPageNo - 1) * 5);

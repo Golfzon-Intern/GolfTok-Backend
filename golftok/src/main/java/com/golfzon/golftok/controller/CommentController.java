@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,21 +32,30 @@ public class CommentController {
 	@Autowired
 	private UsersService userService;
 	
-	// 댓글 리스트 보기
-	@GetMapping("commentList")
+	// 부모 댓글 리스트 보기
+	// 자식 댓글 개수 가져오는 부분 수정 필요!!
+	@GetMapping("parentList")
 	public HashMap<String, Object> commentList(@RequestParam("postId") int postId){
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		List<Comments> commentList = commentService.getAllComments(postId);
-		map.put("commentList", commentList);
+		List<HashMap<String, Object>> commentList = commentService.getParentComments(postId);
+		map.put("parentList", commentList);
+		return map;
+	}
+	
+	// 자식 댓글 리스트 보기
+	@GetMapping("childrenList")
+	public HashMap<String, Object> childrenList(@RequestParam("commentId") int commentId){
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		List<HashMap<String, Object>> commentList = commentService.getChidrenComments(commentId);
+		map.put("childrenList", commentList);
 		return map;
 	}
 
 	// 댓글 작성
 	@PostMapping("input")
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public HashMap<String, Object> inputComment(@RequestBody HashMap<String, Object> map,Principal principal,
+	public void inputComment(@RequestBody HashMap<String, Object> map,Principal principal,
 			HttpServletResponse response) throws IOException{
-		HashMap<String, Object> commentMap = new HashMap<String, Object>();
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
 		
@@ -57,14 +65,6 @@ public class CommentController {
 		} else {
 			System.out.println("Success!!!");
 		}
-
-		int postId = (int) map.get("postId");
-		
-		List<Comments> commentList = commentService.getAllComments(postId);
-		commentMap.put("commentList", commentList);
-
-		// 상세보기 페이지
-		return commentMap;
 	}
 
 	// 댓글 수정

@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -116,7 +115,7 @@ public class LikeController {
 	// 게시물 좋아요 정보 반환
 	@GetMapping("post")
 	@ResponseStatus(code = HttpStatus.OK)
-	public HashMap<String, Object> getLike(@RequestParam(value = "postId") int postId, HttpServletResponse response,
+	public HashMap<String, Object> getPostLike(@RequestParam(value = "postId") int postId, HttpServletResponse response,
 			Principal principal) throws IOException {
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
@@ -127,13 +126,36 @@ public class LikeController {
 		
 		// 좋아요가 되어 있는지 확인
 		int flag = likeService.getPostLikeFlag(likeMap);
-		System.out.println("flag:"+flag);
 		if (flag > 0) flag = 0;
 		else flag=1;
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("flag", flag);
 		map.put("likeCount", postService.getPostLikeCount(postId));
+		
+		return map;
+	}
+	
+	// 댓글 좋아요 정보 반환
+	@GetMapping("comment")
+	@ResponseStatus(code = HttpStatus.OK)
+	public HashMap<String, Object> getCommentLike(@RequestParam(value = "commentId") int commentId, HttpServletResponse response,
+			Principal principal) throws IOException {
+		String userName = principal.getName();
+		int userId = userService.getUserIdByUserName(userName);
+		
+		HashMap<String, Object> likeMap = new HashMap<String, Object>();
+		likeMap.put("commentId", commentId);
+		likeMap.put("userId", userId);
+
+		// 좋아요가 되어 있는지 확인
+		int flag = likeService.getCommentLikeFlag(likeMap);
+		if (flag > 0) flag = 0;
+		else flag = 1;
+
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("flag", flag);
+		map.put("likeCount", commentService.getCommentLikeCount(commentId));
 		
 		return map;
 	}
