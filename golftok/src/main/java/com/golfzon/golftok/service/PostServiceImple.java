@@ -96,4 +96,10 @@ public class PostServiceImple implements PostService {
 		return postMapper.getPostLikeCount(postId);
 	}
 
+
+	@Override
+	public List<HashMap<String, Object>> getProfilePosts(Integer userId) {
+		return postMapper.getProfilePosts(userId);
+	}
+
 }

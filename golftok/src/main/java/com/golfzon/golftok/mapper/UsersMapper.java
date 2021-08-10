@@ -28,8 +28,8 @@ public interface UsersMapper {
 	int increaseFollower(int friendId);
 	int increaseFollowing(int userId);
 	String getPasswordByUserName(String userName);
-	TokUsers getUserByUserId(int userId);
-	TokUsers getUserByUserNameExceptPwd(String userName);
+	HashMap<String, Object> getUserByUserId(int userId);
+	HashMap<String, Object> getUserByUserNameExceptPwd(String userName);
 	List<TokPosts> getFollowingPost(Criteria criteria);
 	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId);
 	List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount();

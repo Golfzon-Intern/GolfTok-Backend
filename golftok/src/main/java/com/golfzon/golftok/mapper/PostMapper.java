@@ -40,4 +40,6 @@ public interface PostMapper {
 	public Object getPostLikeCount(int postId);
 
 	public List<HashMap<String, Object>> getAllPosts(Criteria criteria);
+
+	public List<HashMap<String, Object>> getProfilePosts(Integer userId);
 }

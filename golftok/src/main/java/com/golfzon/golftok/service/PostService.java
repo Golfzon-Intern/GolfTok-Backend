@@ -29,4 +29,6 @@ public interface PostService {
 
 	public Object getPostLikeCount(int postId);
 
+	public List<HashMap<String, Object>> getProfilePosts(Integer userId);
+
 }

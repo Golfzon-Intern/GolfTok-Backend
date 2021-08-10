@@ -52,10 +52,11 @@
 			, u.user_nickname as userNickname
 			, u.user_icon as userIcon 
 		from 
-			follow as f, tok_users as u
+			follow as f with(nolock)
+			inner join 
+			tok_users as u with(nolock) on f.[friend_id]=u.[user_id]
 		where 
 			f.user_id=#{userId} 
-			and f.friend_id=u.user_id
 	</select>
 	
 
@@ -67,10 +68,11 @@
 			, u.user_nickname as userNickname
 			, u.user_icon as userIcon 
 		from 
-			follow as f, tok_users as u
+			follow as f with(nolock)
+			inner join 
+			tok_users as u with(nolock) on f.[friend_id]=u.[user_id]
 		where 
 			f.user_id=#{userId} and 
-			f.friend_id=u.user_id
 	</select>
 	
 	<!-- 로그인 했을 경우-추천 계정 15개 보기 : 자신의 나이대가 많이 팔로우 한 사람 추천 -->
@@ -124,10 +126,11 @@
 			, user_icon as userIcon
 			, sum(like_count) as allLikeCount
 		from 
-			tok_users u, tok_posts p
+			tok_users u with(nolock)
+			inner join
+			tok_posts p with(nolock) on u.[user_id]=p.[user_id]
 		where 
-			u.user_id=p.user_id
-			and upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
+			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
 		group by u.user_id, user_name, user_icon, user_nickname
 		order by allLikeCount DESC
 	</select>
@@ -141,9 +144,10 @@
 			, user_icon as userIcon
 			, sum(like_count) as allLikeCount
 		from 
-			tok_users u, tok_posts p
+			tok_users u with(nolock)
+			inner join
+			tok_posts p with(nolock) on u.[user_id]=p.[user_id]
 		where 
-			u.user_id=p.user_id and 
 			upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
 		group by u.user_id, user_name, user_icon, user_nickname
 		order by allLikeCount DESC
@@ -158,21 +162,36 @@
 		where 
 			user_name=#{userName}
 	</select>
-	
+
 	<!-- userId로 user 객체 가져오기 -->
-	<select id="getUserByUserId" parameterType="int" resultMap="usersResult">
+	<select id="getUserByUserId" parameterType="int" resultType="HashMap">
 		select 
-			*
+			user_id as userId
+			, user_name as userName
+			, user_nickname as userNickname
+			, user_icon as userIcon
+			, introduction_message as introductionMessage
+			, user_grade as userGrade
+			, following_count as followingCount
+			, follower_count as followerCount
 		from 
 			tok_users
 		where 
 			user_id=#{userId}
 	</select>
 
-	<!-- userName으로 user 객체 가져오기 (비번 제외) -->
-	<select id="getUserByUserNameExceptPwd" parameterType="String" resultMap="usersResult">
+	<!-- userName으로 user 객체 가져오기 -->
+	<select id="getUserByUserNameExceptPwd" parameterType="String" resultType="HashMap">
 		select 
-			*
+			select 
+			user_id as userId
+			, user_name as userName
+			, user_nickname as userNickname
+			, user_icon as userIcon
+			, introduction_message as introductionMessage
+			, user_grade as userGrade
+			, following_count as followingCount
+			, follower_count as followerCount
 		from 
 			tok_users
 		where 

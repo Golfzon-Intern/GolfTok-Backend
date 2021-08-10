@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
+import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
 @RestController
@@ -24,27 +25,43 @@ import com.golfzon.golftok.service.UsersService;
 public class UserController {
 	@Autowired
 	private UsersService userService;
+	
+	@Autowired
+	private PostService postService;
 
 	// 유저 정보 조회
 	@GetMapping("info")
-	public TokUsers getCurrentUserInfo(@RequestParam(value = "userId", required = false) Integer userId,
+	public HashMap<String, Object> getCurrentUserInfo(@RequestParam(value = "userId", required = false) Integer userId,
 			Principal principal) {
-		TokUsers user = null;
-		System.out.println("userId:" + userId);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		HashMap<String, Object> user = null;
 
 		if (userId == null) {
 			if (principal != null) {
 				String userName = principal.getName();
 				user = userService.getUserByUserNameExceptPwd(userName);
-				// 비밀번호 값은 보안상 보내지 않는다
-				user.setUserPassword("null");
 			}
 		} else {
 			user = userService.getUserByUserId(userId);
 		}
 
-		return user;
+		map.put("user", user);
+		return map;
 	}
+	
+	
+	// 프로필 페이지 - 게시물 썸네일 보기
+	@GetMapping("posts")
+	public HashMap<String, Object> getUserPosts(@RequestParam(value = "userId", required = false) Integer userId,
+			Principal principal) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		List<HashMap<String, Object>> postList = postService.getProfilePosts(userId);
+
+		map.put("postList", postList);
+
+		return map;
+	}
+	
 
 	// 팔로잉
 	@PostMapping("following")

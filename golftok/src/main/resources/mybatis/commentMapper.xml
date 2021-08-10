@@ -51,8 +51,8 @@
 		, c.post_id as postId
 		, c.comment_text as commentText
 		, convert(varchar(10), c.upload_date, 23) as commentGroup
-		, like_count as likeCount
-		, comment_group as commentGroup
+		, c.like_count as likeCount
+		, c.comment_group as commentGroup
 		, u.[user_id] as userId
 		, u.[user_name] as userName
 		, u.user_icon as userIcon
@@ -74,6 +74,7 @@
 		where
 			post_id = 18
 			and group_layer = 0
+		order by upload_date DESC
 	</select>
 	
 	

@@ -86,13 +86,13 @@ public class UsersServiceImple implements UsersService{
 
 
 	@Override
-	public TokUsers getUserByUserId(int userId) {
+	public HashMap<String, Object> getUserByUserId(int userId) {
 		return userMapper.getUserByUserId(userId);
 	}
 
 
 	@Override
-	public TokUsers getUserByUserNameExceptPwd(String userName) {
+	public HashMap<String, Object> getUserByUserNameExceptPwd(String userName) {
 		return userMapper.getUserByUserNameExceptPwd(userName);
 	}
 

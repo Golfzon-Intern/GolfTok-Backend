@@ -59,20 +59,21 @@
 				post_id as postId
 				, post_content as postContent
 				, video_root as videoRoot
-				,like_count as likeCount, 
-				comment_count as commentCount
-				,CONVERT(CHAR(10), upload_date, 23) as uploadDate
+				, like_count as likeCount
+				, comment_count as commentCount
+				, CONVERT(CHAR(10), upload_date, 23) as uploadDate
 				, post_thumbnail as postThumbnail
 				, locations,u.user_id as userId
 				, u.user_name as userName
 				, u.user_icon as userIcon
 				, u.user_nickname as userNickname
 			from 
-				tok_posts p, tok_users u
+				tok_users u with(nolock)
+				inner join
+				tok_posts p with(nolock) on u.[user_id]=p.[user_id]
 			where
 				(like_count!=0 or comment_count!=0) and
-				upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate())) and
-				p.user_id=u.user_id
+				upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
 			order by like_count DESC,comment_count DESC
 			OFFSET #{startIndex} ROW FETCH NEXT #{recordsPerPage} ROW ONLY
 		) as A
@@ -117,9 +118,10 @@
 			, u.user_icon as userIcon
 			, u.user_nickname as userNickname
 		from 
-			tok_users u, tok_posts p
+			tok_users u with(nolock)
+			inner join
+			tok_posts p with(nolock) on u.[user_id]=p.[user_id]
 		where 
-			u.user_id=p.user_id and 
 			post_id=#{postId}
 	</select>
 
@@ -202,6 +204,17 @@
 			tok_posts
 		where 
 			post_id=#{postId}
+	</select>
+	
+	<!-- 프로필 페이지 게시물 가져오기 -->
+	<select id="getProfilePosts" parameterType="int" resultType="HashMap">
+		select
+			post_id as postId,
+			post_thumbnail as postThumbnail
+		from
+			tok_posts
+		where
+			user_id=#{userId}
 	</select>
 
 

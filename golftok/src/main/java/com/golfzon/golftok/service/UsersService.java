@@ -32,9 +32,9 @@ public interface UsersService {
 
 	String getPasswordByUserName(String userName);
 
-	TokUsers getUserByUserId(int userId);
+	HashMap<String, Object> getUserByUserId(int userId);
 
-	TokUsers getUserByUserNameExceptPwd(String userName);
+	HashMap<String, Object> getUserByUserNameExceptPwd(String userName);
 
 	List<TokPosts> getFollowingPost(Criteria criteria);
 
