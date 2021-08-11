@@ -42,8 +42,8 @@ public class PostServiceImple implements PostService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getDetailPost(int postId) {
-		return postMapper.getDetailPost(postId);
+	public List<HashMap<String, Object>> getDetailPost(HashMap<String, Object> detailMap) {
+		return postMapper.getDetailPost(detailMap);
 	}
 
 	@Override
@@ -100,6 +100,24 @@ public class PostServiceImple implements PostService {
 	@Override
 	public List<HashMap<String, Object>> getProfilePosts(Integer userId) {
 		return postMapper.getProfilePosts(userId);
+	}
+
+
+	@Override
+	public int getUserIdByPostId(int postId) {
+		return postMapper.getUserIdByPostId(postId);
+	}
+
+
+	@Override
+	public Integer getPreviousPostId(HashMap<String, Object> detailMap) {
+		return postMapper.getPreviousPostId(detailMap);
+	}
+
+
+	@Override
+	public Integer getNextPostId(HashMap<String, Object> detailMap) {
+		return postMapper.getNextPostId(detailMap);
 	}
 
 }

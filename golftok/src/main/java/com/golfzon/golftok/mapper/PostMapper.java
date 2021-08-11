@@ -17,7 +17,7 @@ public interface PostMapper {
 
 	public List<HashMap<String, Object>> getNasmo(int userId);
 
-	public List<HashMap<String, Object>> getDetailPost(int postId);
+	public List<HashMap<String, Object>> getDetailPost(HashMap<String, Object> detailMap);
 
 	public List<Comments> getAllComments(int postId);
 
@@ -42,4 +42,10 @@ public interface PostMapper {
 	public List<HashMap<String, Object>> getAllPosts(Criteria criteria);
 
 	public List<HashMap<String, Object>> getProfilePosts(Integer userId);
+
+	public int getUserIdByPostId(int postId);
+
+	public Integer getPreviousPostId(HashMap<String, Object> detailMap);
+
+	public Integer getNextPostId(HashMap<String, Object> detailMap);
 }

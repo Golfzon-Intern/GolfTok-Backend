@@ -102,8 +102,40 @@
 		(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations},#{postThumbnail})
 	</insert>
 	
+	<!-- 이 전 게시물 id 받아오기 -->
+	<select id="getPreviousPostId" parameterType="HashMap" resultType="int">
+		select
+			top 1
+			post_id
+		from 
+			tok_posts p with(nolock)
+			inner join
+			tok_users u with(nolock)  on u.[user_id] = p.[user_id]
+		where
+			post_id <![CDATA[ < ]]> #{postId} and
+			u.user_id=#{userId}
+		order by
+			post_id desc
+	</select>
+	
+	<!-- 이 후 게시물 id 받아오기 -->
+	<select id="getNextPostId" parameterType="HashMap" resultType="int">
+		select
+			top 1
+			post_id
+		from 
+			tok_posts p with(nolock)
+			inner join
+			tok_users u with(nolock)  on u.[user_id] = p.[user_id]
+		where
+			post_id <![CDATA[ > ]]> #{postId} and
+			u.user_id=#{userId}
+		order by
+			post_id desc
+	</select>
+	
 	<!-- 게시물(동영상) 상세보기 -->
-	<select id="getDetailPost" parameterType="int" resultType="HashMap">
+	<select id="getDetailPost" parameterType="HashMap" resultType="HashMap">
 		select
 			post_id as postId
 			, post_content as postContent
@@ -117,11 +149,15 @@
 			, u.user_name as userName
 			, u.user_icon as userIcon
 			, u.user_nickname as userNickname
-		from 
+			<if test="prevPostId!=null">,#{prevPostId} as previousPostId</if>
+			<if test="prevPostId==null">,#{postId} as previousPostId</if>
+			<if test="nextPostId!=null">,#{nextPostId} as nextPostId</if>
+			<if test="nextPostId==null">,#{postId} as nextPostId</if>
+		from
 			tok_users u with(nolock)
 			inner join
 			tok_posts p with(nolock) on u.[user_id]=p.[user_id]
-		where 
+		where
 			post_id=#{postId}
 	</select>
 
@@ -159,6 +195,16 @@
 			user_id=#{userId}
 	</select>
 	
+	<!-- postId로 userId 가져오기 -->
+	<select id="getUserIdByPostId" parameterType="int" resultType="int">
+		select
+			user_id
+		from
+			tok_posts
+		where 
+			post_id=#{postId}
+	</select>
+	
 	<!-- hashtag 삽입 -->
 	<insert id="insertHashtag" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="hashtagId" order="BEFORE">
@@ -173,7 +219,7 @@
 		select 
 			post_id
 		from 
-			tok_posts
+			tok_posts with(nolock)
 		where 
 			post_content=#{postContent} and
 			user_id=#{userId}

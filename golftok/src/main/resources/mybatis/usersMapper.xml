@@ -47,7 +47,8 @@
 	<!-- 내 골프 친구 5개 보기 (사이드 메뉴) -->
 	<select id="getFiveMyFollowing" parameterType="int" resultType="HashMap">
 		select 
-			TOP 5 u.user_id as userId
+			TOP 5 
+			u.user_id as userId
 			, u.user_name as userName
 			, u.user_nickname as userNickname
 			, u.user_icon as userIcon 
@@ -78,7 +79,8 @@
 	<!-- 로그인 했을 경우-추천 계정 15개 보기 : 자신의 나이대가 많이 팔로우 한 사람 추천 -->
 	<select id="getRecommendedFriedns15ByOrders" parameterType="int" resultType="HashMap">
 		select 
-			TOP 15 user_id as userId
+			TOP 15 
+			user_id as userId
 			, user_name as userName
 			, user_nickname as userNickname
 			, user_icon as userIcon
@@ -99,7 +101,8 @@
 	<!-- 로그인 했을 경우-추천 계정 5개 보기 : 자신의 나이대가 많이 팔로우 한 사람 추천 -->
 	<select id="getRecommendedFriedns5ByOrders" parameterType="int" resultType="HashMap">
 		select 
-			TOP 5 user_id as userId
+			TOP 5 
+			user_id as userId
 			, user_name as userName
 			, user_nickname as userNickname
 			, user_icon as userIcon
@@ -120,7 +123,8 @@
 	<!-- 로그인 안했을 경우-추천 계정 15개 보기 : 일주일 간 누적 좋아요를 많이 받은 계정 추천 -->
 	<select id="getRecommendedFriedns15ByLikeCount" parameterType="int" resultType="HashMap">
 		select 
-			TOP 15 u.user_id as userId
+			TOP 15 
+			u.user_id as userId
 			, user_name as userName
 			, user_nickname as userNickname
 			, user_icon as userIcon
@@ -138,7 +142,8 @@
 	<!-- 로그인 안했을 경우-추천 계정 5개 보기 : 일주일 간 누적 좋아요를 많이 받은 계정 추천 -->
 	<select id="getRecommendedFriedns5ByLikeCount" parameterType="int" resultType="HashMap">
 		select 
-			TOP 5 u.user_id as userId
+			TOP 5 
+			u.user_id as userId
 			, user_name as userName
 			, user_nickname as userNickname
 			, user_icon as userIcon

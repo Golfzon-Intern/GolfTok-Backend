@@ -47,29 +47,29 @@
 	<!-- postId에 해당하는 부모 댓글 가져오기 -->
 	<select id="getParentComments" parameterType="int" resultType="HashMap">
 		select
-		c.comment_id as commentId
-		, c.post_id as postId
-		, c.comment_text as commentText
-		, convert(varchar(10), c.upload_date, 23) as commentGroup
-		, c.like_count as likeCount
-		, c.comment_group as commentGroup
-		, u.[user_id] as userId
-		, u.[user_name] as userName
-		, u.user_icon as userIcon
-		, u.user_nickname as userNickname
-		, (
-			select
-				count(1)
-			from
-				mdprj.dbo.comments with(nolock)
-			where
-				post_id = c.post_id
-				and comment_group = c.comment_group
-				and group_layer = 1
-		) as childrenCount
+			c.comment_id as commentId
+			, c.post_id as postId
+			, c.comment_text as commentText
+			, convert(varchar(10), c.upload_date, 23) as commentGroup
+			, c.like_count as likeCount
+			, c.comment_group as commentGroup
+			, u.[user_id] as userId
+			, u.[user_name] as userName
+			, u.user_icon as userIcon
+			, u.user_nickname as userNickname
+			, (
+				select
+					count(1)
+				from
+					mdprj.dbo.comments with(nolock)
+				where
+					post_id = c.post_id
+					and comment_group = c.comment_group
+					and group_layer = 1
+			) as childrenCount
 		from
 			mdprj.dbo.comments c with(nolock)
-		inner join
+			inner join
 			mdprj.dbo.tok_users u with(nolock) on c.[user_id] = u.[user_id]
 		where
 			post_id = 18
@@ -92,10 +92,11 @@
 			, u.user_icon as userIcon
 			, u.user_nickname as userNickname
 		from 
-			tok_users u, comments c
+			mdprj.dbo.comments c with(nolock)
+			inner join
+			mdprj.dbo.tok_users u with(nolock) on c.[user_id] = u.[user_id]
 		where
 			group_layer=1 and
-			u.user_id=c.user_id and
 			comment_group=#{commentId}
 		order by group_order
 	</select>
