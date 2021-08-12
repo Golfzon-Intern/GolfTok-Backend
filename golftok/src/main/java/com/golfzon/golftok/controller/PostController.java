@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.security.Principal;
 import java.util.HashMap;
@@ -38,8 +39,6 @@ import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
-
-
 @RestController
 @RequestMapping("post")
 public class PostController {
@@ -51,8 +50,9 @@ public class PostController {
 
 	// 게시물 리스트 보기
 	@GetMapping("postList")
-	public HashMap<String, Object> getPostList(Principal principal, @RequestParam(value = "currentPageNo") int currentPageNo,
-			Criteria criteria) throws InterruptedException, IOException, ParseException, JSONException {
+	public HashMap<String, Object> getPostList(Principal principal,
+			@RequestParam(value = "currentPageNo") int currentPageNo, Criteria criteria)
+			throws InterruptedException, IOException, ParseException, JSONException {
 		List<HashMap<String, Object>> allPostList = null;
 		// paging 설정
 		criteria.setRecordsPerPage(15);
@@ -62,55 +62,65 @@ public class PostController {
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		System.out.println("principal:" + principal);
+		
+		allPostList = postService.getAllPosts(criteria);
+		map.put("allPostList", allPostList);
 
 		// 로그인 되지 않았을 때 좋아요 순 게시물
-		if(principal==null) {
-			allPostList = postService.getAllPosts(criteria);
-			map.put("allPostList", allPostList);
-		
-		// 로그인 됐을 시, 사용자 기반 추천
-		}else {
-			PythonInterpreter interpreter = new PythonInterpreter();
-			interpreter.execfile("C://Users//owner//PycharmProjects//golftok//content_test.py");
-			
-			// 추천 알고리즘 실행
-			/*
-			 * ProcessBuilder pb = new ProcessBuilder("python",
-			 * "C://Users//owner//PycharmProjects//golftok//content_test.py","1.pdf");
-			 * 
-			 * pb.redirectErrorStream(true); Process proc = pb.start();
-			 */
-			
-			
-	        JSONParser parser = new JSONParser();
+		/*
+		 * if(principal==null) { allPostList = postService.getAllPosts(criteria);
+		 * map.put("allPostList", allPostList);
+		 * 
+		 * // 로그인 됐을 시, 사용자 기반 추천 }else {
+		 * 
+		 * System.setProperty("python.cachedir.skip", "true"); PythonInterpreter
+		 * interpreter = new PythonInterpreter();
+		 * interpreter.exec("from java.lang import System");
+		 * 
+		 * StringWriter out = new StringWriter(); interpreter.setOut(out);
+		 * 
+		 * interpreter.execfile(
+		 * "C://Users//owner//PycharmProjects//golftok//content_test.py");
+		 * 
+		 * // 추천 알고리즘 실행
+		 * 
+		 * ProcessBuilder pb = new ProcessBuilder("python",
+		 * "C://Users//owner//PycharmProjects//golftok//content_test.py", "1.pdf");
+		 * 
+		 * pb.redirectErrorStream(true); Process proc = pb.start();
+		 * 
+		 * 
+		 * 
+		 * JSONParser parser = new JSONParser();
+		 * 
+		 * // JSON 파일 읽기 Reader reader = new FileReader(
+		 * "C://Users//owner//PycharmProjects//golftok//post_predictions.json");
+		 * JSONObject jsonObject = (JSONObject) parser.parse(reader);
+		 * 
+		 * JSONArray recommendedList = (JSONArray) jsonObject.get("data");
+		 * 
+		 * 
+		 * for (Object s : recommendedList) { System.out.println(s); }
+		 * 
+		 * 
+		 * 
+		 * JSONArray m = (JSONArray) jsonObject.get("data"); Iterator<Object> iterator =
+		 * m.iterator();
+		 * 
+		 * System.out.println("**JsonList**"); while (iterator.hasNext()) { String s =
+		 * (String) iterator.next(); System.out.println(s); }
+		 * 
+		 * 
+		 * 
+		 * Reader reader = new InputStreamReader(proc.getInputStream(),"euc-kr");
+		 * BufferedReader bf = new BufferedReader(reader); String s; while ((s =
+		 * bf.readLine()) != null) { System.out.println(s); }
+		 * 
+		 * map.put("allPostList", recommendedList);
+		 * 
+		 * interpreter.close(); }
+		 */
 
-	        // JSON 파일 읽기
-	        Reader reader = new FileReader("C://Users//owner//PycharmProjects//golftok//post_predictions.json");
-	        JSONObject jsonObject = (JSONObject) parser.parse(reader);
-	        
-			JSONArray recommendedList = (JSONArray) jsonObject.get("data");
-			
-			/*
-			 * for (Object s : recommendedList) { System.out.println(s); }
-			 */
-
-			/*
-			 * JSONArray m = (JSONArray) jsonObject.get("data"); Iterator<Object> iterator =
-			 * m.iterator();
-			 * 
-			 * System.out.println("**JsonList**"); while (iterator.hasNext()) { String s =
-			 * (String) iterator.next(); System.out.println(s); }
-			 */
-			
-			/*
-			 * Reader reader = new InputStreamReader(proc.getInputStream(),"euc-kr");
-			 * BufferedReader bf = new BufferedReader(reader); String s; while ((s =
-			 * bf.readLine()) != null) { System.out.println(s); }
-			 */
-			map.put("allPostList", recommendedList);
-			interpreter.close();
-		}
-		
 		return map;
 	}
 
@@ -149,8 +159,6 @@ public class PostController {
 			postMap.put("postId", postId);
 
 			postService.insertHashTag(postMap);
-
-			System.out.println("Success!!!");
 		}
 
 		return map;
@@ -158,35 +166,36 @@ public class PostController {
 
 	// 게시물 (동영상) 상세보기
 	@GetMapping("detail")
-	public HashMap<String, Object> getDetailPost(@RequestParam(value = "postId") int postId, @RequestParam(value = "type") int type) {
+	public HashMap<String, Object> getDetailPost(@RequestParam(value = "postId") int postId,
+			@RequestParam(value = "type") int type) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> postList = null;
-		
+
 		HashMap<String, Object> detailMap = new HashMap<String, Object>();
-		detailMap.put("postId",postId);
-		
+		detailMap.put("postId", postId);
+
 		// 메인 페이지 상세보기
-		if(type==0) {
-			detailMap.put("prevPostId",0);
-			detailMap.put("nextPostId",0);
-			
+		if (type == 0) {
+			detailMap.put("prevPostId", 0);
+			detailMap.put("nextPostId", 0);
+
 			postList = postService.getDetailPost(detailMap);
-		}else { // 프로필 페이지 상세보기
+		} else { // 프로필 페이지 상세보기
 			int userId = postService.getUserIdByPostId(postId);
-			
+
 			HashMap<String, Object> postIdMap = new HashMap<String, Object>();
 			postIdMap.put("userId", userId);
 			postIdMap.put("postId", postId);
-			
+
 			Integer prevPostId = postService.getPreviousPostId(postIdMap);
 			Integer nextPostId = postService.getNextPostId(postIdMap);
 
-			detailMap.put("prevPostId",prevPostId);
-			detailMap.put("nextPostId",nextPostId);
-			
+			detailMap.put("prevPostId", prevPostId);
+			detailMap.put("nextPostId", nextPostId);
+
 			postList = postService.getDetailPost(detailMap);
 		}
-		
+
 		map.put("postList", postList);
 
 		return map;

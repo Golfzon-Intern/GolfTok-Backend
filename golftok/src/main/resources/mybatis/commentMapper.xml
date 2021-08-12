@@ -50,7 +50,7 @@
 			c.comment_id as commentId
 			, c.post_id as postId
 			, c.comment_text as commentText
-			, convert(varchar(10), c.upload_date, 23) as commentGroup
+			, convert(varchar(10), c.upload_date, 23) as uploadDate
 			, c.like_count as likeCount
 			, c.comment_group as commentGroup
 			, u.[user_id] as userId

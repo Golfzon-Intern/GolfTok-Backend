@@ -55,7 +55,18 @@ public class UserController {
 	public HashMap<String, Object> getUserPosts(@RequestParam(value = "userId", required = false) Integer userId,
 			Principal principal) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		List<HashMap<String, Object>> postList = postService.getProfilePosts(userId);
+		List<HashMap<String, Object>> postList = null;
+		
+		// 로그인 된 상태에서 자기 자신의 프로필 페이지 조회
+		if (userId == null) {
+			if (principal != null) {
+				String userName = principal.getName();
+				int uId = userService.getUserIdByUserName(userName);
+				postList = postService.getProfilePosts(uId);
+			}
+		}else { // 다른 사람 프로필 페이지 조회
+			postList = postService.getProfilePosts(userId);
+		}
 
 		map.put("postList", postList);
 
