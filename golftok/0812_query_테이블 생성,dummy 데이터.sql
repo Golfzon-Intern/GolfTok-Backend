@@ -11,8 +11,8 @@ DROP TABLE tok_posts
 DROP TABLE tok_users
 
 
-----------------golf tok 테이블 생성 쿼리-----------------
-----users-----
+------------------table create------------------
+----users----
 create table tok_users (
 	user_id int primary key,
 	user_name nvarchar(50) not null,
@@ -46,7 +46,7 @@ create table follow(
 	friend_id int not null
 )
 
-----comments-----
+----comments----
 create table comments(
 	comment_id int primary key,
 	post_id int FOREIGN KEY REFERENCES tok_posts(post_id),
@@ -59,7 +59,7 @@ create table comments(
 	group_layer int not null
 )
 
------nasmo-----
+----nasmo----
 create table nasmo(
 	nasmo_id int primary key,
 	user_id int FOREIGN KEY REFERENCES tok_users(user_id),
@@ -89,7 +89,8 @@ create table comment_like(
 )
 
 
------users data-----
+---------------- data -----------------
+----users data----
 insert into tok_users values (1,'mul1234','mul1234','mul4321','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/user_icon%2Fimage2.jpg?alt=media&token=1cf84666-7c3b-42e9-9050-1fee04eaf2c6','안녕하세요!',28,'까치',25,40)
 insert into tok_users values (2,'hok333','hok333','오늘도골프','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/user_icon%2Fimage3.jpg?alt=media&token=c63ed6ca-b4b4-4ee5-84f7-ac61b917a8e1','홉이입니다',29,'참새',3,2)
 insert into tok_users values (3,'qaz1234','qaz1234','qaz1234','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/user_icon%2Fimage4.jpg?alt=media&token=3128f63c-c852-4a99-a7ba-04aef0a2dd18','골프왕',36,'매',8,10)
@@ -121,8 +122,7 @@ insert into tok_users values (28,'dogcat367','dogcat367','흰둥이','https://fireb
 insert into tok_users values (29,'sincer881','sincer881','sinser','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/user_icon%2Fimage30.jpg?alt=media&token=1cf3f95f-b62c-4a04-8476-a9db77cd8ba7','',31,'매',2,0)
 insert into tok_users values (30,'525angel','525angel','angel','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/user_icon%2Fimage31.jpg?alt=media&token=f9a39c25-7895-4a6d-a4b4-181b0ab2f666','골프 잘 치고 싶어요!',22,'까치',7,14)
 
-
-----tok_posts data-----
+----tok_posts data----
 insert into tok_posts values(1,1,'','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/sample_video%2FtestVideo1.mp4?alt=media&token=7e802ee5-88b7-475d-85d1-8bc7afafd840',DATEADD(dd,-10,getdate()),21,2,'','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail1.JPG?alt=media&token=f7404741-4888-44d7-b3fc-9b735cb74839')
 insert into tok_posts values(2,1,'','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/sample_video%2FtestVideo2.mp4?alt=media&token=636c149d-5aa2-4270-a9ea-4455b8dff3a8',DATEADD(dd,-10,getdate()),12,0,'','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail2.JPG?alt=media&token=07a4a97e-ecfa-40b2-bc4c-cfe5eb81a652')
 insert into tok_posts values(3,2,'폼 잡는거 힘들다','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/sample_video%2FtestVideo3.mp4?alt=media&token=81aa829b-e33f-4f8c-b409-898c1451cb57',DATEADD(dd,-8,getdate()),4,1,'서울특별시 강남구 논현로 833 재경빌딩','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail3.JPG?alt=media&token=8edd989d-8021-46be-9c2d-06bff5b6f3c5')
@@ -164,9 +164,7 @@ insert into tok_posts values(38,26,'#길거리버스킹 #버스킹 많이보러오세요^^','htt
 insert into tok_posts values(39,28,'오랜만에 악기 연주','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/sample_video%2FtestVideo42.mp4?alt=media&token=45b64d4d-d474-43ba-81e2-fced8cbd4b5c',GETDATE(),27,0,'','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail39.JPG?alt=media&token=b8701ca7-2dd4-4698-a595-1639f9258a1b')
 insert into tok_posts values(40,29,'#드럼 연주','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/sample_video%2FtestVideo43.mp4?alt=media&token=c9643439-c48e-4e06-b08c-22dce79a1492',GETDATE(),38,4,'','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail40.JPG?alt=media&token=84c056f1-a2a8-4ec7-80d1-3aeebbf6f6ed')
 
-
-
-----golf_friends data-----
+----golf_friends data----
 insert into follow values(1,1,3)
 insert into follow values(2,1,6)
 insert into follow values(3,2,6)
@@ -218,7 +216,7 @@ insert into follow values(48,26,19)
 insert into follow values(49,28,1)
 insert into follow values(50,29,21)
 
------nasmo data------
+----nasmo data-----
 insert into nasmo values(1,1,'http://techslides.com/demos/sample-videos/small.mp4','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail1.JPG?alt=media&token=637d6650-1b51-401c-8d81-27d59ecbc23e')
 insert into nasmo values(2,4,'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail9.JPG?alt=media&token=3c4879c5-e5e4-4698-81b9-2080c2d8accc')
 insert into nasmo values(3,6,'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4.mp4','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail5.JPG?alt=media&token=181fb399-26fa-4bc1-9dd0-1149b93dbe13')
@@ -238,8 +236,7 @@ insert into nasmo values(16,10,'https://vt.tumblr.com/tumblr_o600t8hzf51qcbnq0_4
 insert into nasmo values(17,10,'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail8.JPG?alt=media&token=2ce56ea7-9529-48fb-b808-3b5c9886918a')
 insert into nasmo values(18,16,'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4','https://firebasestorage.googleapis.com/v0/b/golftok-29f49.appspot.com/o/video_thumbnail%2Fthumbnail8.JPG?alt=media&token=2ce56ea7-9529-48fb-b808-3b5c9886918a')
 
-
-----comments data-----
+----comments data----
 insert into comments values(1,1,4,'멋져요!!',DATEADD(dd,-4,getdate()),2,'1','0',0)
 insert into comments values(2,1,1,'감사합니다ㅎㅎㅎ',DATEADD(dd,-4,getdate()),1,'1','1',1)
 insert into comments values(3,6,2,'나중에 저랑도 같이 쳐요ㅎㅎ',DATEADD(dd,-4,getdate()),1,'4','0',0)
@@ -271,7 +268,6 @@ insert into comments values(28,19,12,'초보의 실력이 아닌데???ㅋㅋ',GETDATE(),2,'
 insert into comments values(29,19,6,'시작한지 3개월밖에 안됐어ㅋㅋ',GETDATE(),6,'28','1',1)
 insert into comments values(30,18,6,'ㅋㅋㅋㅋㅋ',GETDATE(),6,'30','0',0)
 insert into comments values(31,18,6,'재밌어 보인다ㅋㅋㅋ',GETDATE(),6,'31','0',0)
-
 insert into comments values(32,24,16,'ㅜㅜㅜㅜ',GETDATE(),2,'32','0',0)
 insert into comments values(33,24,8,'헐너무귀여운데',GETDATE(),11,'33','0',0)
 insert into comments values(34,24,19,'여긴 어딘가요??',GETDATE(),1,'34','0',0)
@@ -286,8 +282,7 @@ insert into comments values(42,36,6,'실력이 더 늘었네ㅋㅋㅋㅋㅋ',GETDATE(),31,'4
 insert into comments values(43,39,6,'버스킹 어디서 하세요??',GETDATE(),5,'43','0',0)
 insert into comments values(44,39,6,'팬 입니다!!!',GETDATE(),11,'44','0',0)
 
-
----hashtag data---
+----hashtag data----
 insert into hashtag values(1,5,'시원한한방')
 insert into hashtag values(2,5,'골프')
 insert into hashtag values(3,5,'나이스샷')
@@ -345,9 +340,26 @@ insert into post_like values(20,8,9)
 insert into post_like values(21,9,10)
 insert into post_like values(22,9,15)
 insert into post_like values(23,9,11)
-insert into post_like values(24,10,7)
-insert into post_like values(25,10,8)
-
+insert into post_like values(24,11,7)
+insert into post_like values(25,11,8)
+insert into post_like values(26,11,17)
+insert into post_like values(27,12,22)
+insert into post_like values(28,13,23)
+insert into post_like values(29,13,28)
+insert into post_like values(30,13,4)
+insert into post_like values(31,13,7)
+insert into post_like values(32,14,16)
+insert into post_like values(33,14,29)
+insert into post_like values(34,14,22)
+insert into post_like values(35,14,21)
+insert into post_like values(36,14,6)
+insert into post_like values(37,16,4)
+insert into post_like values(38,16,3)
+insert into post_like values(39,18,1)
+insert into post_like values(40,18,11)
+insert into post_like values(41,18,19)
+insert into post_like values(42,19,27)
+insert into post_like values(43,20,25)
 
 ----comment_like----
 insert into comment_like values(1,1,11)
@@ -370,4 +382,24 @@ insert into comment_like values(17,9,1)
 insert into comment_like values(18,11,5)
 insert into comment_like values(19,11,13)
 insert into comment_like values(20,13,5)
-insert into comment_like values(20,13,5)
+insert into comment_like values(21,13,14)
+insert into comment_like values(22,13,5)
+insert into comment_like values(23,14,3)
+insert into comment_like values(24,15,18)
+insert into comment_like values(25,15,17)
+insert into comment_like values(26,16,13)
+insert into comment_like values(27,18,12)
+insert into comment_like values(28,18,24)
+insert into comment_like values(29,18,28)
+insert into comment_like values(30,19,29)
+insert into comment_like values(31,20,30)
+insert into comment_like values(32,20,21)
+insert into comment_like values(33,20,23)
+insert into comment_like values(34,20,24)
+insert into comment_like values(35,21,8)
+insert into comment_like values(36,22,9)
+insert into comment_like values(37,23,10)
+insert into comment_like values(38,26,14)
+insert into comment_like values(39,26,23)
+insert into comment_like values(40,27,24)
+
