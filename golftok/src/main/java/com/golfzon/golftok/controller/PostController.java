@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,8 @@ import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
+import ch.qos.logback.core.joran.spi.Interpreter;
+
 @RestController
 @RequestMapping("post")
 public class PostController {
@@ -53,6 +56,7 @@ public class PostController {
 	public HashMap<String, Object> getPostList(Principal principal,
 			@RequestParam(value = "currentPageNo") int currentPageNo, Criteria criteria)
 			throws InterruptedException, IOException, ParseException, JSONException {
+		
 		List<HashMap<String, Object>> allPostList = null;
 		// paging 설정
 		criteria.setRecordsPerPage(15);
@@ -61,66 +65,85 @@ public class PostController {
 		criteria.setStartIndex((currentPageNo - 1) * 5);
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		System.out.println("principal:" + principal);
-		
+		/*
 		allPostList = postService.getAllPosts(criteria);
 		map.put("allPostList", allPostList);
+		 */	
+		
+		  // 로그인 되지 않았을 때 랜덤 게시물 
+		
+		if(principal==null) { 
+			allPostList = postService.getAllPosts(criteria); 
+			map.put("allPostList", allPostList);
+		  
+		  }else { // 로그인 됐을 시, 사용자 기반 추천 
+			  //System.setProperty("python.impoty.skip","true"); 
+			  //PythonInterpreter interpreter = new PythonInterpreter();
+			  
+			  //StringWriter out = new StringWriter(); 
+			  //interpreter.setOut(out);
+			  
+			  //interpreter.exec("import pandas as pd");
+			  
+			  //interpreter.execfile("C://Users//owner//PycharmProjects//golftok//content_test.py");
+			  //interpreter.exec("recommend(10)");
+			  
+			
+				// ProcessBuilder 사용 => 추천 알고리즘 실행
+			  // 실행은 되나.. sysout으로만 출력 됨
+			  // python에서 결과 json 파일로 저장 후, 그 json 파일을 java에서 보면 변경되어 있지 X (계속 같은 결과값 반환)
+				ProcessBuilder pb = new ProcessBuilder("python", "-u",
+						"C://Users//owner//PycharmProjects//golftok//content_test.py");
 
-		// 로그인 되지 않았을 때 좋아요 순 게시물
-		/*
-		 * if(principal==null) { allPostList = postService.getAllPosts(criteria);
-		 * map.put("allPostList", allPostList);
-		 * 
-		 * // 로그인 됐을 시, 사용자 기반 추천 }else {
-		 * 
-		 * System.setProperty("python.cachedir.skip", "true"); PythonInterpreter
-		 * interpreter = new PythonInterpreter();
-		 * interpreter.exec("from java.lang import System");
-		 * 
-		 * StringWriter out = new StringWriter(); interpreter.setOut(out);
-		 * 
-		 * interpreter.execfile(
-		 * "C://Users//owner//PycharmProjects//golftok//content_test.py");
-		 * 
-		 * // 추천 알고리즘 실행
-		 * 
-		 * ProcessBuilder pb = new ProcessBuilder("python",
-		 * "C://Users//owner//PycharmProjects//golftok//content_test.py", "1.pdf");
-		 * 
-		 * pb.redirectErrorStream(true); Process proc = pb.start();
-		 * 
-		 * 
-		 * 
-		 * JSONParser parser = new JSONParser();
-		 * 
-		 * // JSON 파일 읽기 Reader reader = new FileReader(
-		 * "C://Users//owner//PycharmProjects//golftok//post_predictions.json");
-		 * JSONObject jsonObject = (JSONObject) parser.parse(reader);
-		 * 
-		 * JSONArray recommendedList = (JSONArray) jsonObject.get("data");
-		 * 
-		 * 
-		 * for (Object s : recommendedList) { System.out.println(s); }
-		 * 
-		 * 
-		 * 
-		 * JSONArray m = (JSONArray) jsonObject.get("data"); Iterator<Object> iterator =
-		 * m.iterator();
-		 * 
-		 * System.out.println("**JsonList**"); while (iterator.hasNext()) { String s =
-		 * (String) iterator.next(); System.out.println(s); }
-		 * 
-		 * 
-		 * 
-		 * Reader reader = new InputStreamReader(proc.getInputStream(),"euc-kr");
-		 * BufferedReader bf = new BufferedReader(reader); String s; while ((s =
-		 * bf.readLine()) != null) { System.out.println(s); }
-		 * 
-		 * map.put("allPostList", recommendedList);
-		 * 
-		 * interpreter.close(); }
-		 */
+				System.out.println("pb:" + pb);
 
+				Process p = pb.start();
+				
+				BufferedReader inFile = new BufferedReader(new InputStreamReader(p.getInputStream())); 
+				String sLine = null; 
+				JSONParser parser = new JSONParser();
+				
+				while( (sLine = inFile.readLine()) != null ) {
+					System.out.println(sLine);
+					String[] sList = sLine.split("\t");
+					System.out.println("len:"+sList.length);
+					for (String s : sList) { System.out.println("s:"+s);}
+					System.out.println("=============");
+				}
+
+				//int exitCode = p.waitFor();
+				//System.out.println("Process exit value:" + exitCode);
+				
+				inFile.close();
+
+				/*
+				Reader reader = new FileReader("C://Users//owner//PycharmProjects//golftok//post_predictions.json");
+				JSONObject jsonObject = (JSONObject) parser.parse(reader); 
+				JSONArray recommendedList = (JSONArray) jsonObject.get("data");
+				  
+				for (Object s : recommendedList) { System.out.println("***"+s); }
+				*/
+				  
+				// JSON 파일 읽기 
+				/*
+				Reader reader = new FileReader("C://Users//owner//PycharmProjects//golftok//post_predictions.json");
+				  JSONObject jsonObject = (JSONObject) parser.parse(reader); 
+				  JSONArray recommendedList = (JSONArray) jsonObject.get("data");
+				  
+				  for (Object s : recommendedList) { System.out.println(s); }
+				  
+				  //Reader reader = new InputStreamReader(proc.getInputStream(),"euc-kr");
+				  BufferedReader bf = new BufferedReader(reader); 
+				  String s; 
+				  while ((s=bf.readLine()) != null) { System.out.println(s); }
+				  
+				  map.put("allPostList", recommendedList);
+				 */
+				
+			  //interpreter.close(); 
+			  }
+		
+		 
 		return map;
 	}
 
