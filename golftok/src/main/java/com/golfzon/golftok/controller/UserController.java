@@ -73,8 +73,25 @@ public class UserController {
 		return map;
 	}
 	
+	// 팔로잉 조회
+	@GetMapping("following")
+	public HashMap<String, Object> getFollowing(@RequestParam(value = "friendId") Integer friendId, Principal principal) {
+		HashMap<String, Object> followingMap = new HashMap<String, Object>();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		String userName = principal.getName();
+		int userId = userService.getUserIdByUserName(userName);
 
-	// 팔로잉
+		followingMap.put("userId", userId);
+		followingMap.put("friendId", friendId);
+		
+		int following = userService.getFollowing(followingMap);
+		map.put("following", following);
+		
+		return map;
+	}
+
+	// 팔로잉 하기
 	@PostMapping("following")
 	@ResponseStatus(code = HttpStatus.OK)
 	public void following(@RequestBody HashMap<String, Object> map, Principal principal) {
@@ -93,16 +110,17 @@ public class UserController {
 	// 내가 팔로잉 중인 계정 5개 보기 (사이드 메뉴)
 	@GetMapping("fiveMyFollowing")
 	public HashMap<String, Object> getFiveMyFollowing(Principal principal) {
-		String userName = principal.getName();
-		int userId = userService.getUserIdByUserName(userName);
 		HashMap<String, Object> map = new HashMap<String, Object>();
-
 		List<HashMap<String, Object>> followingList = null;
 
 		// 로그인 됐을 때
 		if (principal != null) {
+			String userName = principal.getName();
+			int userId = userService.getUserIdByUserName(userName);
+			
 			followingList = userService.getFiveMyFollowing(userId);
 		}
+		
 		map.put("followingList", followingList);
 
 		return map;
@@ -161,8 +179,8 @@ public class UserController {
 			recommendList = userService.getRecommendedFriedns5ByOrders(userId);
 		} else { // 로그인 안됐을 때
 			recommendList = userService.getRecommendedFriedns5ByLikeCount();
-
 		}
+
 		map.put("recommendList", recommendList);
 
 		return map;
@@ -187,65 +205,5 @@ public class UserController {
 
 		return map;
 	}
-
-	// 프로필 페이지보기
-	/*
-	 * @GetMapping("profile") public HashMap<String, Object>
-	 * getProfilePage(@RequestParam(value = "userId") int userId, Principal
-	 * principal) { HashMap<String, Object> map = new HashMap<String, Object>();
-	 * List<HashMap<String, Object>> recommendList = null; List<HashMap<String,
-	 * Object>> followingList = null;
-	 * 
-	 * TokUsers user = userService.getUserByUserId(userId); List<HashMap<String,
-	 * Object>> postList = postService.getAllUserPosts(userId);
-	 * 
-	 * map.put("user", user); map.put("postList", postList);
-	 * 
-	 * // 로그인 됐을 때 if (principal != null) { String userName = principal.getName();
-	 * int loginUserId = userService.getUserIdByUserName(userName); followingList =
-	 * userService.getMyFollowing(loginUserId); recommendList =
-	 * userService.getRecommendedFriednsByOrders(loginUserId);
-	 * 
-	 * map.put("followingList", followingList); map.put("recommendList",
-	 * recommendList); } else { // 로그인 안됐을 때 recommendList =
-	 * userService.getRecommendedFriednsByLikeCount(); map.put("followingList",
-	 * null); map.put("recommendList", recommendList); }
-	 * 
-	 * return map; }
-	 */
-
-	// 골프 친구 신청
-	/*
-	 * @PostMapping("friend/requestFriend") public HashMap<String, Object>
-	 * requestGolfFriend(@RequestBody HashMap<String, Object> map,Principal
-	 * principal) { String userName = principal.getName(); int userId =
-	 * userService.getUserNameByUserId(userName); map.put("userId", userId);
-	 * 
-	 * userService.requestGolfFriend(map);
-	 * 
-	 * return null; }
-	 * 
-	 * // 골프 친구 승인
-	 * 
-	 * @PostMapping("friend/approveFriend") public HashMap<String, Object>
-	 * approveFriendRequest(@RequestBody HashMap<String, Object> map,Principal
-	 * principal) { String userName = principal.getName(); int userId =
-	 * userService.getUserNameByUserId(userName); int requestId = (int)
-	 * map.get("requestId"); int requestUserId =
-	 * userService.getUserIdByRequestId(requestId);
-	 * 
-	 * HashMap<String, Object> approveMap1 = new HashMap<String, Object>();
-	 * approveMap1.put("userId", userId); approveMap1.put("friendId",
-	 * requestUserId); HashMap<String, Object> approveMap2 = new HashMap<String,
-	 * Object>(); approveMap2.put("friendId", userId); approveMap2.put("userId",
-	 * requestUserId);
-	 * 
-	 * // 친구 신청 승인 1 : 친구 리스트에 넣기 (양방향)
-	 * userService.approveFriendRequest(approveMap1);
-	 * userService.approveFriendRequest(approveMap2); // 친구 신청 승인 2 : 요청 삭제
-	 * userService.deleteFriendRequset(requestId);
-	 * 
-	 * return null; }
-	 */
 
 }

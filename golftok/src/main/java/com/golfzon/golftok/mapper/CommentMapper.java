@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import com.golfzon.golftok.model.Comments;
+
 @Mapper
 @Repository
 public interface CommentMapper {
@@ -26,4 +28,7 @@ public interface CommentMapper {
 	public int unlikeComment(int commentId);
 	public int getCommentLikeCount(int commentId);
 	public List<HashMap<String, Object>> getChidrenComments(int commentId);
+	public int getLatestComment();
+	public HashMap<String, Object> getCommentByCommentId(HashMap<String, Object> map);
+	public int getCommentCountByPostId(int postId);
 }

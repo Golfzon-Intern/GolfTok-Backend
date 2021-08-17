@@ -53,17 +53,28 @@ public class CommentController {
 	// 댓글 작성
 	@PostMapping("input")
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public void inputComment(@RequestBody HashMap<String, Object> map,Principal principal,
+	public HashMap<String, Object> inputComment(@RequestBody HashMap<String, Object> map,Principal principal,
 			HttpServletResponse response) throws IOException{
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
+		int groupLayer = (int) map.get("groupLayer");
 		
 		map.put("userId", userId);
 		if (commentService.inputComment(map) == 0) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
-		} else {
-			System.out.println("Success!!!");
 		}
+		
+		int commentId = commentService.getLatestComment();
+		
+		HashMap<String, Object> commentMap = new HashMap<String, Object>();
+		HashMap<String, Object> tempCommentMap = new HashMap<String, Object>();
+		tempCommentMap.put("commentId", commentId);
+		tempCommentMap.put("groupLayer", groupLayer);
+		
+		HashMap<String, Object> comment = commentService.getCommentByCommentId(tempCommentMap);
+		commentMap.put("comment", comment);
+		
+		return commentMap;
 	}
 
 	// 댓글 수정
@@ -73,8 +84,6 @@ public class CommentController {
 			HttpServletResponse response) throws IOException{
 		if (commentService.updateComment(map) == 0) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
-		} else {
-			System.out.println("Success!!!");
 		}
 	}
 
@@ -83,21 +92,21 @@ public class CommentController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deleteComment(@RequestParam(value = "commentId") int commentId,
 			HttpServletResponse response) throws IOException{
-		//HashMap<String, Object> commentMap = new HashMap<String, Object>();
-		// 댓글 삭제 전, 미리 댓글id를 이용 해 게시물 정보 얻어오기
-		//int postId = commentService.getPostIdByCommentId(commentId);
 
 		if (commentService.deleteComment(commentId) == 0) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN); //403 에러
-		} else {
-			System.out.println("Success!!!");
 		}
-
-		/*
-		 * List<Comments> commentList = commentService.getAllComments(postId);
-		 * commentMap.put("commentList", commentList);
-		 * 
-		 * return commentMap;
-		 */
+	}
+	
+	// 댓글 개수 가져오기
+	@GetMapping("count")
+	public HashMap<String, Object> getCommentCount(@RequestParam(value = "postId") int postId,
+			HttpServletResponse response) throws IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		int commentCount = commentService.getCommentCountByPostId(postId);
+		map.put("commentCount", commentCount);
+		
+		return map;
 	}
 }

@@ -62,6 +62,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
 		// CORS를 적용할 URL패턴을 정의
 		registry.addMapping("/**")
 				// 자원 공유를 허락할 Origin을 지정
-				.allowedOrigins("*");
+				.allowedOrigins("*")
+				.allowedMethods("*");
 	}
 }

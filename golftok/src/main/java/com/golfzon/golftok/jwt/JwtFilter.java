@@ -29,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		String authorizationHeader = httpServletRequest.getHeader("x-access-token");
 		String token = null;
 		String userName = null;
-		System.out.println("authorizationHeader:"+authorizationHeader);
+		//System.out.println("authorizationHeader:"+authorizationHeader);
 		
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			token = authorizationHeader.substring(7);

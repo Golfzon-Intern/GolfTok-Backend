@@ -42,6 +42,7 @@ public class LikeController {
 	@ResponseStatus(code = HttpStatus.OK)
 	public void likePost(@RequestBody HashMap<String, Object> map, HttpServletResponse response,
 			Principal principal) throws IOException {
+		
 		int postId = (int) map.get("postId");
 		
 		String userName = principal.getName();
@@ -60,7 +61,7 @@ public class LikeController {
 	// 게시물 좋아요 취소
 	@DeleteMapping("post")
 	@ResponseStatus(code = HttpStatus.OK)
-	public void unlikePost(@RequestParam(value = "postId") int postId, HttpServletResponse response,
+	public void unlikePost(@RequestParam(value = "postId") Integer postId, HttpServletResponse response,
 			Principal principal) throws IOException {
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
@@ -117,20 +118,26 @@ public class LikeController {
 	@ResponseStatus(code = HttpStatus.OK)
 	public HashMap<String, Object> getPostLike(@RequestParam(value = "postId") int postId, HttpServletResponse response,
 			Principal principal) throws IOException {
-		String userName = principal.getName();
-		int userId = userService.getUserIdByUserName(userName);
-		
-		HashMap<String, Object> likeMap = new HashMap<String, Object>();
-		likeMap.put("postId", postId);
-		likeMap.put("userId", userId);
-		
-		// 좋아요가 되어 있는지 확인
-		int flag = likeService.getPostLikeFlag(likeMap);
-		if (flag > 0) flag = 0;
-		else flag=1;
-		
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("flag", flag);
+
+		if (principal!=null) {
+			String userName = principal.getName();
+			int userId = userService.getUserIdByUserName(userName);
+			
+			HashMap<String, Object> likeMap = new HashMap<String, Object>();
+			likeMap.put("postId", postId);
+			likeMap.put("userId", userId);
+			
+			// 좋아요가 되어 있는지 확인
+			int flag = likeService.getPostLikeFlag(likeMap);
+			if (flag > 0) flag = 0;
+			else flag=1;
+			
+			map.put("flag", flag);
+		}else {
+			map.put("flag", 1);
+		}
+
 		map.put("likeCount", postService.getPostLikeCount(postId));
 		
 		return map;

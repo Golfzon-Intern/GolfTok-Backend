@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.golfzon.golftok.mapper.CommentMapper;
+import com.golfzon.golftok.model.Comments;
 
 @Service
 @Transactional
@@ -23,29 +24,6 @@ public class CommentServiceImple implements CommentService{
 		return commentMapper.getParentComments(postId);
 	}
 
-	
-	
-	/*
-	 * @Override public List<HashMap<String, Object>> getParentComments(int postId)
-	 * { List<HashMap<String, Object>> allCommentList =
-	 * commentMapper.getParentComments(postId); List<HashMap<String, Object>>
-	 * parentCommentList = new ArrayList<HashMap<String,Object>>();
-	 * List<HashMap<String, Object>> chilrenCommentList = new
-	 * ArrayList<HashMap<String,Object>>(); List<HashMap<String, Object>>
-	 * newCommentList =new ArrayList<HashMap<String,Object>>();
-	 * 
-	 * for(HashMap<String, Object> comment : allCommentList) { // 부모, 자식 분리 (부모:0,
-	 * 자식:1) if((int)comment.get("groupLayer")==0) { parentCommentList.add(comment);
-	 * }else { chilrenCommentList.add(comment); } }
-	 * 
-	 * // 부모 먼저 넣기 for(HashMap<String, Object> pComment: parentCommentList) {
-	 * newCommentList.add(pComment); // 해당 부모의 자식 넣기 for(HashMap<String, Object>
-	 * cComment:chilrenCommentList) {
-	 * if(pComment.get("commentGroup").equals(cComment.get("commentGroup"))) {
-	 * newCommentList.add(cComment); } } }
-	 * 
-	 * return newCommentList; }
-	 */
 	@Override
 	public int inputComment(HashMap<String, Object> map) {
 		int groupLayer=(int) map.get("groupLayer");
@@ -135,4 +113,49 @@ public class CommentServiceImple implements CommentService{
 	public List<HashMap<String, Object>> getChidrenComments(int commentId) {
 		return commentMapper.getChidrenComments(commentId);
 	}
+
+
+	@Override
+	public int getLatestComment() {
+		return commentMapper.getLatestComment();
+	}
+
+
+	@Override
+	public HashMap<String, Object> getCommentByCommentId(HashMap<String, Object> map) {
+		HashMap<String, Object> commentMap = commentMapper.getCommentByCommentId(map);
+		if ((int)map.get("groupLayer")==0) {
+			commentMap.put("childrenCount", 0);
+		}
+		return commentMap;
+	}
+
+	@Override
+	public int getCommentCountByPostId(int postId) {
+		return commentMapper.getCommentCountByPostId(postId);
+	}
+	
+
+	
+	/*
+	 * @Override public List<HashMap<String, Object>> getParentComments(int postId)
+	 * { List<HashMap<String, Object>> allCommentList =
+	 * commentMapper.getParentComments(postId); List<HashMap<String, Object>>
+	 * parentCommentList = new ArrayList<HashMap<String,Object>>();
+	 * List<HashMap<String, Object>> chilrenCommentList = new
+	 * ArrayList<HashMap<String,Object>>(); List<HashMap<String, Object>>
+	 * newCommentList =new ArrayList<HashMap<String,Object>>();
+	 * 
+	 * for(HashMap<String, Object> comment : allCommentList) { // 부모, 자식 분리 (부모:0,
+	 * 자식:1) if((int)comment.get("groupLayer")==0) { parentCommentList.add(comment);
+	 * }else { chilrenCommentList.add(comment); } }
+	 * 
+	 * // 부모 먼저 넣기 for(HashMap<String, Object> pComment: parentCommentList) {
+	 * newCommentList.add(pComment); // 해당 부모의 자식 넣기 for(HashMap<String, Object>
+	 * cComment:chilrenCommentList) {
+	 * if(pComment.get("commentGroup").equals(cComment.get("commentGroup"))) {
+	 * newCommentList.add(cComment); } } }
+	 * 
+	 * return newCommentList; }
+	 */
 }

@@ -111,7 +111,7 @@ public class UsersServiceImple implements UsersService{
 
 	@Override
 	public List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount() {
-		List<HashMap<String, Object>> recommendList = userMapper.getRecommendedFriedns15ByLikeCount();
+		List<HashMap<String, Object>> recommendList = userMapper.getRecommendedFriedns5ByLikeCount();
 		for(HashMap<String, Object> map :recommendList) {
 			map.remove("allLikeCount");
 		}
@@ -144,5 +144,11 @@ public class UsersServiceImple implements UsersService{
 	@Override
 	public List<HashMap<String, Object>> getAllMyFollowing(int userId) {
 		return userMapper.getAllMyFollowing(userId);
+	}
+
+
+	@Override
+	public int getFollowing(HashMap<String, Object> map) {
+		return userMapper.getFollowing(map);
 	}
 }

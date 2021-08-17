@@ -36,13 +36,6 @@
 		<result property="postThumbnail" column="post_thumbnail" />
 	</resultMap>
 
-	<!-- <resultMap id="requestResult" type="com.golfzon.golftok.model.Request">
-		<id property="requestId" column="request_id"/>
-		<result property="userId" column="user_id" />
-		<result property="requestedId" column="requested_id" />
-		<result property="requestDate" column="request_date" />
-	</resultMap> -->
-	
 	
 	<!-- 내 골프 친구 5개 보기 (사이드 메뉴) -->
 	<select id="getFiveMyFollowing" parameterType="int" resultType="HashMap">
@@ -213,7 +206,18 @@
 			user_name=#{userName}
 	</select>
 	
-	<!-- 팔로잉 -->
+	<!-- 팔로우 조회 -->
+	<select id="getFollowing" parameterType="HashMap" resultType="int">
+		select 
+			count(*) as flag
+		from 
+			follow
+		where
+			user_id=#{userId} and
+			friend_id=#{friendId}
+	</select>
+	
+	<!-- 팔로우 하기 -->
 	<insert id="following" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="followId" order="BEFORE">
 			select MAX(follow_id)+1 from follow
@@ -272,36 +276,4 @@
 		OFFSET #{startIndex} ROW FETCH NEXT #{recordsPerPage} ROW ONLY
 	</select>
 	
-	
-		
-	<!-- 골프 친구 신청 -->
-	<!-- <insert id="requestGolfFriend" parameterType="HashMap">
-		<selectKey resultType="integer" keyProperty="requestId" order="BEFORE">
-			select MAX(request_id)+1 from friend_request
-		</selectKey>
-		insert into friend_request values
-		(#{requestId},#{userId},#{requestedId},getdate())
-	</insert> -->
-	
-	<!-- 골프 친구 승인 -->
-	<!-- <insert id="approveFriendRequest" parameterType="HashMap">
-		<selectKey resultType="integer" keyProperty="golfFriendId" order="BEFORE">
-			select MAX(golf_friend_id)+1 from golf_friends
-		</selectKey>
-		insert into golf_friends values
-		(#{golfFriendId},#{userId},#{friendId})
-	</insert>
-	 -->
-	 
-	<!-- 친구 신청 처리 후, 삭제 -->
-	<!-- <delete id="deleteFriendRequset" parameterType="int">
-		delete from friend_request
-		where request_id=#{requestId}
-	</delete> -->
-	
-	<!-- requsetId로 friendId 가져오기 -->
-	<!-- <select id="getUserIdByRequestId" parameterType="int" resultType="int">
-		select user_id from friend_request
-		where request_id=#{requestId}
-	</select> -->
 </mapper>

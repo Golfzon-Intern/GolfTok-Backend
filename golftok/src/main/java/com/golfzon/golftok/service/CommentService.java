@@ -16,4 +16,7 @@ public interface CommentService {
 	int unlikeComment(int commentId);
 	int getCommentLikeCount(int commentId);
 	List<HashMap<String, Object>> getChidrenComments(int commentId);
+	int getLatestComment();
+	HashMap<String, Object> getCommentByCommentId(HashMap<String, Object> map);
+	int getCommentCountByPostId(int postId);
 }

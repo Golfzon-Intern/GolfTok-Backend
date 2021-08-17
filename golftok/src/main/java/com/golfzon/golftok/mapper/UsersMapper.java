@@ -37,5 +37,7 @@ public interface UsersMapper {
 	List<HashMap<String, Object>> getRecommendedFriedns15ByLikeCount();
 	List<HashMap<String, Object>> getFiveMyFollowing(int userId);
 	List<HashMap<String, Object>> getAllMyFollowing(int userId);
+	List<TokPosts> getFollowingPost(HashMap<String, Object> map);
+	int getFollowing(HashMap<String, Object> map);
 
 }

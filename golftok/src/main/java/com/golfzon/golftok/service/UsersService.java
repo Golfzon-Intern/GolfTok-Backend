@@ -49,4 +49,6 @@ public interface UsersService {
 	List<HashMap<String, Object>> getFiveMyFollowing(int userId);
 
 	List<HashMap<String, Object>> getAllMyFollowing(int userId);
+	
+	int getFollowing(HashMap<String, Object> followingMap);
 }

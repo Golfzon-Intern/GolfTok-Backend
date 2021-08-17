@@ -72,7 +72,7 @@
 			inner join
 			mdprj.dbo.tok_users u with(nolock) on c.[user_id] = u.[user_id]
 		where
-			post_id = 18
+			post_id = #{postId}
 			and group_layer = 0
 		order by upload_date DESC
 	</select>
@@ -196,14 +196,6 @@
 		qcomment_group=#{commentGroup}
 	</delete>
 	
-	<!-- 대댓글 삭제 1 : 상위 대댓글 개수 구하기 -->
-	<!-- 
-	<select id="countUpperChildrenComment" parameterType="HashMap" resultType="int">
-		select count(*) from comments
-		where group_order <![CDATA[ <= ]]> #{groupOrder} and comment_group=#{commentGroup} and group_layer=1
-	</select>
-	 -->
-	
 	<!-- 대댓글 삭제 1 : 대댓글 삭제 -->
 	<delete id="deleteChildrenComment" parameterType="HashMap">
 		delete 
@@ -256,6 +248,48 @@
 			comments
 		where 
 			comment_id=#{commentId}
+	</select>
+	
+	<!-- 삽입 한 댓글 가져오기 -->
+	<select id="getLatestComment" resultType="int">
+		select
+			top 1
+			comment_id
+		from 
+			comments
+		order by
+			comment_id DESC
+	</select>
+	
+	<!-- 댓글id로 댓글 가져오기 -->
+	<select id="getCommentByCommentId" parameterType="HashMap" resultType="HashMap">
+		select
+			comment_id as commentId
+			, post_id as postId
+			, comment_text as commentText
+			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
+			, like_count as likeCount
+			, comment_group as commentGroup
+			, u.[user_id] as userId
+			, u.[user_name] as userName
+			, u.user_icon as userIcon
+			, u.user_nickname as userNickname
+		from
+			mdprj.dbo.comments c with(nolock)
+			inner join
+			mdprj.dbo.tok_users u with(nolock) on c.[user_id] = u.[user_id]
+		where
+			comment_id=#{commentId}
+	</select>
+	
+	<!-- 총 댓글 수 가져오기 -->
+	<select id="getCommentCountByPostId" parameterType="int" resultType="int">
+		select
+			count(*)
+		from 
+			comments
+		where
+			post_id=#{postId}
 	</select>
 	
 </mapper>
