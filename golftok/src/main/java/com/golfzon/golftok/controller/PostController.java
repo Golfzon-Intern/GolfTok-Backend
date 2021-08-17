@@ -115,7 +115,6 @@ public class PostController {
 				//System.out.println("Process exit value:" + exitCode);
 				
 				inFile.close();
-				
 
 				/*
 				Reader reader = new FileReader("C://Users//owner//PycharmProjects//golftok//post_predictions.json");
