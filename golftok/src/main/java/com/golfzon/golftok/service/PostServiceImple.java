@@ -17,20 +17,12 @@ public class PostServiceImple implements PostService {
 	@Autowired
 	private PostMapper postMapper;
 	
-	// 모든 게시물 가져오기 (하루 + 2일~7일 게시물 병합 후 반환)
+	// 모든 게시물 가져오기
 	@Override
-	public List<HashMap<String, Object>> getAllPosts(Criteria criteria) {
-		//List<HashMap<String, Object>> todayPostList = postMapper.getTodayAllPosts(criteria);
-		//List<HashMap<String, Object>> otherPostList = postMapper.getOtherDayAllPosts(criteria);
-		
-		List<HashMap<String, Object>> allPosts = postMapper.getAllPosts(criteria);
-		//todayPostList.addAll(otherPostList);
-		//return todayPostList;
-		
-		return allPosts;
+	public List<HashMap<String, Object>> getAllPosts(Criteria criteria) {	
+		return postMapper.getAllPosts(criteria);
 	}
 
-	
 	@Override
 	public int insertPost(HashMap<String, Object> map) {
 		return postMapper.insertPost(map);
@@ -118,6 +110,12 @@ public class PostServiceImple implements PostService {
 	@Override
 	public Integer getNextPostId(HashMap<String, Object> detailMap) {
 		return postMapper.getNextPostId(detailMap);
+	}
+
+
+	@Override
+	public HashMap<String, Object> getPostByPostId(int postId) {
+		return postMapper.getPostByPostId(postId);
 	}
 
 }

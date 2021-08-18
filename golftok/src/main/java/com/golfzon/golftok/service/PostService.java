@@ -37,4 +37,6 @@ public interface PostService {
 
 	public Integer getNextPostId(HashMap<String, Object> detailMap);
 
+	public HashMap<String, Object> getPostByPostId(int postId);
+
 }

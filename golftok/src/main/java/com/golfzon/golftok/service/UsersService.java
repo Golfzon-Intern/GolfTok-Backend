@@ -36,9 +36,9 @@ public interface UsersService {
 
 	HashMap<String, Object> getUserByUserNameExceptPwd(String userName);
 
-	List<TokPosts> getFollowingPost(Criteria criteria);
+	List<HashMap<String, Object>> getFollowingPost(Criteria criteria);
 
-	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId);
+	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(HashMap<String, Object> recommendMap);
 
 	List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount();
 

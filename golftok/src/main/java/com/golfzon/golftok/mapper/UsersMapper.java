@@ -30,8 +30,8 @@ public interface UsersMapper {
 	String getPasswordByUserName(String userName);
 	HashMap<String, Object> getUserByUserId(int userId);
 	HashMap<String, Object> getUserByUserNameExceptPwd(String userName);
-	List<TokPosts> getFollowingPost(Criteria criteria);
-	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId);
+	List<HashMap<String, Object>> getFollowingPost(Criteria criteria);
+	List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(HashMap<String, Object> recommendMap);
 	List<HashMap<String, Object>> getRecommendedFriedns5ByLikeCount();
 	List<HashMap<String, Object>> getRecommendedFriedns15ByOrders(int userId);
 	List<HashMap<String, Object>> getRecommendedFriedns15ByLikeCount();

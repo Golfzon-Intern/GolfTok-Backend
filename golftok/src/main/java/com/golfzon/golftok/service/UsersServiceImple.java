@@ -98,14 +98,14 @@ public class UsersServiceImple implements UsersService{
 
 
 	@Override
-	public List<TokPosts> getFollowingPost(Criteria criteria) {
+	public List<HashMap<String, Object>> getFollowingPost(Criteria criteria) {
 		return userMapper.getFollowingPost(criteria);
 	}
 
 
 	@Override
-	public List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(int userId) {
-		return userMapper.getRecommendedFriedns5ByOrders(userId);
+	public List<HashMap<String, Object>> getRecommendedFriedns5ByOrders(HashMap<String, Object> recommendMap) {
+		return userMapper.getRecommendedFriedns5ByOrders(recommendMap);
 	}
 
 

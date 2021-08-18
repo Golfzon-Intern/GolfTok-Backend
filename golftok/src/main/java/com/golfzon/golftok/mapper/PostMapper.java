@@ -48,4 +48,6 @@ public interface PostMapper {
 	public Integer getPreviousPostId(HashMap<String, Object> detailMap);
 
 	public Integer getNextPostId(HashMap<String, Object> detailMap);
+
+	public HashMap<String, Object> getPostByPostId(int postId);
 }

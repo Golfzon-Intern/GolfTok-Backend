@@ -118,6 +118,7 @@ public class LikeController {
 	@ResponseStatus(code = HttpStatus.OK)
 	public HashMap<String, Object> getPostLike(@RequestParam(value = "postId") int postId, HttpServletResponse response,
 			Principal principal) throws IOException {
+		System.out.println("postId:"+postId);
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		if (principal!=null) {
@@ -138,6 +139,7 @@ public class LikeController {
 			map.put("flag", 1);
 		}
 
+		System.out.println("likeCount:"+postService.getPostLikeCount(postId));
 		map.put("likeCount", postService.getPostLikeCount(postId));
 		
 		return map;

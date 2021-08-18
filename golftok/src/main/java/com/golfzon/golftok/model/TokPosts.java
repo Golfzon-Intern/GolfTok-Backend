@@ -17,4 +17,5 @@ public class TokPosts {
 	private int commentCount;
 	private String locations;
 	private String postThumbnail;
+	private String golfClub;
 }

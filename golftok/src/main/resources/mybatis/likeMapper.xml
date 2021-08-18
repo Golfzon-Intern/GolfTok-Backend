@@ -12,10 +12,11 @@
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="userAge" column="user_age" />
 		<result property="userGrade" column="user_grade" />
 		<result property="followingCount" column="following_count" />
 		<result property="followerCount" column="follower_count" />
+		<result property="roleModel" column="role_model" />
+		<result property="handicap" column="handicap" />
 	</resultMap>
 	
 	<resultMap id="postsResult" type="com.golfzon.golftok.model.TokPosts">
@@ -28,6 +29,7 @@
 		<result property="commentCount" column="comment_count" />
 		<result property="locations" column="locations" />
 		<result property="postThumbnail" column="post_thumbnail" />
+		<result property="golfClub" column="golf_club" />
 	</resultMap>
 	
 	<resultMap id="commentsResult" type="com.golfzon.golftok.model.Comments">

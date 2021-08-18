@@ -149,7 +149,7 @@ public class UserController {
 	public HashMap<String, Object> getFollowingPost(Principal principal,
 			@RequestParam(value = "currentPageNo") int currentPageNo, Criteria criteria) {
 		// paging 설정
-		criteria.setRecordsPerPage(4);
+		criteria.setRecordsPerPage(15);
 		criteria.setCurrentPageNo(currentPageNo);
 		// 해당페이지 시작 인덱스 설정
 		criteria.setStartIndex((currentPageNo - 1) * 5);
@@ -159,7 +159,7 @@ public class UserController {
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
 		criteria.setUserId(userId);
-		List<TokPosts> postList = userService.getFollowingPost(criteria);
+		List<HashMap<String, Object>> postList = userService.getFollowingPost(criteria);
 
 		map.put("postList", postList);
 
@@ -175,8 +175,13 @@ public class UserController {
 
 		if (principal != null) {
 			String userName = principal.getName();
-			int userId = userService.getUserIdByUserName(userName);
-			recommendList = userService.getRecommendedFriedns5ByOrders(userId);
+			TokUsers user = userService.getUserByUserName(userName);
+			HashMap<String, Object> recommendMap = new HashMap<String, Object>();
+			
+			recommendMap.put("userId", user.getUserId());
+			recommendMap.put("userGrade", user.getUserGrade());
+			recommendMap.put("handicap", user.getHandicap());
+			recommendList = userService.getRecommendedFriedns5ByOrders(recommendMap);
 		} else { // 로그인 안됐을 때
 			recommendList = userService.getRecommendedFriedns5ByLikeCount();
 		}
@@ -185,25 +190,4 @@ public class UserController {
 
 		return map;
 	}
-
-	// 전체 보기 - 추천 계정 보기 (15개 가져오기)
-	@GetMapping("recommend/fifteenFollowing")
-	public HashMap<String, Object> recommend15Following(Principal principal) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-
-		List<HashMap<String, Object>> recommendList = null;
-
-		if (principal != null) {
-			String userName = principal.getName();
-			int userId = userService.getUserIdByUserName(userName);
-			recommendList = userService.getRecommendedFriedns15ByOrders(userId);
-		} else { // 로그인 안됐을 때
-			recommendList = userService.getRecommendedFriedns15ByLikeCount();
-
-		}
-		map.put("recommendList", recommendList);
-
-		return map;
-	}
-
 }

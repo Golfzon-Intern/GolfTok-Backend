@@ -12,10 +12,11 @@
 		<result property="userPassword" column="user_password" />
 		<result property="userIcon" column="user_icon" />
 		<result property="introductionMessage" column="introduction_message" />
-		<result property="userAge" column="user_age" />
 		<result property="userGrade" column="user_grade" />
 		<result property="followingCount" column="following_count" />
 		<result property="followerCount" column="follower_count" />
+		<result property="roleModel" column="role_model" />
+		<result property="handicap" column="handicap" />
 	</resultMap>
 
 	<resultMap id="postsResult" type="com.golfzon.golftok.model.TokPosts">
@@ -28,6 +29,7 @@
 		<result property="commentCount" column="comment_count" />
 		<result property="locations" column="locations" />
 		<result property="postThumbnail" column="post_thumbnail" />
+		<result property="golfClub" column="golf_club" />
 	</resultMap>
 
 	<resultMap id="nasmoResult" type="com.golfzon.golftok.model.Nasmo">
@@ -61,12 +63,16 @@
 				, video_root as videoRoot
 				, like_count as likeCount
 				, comment_count as commentCount
+				, golf_club as golfClub
 				, CONVERT(CHAR(10), upload_date, 23) as uploadDate
 				, post_thumbnail as postThumbnail
 				, locations,u.user_id as userId
 				, u.user_name as userName
 				, u.user_icon as userIcon
 				, u.user_nickname as userNickname
+				, u.handicap
+				, u.user_grade as userGrade
+				, u.role_model as roleModel
 			from 
 				tok_users u with(nolock)
 				inner join
@@ -79,8 +85,32 @@
 		) as A
 		order by newid()
 	</select>
+	
+	<!-- postId로 post 가져오기 -->
+	<select id="getPostByPostId" parameterType="int" resultType="HashMap">
+		select
+			post_id as postId
+			, post_content as postContent
+			, video_root as videoRoot
+			, like_count as likeCount
+			, comment_count as commentCount
+			, golf_club as golfClub
+			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
+			, post_thumbnail as postThumbnail
+			, locations,u.user_id as userId
+			, u.user_name as userName
+			, u.user_icon as userIcon
+			, u.user_nickname as userNickname
+			, u.user_grade as userGrade
+			, u.handicap
+		from
+			tok_users u with(nolock)
+			inner join
+			tok_posts p with(nolock) on u.[user_id]=p.[user_id]
+		where
+			post_id=#{postId}
+	</select>
 
-	 
 	<!-- 내 나스모 영상 보기 -->
 	<select id="getNasmo" parameterType="int" resultType="HashMap">
 		select 
@@ -99,7 +129,7 @@
 			select MAX(post_id)+1 from tok_posts
 		</selectKey>
 		insert into tok_posts values
-		(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations},#{postThumbnail})
+			(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations},#{postThumbnail},#{golf_club})
 	</insert>
 	
 	<!-- 이 전 게시물 id 받아오기 -->
@@ -142,6 +172,7 @@
 			, video_root as videoRoot
 			, like_count as likeCount
 			, comment_count as commentCount
+			, golf_club as golfClub
 			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
 			, post_thumbnail as postThumbnail
 			, locations
@@ -149,6 +180,9 @@
 			, u.user_name as userName
 			, u.user_icon as userIcon
 			, u.user_nickname as userNickname
+			, u.handicap
+			, u.role_model as roleModel
+			, u.user_grade as userGrade
 			<if test="prevPostId!=null">,#{prevPostId} as previousPostId</if>
 			<if test="prevPostId==null">,#{postId} as previousPostId</if>
 			<if test="nextPostId!=null">,#{nextPostId} as nextPostId</if>
@@ -170,6 +204,7 @@
 			, video_root=#{videoRoot}
 			, locations=#{locations}
 			, post_thumbnail=#{postThumbnail}
+			, golf_club=#{golfClub}
 		where 
 			post_id=#{postId}
 	</update>
@@ -226,11 +261,26 @@
 	</select>
 	
 	<!-- 해시태그(#)로 게시물 검색 -->
-	<select id="searchPosts" parameterType="String" resultMap="postsResult">
+	<select id="searchPosts" parameterType="String" resultType="HashMap">
 		select 
-			*
+			post_id as postId
+			, post_content as postContent
+			, video_root as videoRoot
+			, like_count as likeCount
+			, comment_count as commentCount
+			, golf_club as golfClub
+			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
+			, post_thumbnail as postThumbnail
+			, locations,u.user_id as userId
+			, u.user_name as userName
+			, u.user_icon as userIcon
+			, u.user_nickname as userNickname
+			, u.handicap
+			, u.user_grade as userGrade
 		from 
-			tok_posts
+			tok_users u with(nolock)
+			inner join
+			tok_posts p with(nolock) on u.[user_id]=p.[user_id]
 		where 
 			post_id in (
 				select 

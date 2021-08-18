@@ -20,7 +20,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-//import org.codehaus.jettison.json.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +39,6 @@ import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
-import ch.qos.logback.core.joran.spi.Interpreter;
-
 @RestController
 @RequestMapping("post")
 public class PostController {
@@ -56,8 +53,7 @@ public class PostController {
 	public HashMap<String, Object> getPostList(Principal principal,
 			@RequestParam(value = "currentPageNo") int currentPageNo, Criteria criteria)
 			throws InterruptedException, IOException, ParseException, JSONException {
-		
-		List<HashMap<String, Object>> allPostList = null;
+
 		// paging 설정
 		criteria.setRecordsPerPage(15);
 		criteria.setCurrentPageNo(currentPageNo);
@@ -65,85 +61,46 @@ public class PostController {
 		criteria.setStartIndex((currentPageNo - 1) * 5);
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		/*
-		allPostList = postService.getAllPosts(criteria);
-		map.put("allPostList", allPostList);
-		 */	
+
+		//allPostList = postService.getAllPosts(criteria);
+		//map.put("allPostList", allPostList);
+
 		
-		  // 로그인 되지 않았을 때 랜덤 게시물 
-		
-		if(principal==null) { 
-			allPostList = postService.getAllPosts(criteria); 
+		// 로그인 되지 않았을 때 랜덤 게시물
+		if (principal == null) {
+			List<HashMap<String, Object>> allPostList = postService.getAllPosts(criteria);
 			map.put("allPostList", allPostList);
-		  
-		  }else { // 로그인 됐을 시, 사용자 기반 추천 
-			  //System.setProperty("python.impoty.skip","true"); 
-			  //PythonInterpreter interpreter = new PythonInterpreter();
-			  
-			  //StringWriter out = new StringWriter(); 
-			  //interpreter.setOut(out);
-			  
-			  //interpreter.exec("import pandas as pd");
-			  
-			  //interpreter.execfile("C://Users//owner//PycharmProjects//golftok//content_test.py");
-			  //interpreter.exec("recommend(10)");
-			  
+		} else { // 로그인 됐을 시, 사용자 기반 추천
+			String userName = principal.getName();
+			int userId = userService.getUserIdByUserName(userName);
 			
-				// ProcessBuilder 사용 => 추천 알고리즘 실행
-			  // 실행은 되나.. sysout으로만 출력 됨
-			  // python에서 결과 json 파일로 저장 후, 그 json 파일을 java에서 보면 변경되어 있지 X (계속 같은 결과값 반환)
-				ProcessBuilder pb = new ProcessBuilder("python", "-u",
-						"C://Users//owner//PycharmProjects//golftok//content_test.py");
+			ProcessBuilder pb = new ProcessBuilder("python", "-u",
+					"C://Users//owner//PycharmProjects//golftok//content_test.py");
+			Process p = pb.start();
 
-				System.out.println("pb:" + pb);
+			BufferedReader inFile = new BufferedReader(new InputStreamReader(p.getInputStream(), "euc-kr"));
+			String sLine = null;
+			ArrayList<Integer> postIdList = new ArrayList<Integer>();
 
-				Process p = pb.start();
-				
-				BufferedReader inFile = new BufferedReader(new InputStreamReader(p.getInputStream())); 
-				String sLine = null; 
-				JSONParser parser = new JSONParser();
-				
-				while( (sLine = inFile.readLine()) != null ) {
-					System.out.println(sLine);
-					String[] sList = sLine.split("\t");
-					System.out.println("len:"+sList.length);
-					for (String s : sList) { System.out.println("s:"+s);}
-					System.out.println("=============");
+			while ((sLine = inFile.readLine()) != null) {
+				String[] sList = sLine.split(" ");
+				int sListSize = sList.length - 1;
+
+				if (sList[sListSize].matches("[+-]?\\d*(\\.\\d+)?")) {
+					postIdList.add(Integer.parseInt(sList[sListSize]));
 				}
+			}
 
-				//int exitCode = p.waitFor();
-				//System.out.println("Process exit value:" + exitCode);
-				
-				inFile.close();
+			List<HashMap<String, Object>> allPostList = new ArrayList<HashMap<String, Object>>();
+			for (int postId : postIdList) {
+				HashMap<String, Object> postMap = postService.getPostByPostId(postId);
+				allPostList.add(postMap);
+			}
 
-				/*
-				Reader reader = new FileReader("C://Users//owner//PycharmProjects//golftok//post_predictions.json");
-				JSONObject jsonObject = (JSONObject) parser.parse(reader); 
-				JSONArray recommendedList = (JSONArray) jsonObject.get("data");
-				  
-				for (Object s : recommendedList) { System.out.println("***"+s); }
-				*/
-				  
-				// JSON 파일 읽기 
-				/*
-				Reader reader = new FileReader("C://Users//owner//PycharmProjects//golftok//post_predictions.json");
-				  JSONObject jsonObject = (JSONObject) parser.parse(reader); 
-				  JSONArray recommendedList = (JSONArray) jsonObject.get("data");
-				  
-				  for (Object s : recommendedList) { System.out.println(s); }
-				  
-				  //Reader reader = new InputStreamReader(proc.getInputStream(),"euc-kr");
-				  BufferedReader bf = new BufferedReader(reader); 
-				  String s; 
-				  while ((s=bf.readLine()) != null) { System.out.println(s); }
-				  
-				  map.put("allPostList", recommendedList);
-				 */
-				
-			  //interpreter.close(); 
-			  }
-		
-		 
+			map.put("allPostList", allPostList);
+			inFile.close();
+		}
+
 		return map;
 	}
 
@@ -163,7 +120,7 @@ public class PostController {
 	// 동영상 게시물 업로드
 	@PostMapping("insert")
 	@ResponseStatus(HttpStatus.CREATED)
-	public HashMap<String, Object> insertPost(@RequestBody HashMap<String, Object> map, Principal principal,
+	public void insertPost(@RequestBody HashMap<String, Object> map, Principal principal,
 			HttpServletResponse response) throws IOException {
 		String postContent = (String) map.get("postContent");
 		String userName = principal.getName();
@@ -183,8 +140,6 @@ public class PostController {
 
 			postService.insertHashTag(postMap);
 		}
-
-		return map;
 	}
 
 	// 게시물 (동영상) 상세보기
