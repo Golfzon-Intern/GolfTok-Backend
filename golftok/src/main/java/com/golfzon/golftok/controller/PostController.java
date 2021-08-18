@@ -84,7 +84,7 @@ public class PostController {
 
 			while ((sLine = inFile.readLine()) != null) {
 				String[] sList = sLine.split(" ");
-				int sListSize = sList.length - 1; 
+				int sListSize = sList.length - 1;
 
 				if (sList[sListSize].matches("[+-]?\\d*(\\.\\d+)?")) {
 					postIdList.add(Integer.parseInt(sList[sListSize]));
