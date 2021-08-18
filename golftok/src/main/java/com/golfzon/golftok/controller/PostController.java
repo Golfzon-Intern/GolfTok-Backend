@@ -42,7 +42,7 @@ import com.golfzon.golftok.service.UsersService;
 @RestController
 @RequestMapping("post")
 public class PostController {
-	@Autowired 
+	@Autowired
 	private PostService postService;
 
 	@Autowired
