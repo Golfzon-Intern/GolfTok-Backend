@@ -175,12 +175,15 @@ public class UserController {
 
 		if (principal != null) {
 			String userName = principal.getName();
-			TokUsers user = userService.getUserByUserName(userName);
+			int userId = userService.getUserIdByUserName(userName);
+			
+			HashMap<String, Object> user = userService.getUserByUserId(userId);
+			System.out.println(user.toString());
 			HashMap<String, Object> recommendMap = new HashMap<String, Object>();
 			
-			recommendMap.put("userId", user.getUserId());
-			recommendMap.put("userGrade", user.getUserGrade());
-			recommendMap.put("handicap", user.getHandicap());
+			recommendMap.put("userId", user.get("userId"));
+			recommendMap.put("userGrade", user.get("userGrade"));
+			recommendMap.put("handicap", user.get("handicap"));
 			recommendList = userService.getRecommendedFriedns5ByOrders(recommendMap);
 		} else { // 로그인 안됐을 때
 			recommendList = userService.getRecommendedFriedns5ByLikeCount();

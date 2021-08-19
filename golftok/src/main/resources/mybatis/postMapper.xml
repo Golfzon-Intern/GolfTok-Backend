@@ -97,7 +97,8 @@
 			, golf_club as golfClub
 			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
 			, post_thumbnail as postThumbnail
-			, locations,u.user_id as userId
+			, locations
+			, u.user_id as userId
 			, u.user_name as userName
 			, u.user_icon as userIcon
 			, u.user_nickname as userNickname
@@ -264,23 +265,11 @@
 	<select id="searchPosts" parameterType="String" resultType="HashMap">
 		select 
 			post_id as postId
-			, post_content as postContent
-			, video_root as videoRoot
 			, like_count as likeCount
 			, comment_count as commentCount
-			, golf_club as golfClub
-			, CONVERT(CHAR(10), upload_date, 23) as uploadDate
 			, post_thumbnail as postThumbnail
-			, locations,u.user_id as userId
-			, u.user_name as userName
-			, u.user_icon as userIcon
-			, u.user_nickname as userNickname
-			, u.handicap
-			, u.user_grade as userGrade
 		from 
-			tok_users u with(nolock)
-			inner join
-			tok_posts p with(nolock) on u.[user_id]=p.[user_id]
+			tok_posts with(nolock)
 		where 
 			post_id in (
 				select 

@@ -48,7 +48,6 @@
 			, u.user_nickname as userNickname
 			, u.user_icon as userIcon 
 			, u.user_grade as userGrade
-			, u.handicap
 		from 
 			follow as f with(nolock)
 			inner join 
@@ -75,20 +74,38 @@
 	
 	
 	<!-- 로그인 했을 경우-추천 계정 5개 보기 : 자신과 골프 등급과 같거나 핸디가 비슷한 계정 추천 -->
-	<select id="getRecommendedFriedns5ByOrders" parameterType="int" resultType="HashMap">
-		select 
-			TOP 5 
-			user_id as userId
-			, user_name as userName
-			, user_nickname as userNickname
-			, user_icon as userIcon
-			, user_grade as userGrade
-			, handicap
-		from 
-			tok_users
-		where 
-			user_grade=#{userGrade} or
-			handicap BETWEEN #{handicap}-5 AND #{handicap}+5
+	<select id="getRecommendedFriedns5ByOrders" parameterType="HashMap" resultType="HashMap">
+		select
+			TOP 5
+			*
+		from (
+			select 
+				user_id as userId
+				, user_name as userName
+				, user_nickname as userNickname
+				, user_icon as userIcon
+				, user_grade as userGrade
+			from 
+				tok_users
+			where 
+				user_grade=#{userGrade} or
+				handicap BETWEEN #{handicap}-5 AND #{handicap}+5
+		
+			EXCEPT
+		
+			select 
+					u.user_id as userId
+					, u.user_name as userName
+					, u.user_nickname as userNickname
+					, u.user_icon as userIcon 
+					, u.user_grade as userGrade
+				from 
+					follow as f with(nolock)
+					inner join 
+					tok_users as u with(nolock) on f.[friend_id]=u.[user_id]
+				where 
+					f.user_id=#{userId}
+			)as A
 	</select>
 
 	<!-- 로그인 안했을 경우-추천 계정 5개 보기 : 일주일 간 누적 좋아요를 많이 받은 계정 추천 -->
@@ -101,7 +118,6 @@
 			, user_icon as userIcon
 			, sum(like_count) as allLikeCount
 			, user_grade as userGrade
-			, handicap
 		from 
 			tok_users u with(nolock)
 			inner join
@@ -145,7 +161,6 @@
 	<!-- userName으로 user 객체 가져오기 -->
 	<select id="getUserByUserNameExceptPwd" parameterType="String" resultType="HashMap">
 		select 
-			select 
 			user_id as userId
 			, user_name as userName
 			, user_nickname as userNickname
@@ -240,6 +255,7 @@
 			, u.user_nickname as userNickname
 			, u.handicap
 			, u.user_grade as userGrade
+			, u.role_model as roleModel
 		from 
 			tok_users u with(nolock)
 			inner join
