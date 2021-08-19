@@ -58,7 +58,7 @@ public class PostController {
 		criteria.setRecordsPerPage(15);
 		criteria.setCurrentPageNo(currentPageNo);
 		// 해당페이지 시작 인덱스 설정
-		criteria.setStartIndex((currentPageNo - 1) * 5);
+		criteria.setStartIndex((currentPageNo - 1) * 15);
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -92,9 +92,13 @@ public class PostController {
 			}
 
 			List<HashMap<String, Object>> allPostList = new ArrayList<HashMap<String, Object>>();
-			for (int postId : postIdList) {
-				HashMap<String, Object> postMap = postService.getPostByPostId(postId);
-				allPostList.add(postMap);
+			int startIdx = (currentPageNo - 1) * 15;
+			
+			for (int i=startIdx; i<=startIdx+14; i++) {
+				if(i<postIdList.size()) {
+					HashMap<String, Object> postMap = postService.getPostByPostId(postIdList.get(i));
+					allPostList.add(postMap);
+				}else break;
 			}
 
 			map.put("allPostList", allPostList);
