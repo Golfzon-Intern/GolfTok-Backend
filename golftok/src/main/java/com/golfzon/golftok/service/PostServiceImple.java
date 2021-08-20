@@ -11,6 +11,8 @@ import com.golfzon.golftok.mapper.PostMapper;
 import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.TokPosts;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 @Service
 @Transactional
 public class PostServiceImple implements PostService {
@@ -61,21 +63,15 @@ public class PostServiceImple implements PostService {
 	@Override
 	public void insertHashTag(HashMap<String, Object> postMap) {
 		String postContent = (String) postMap.get("postContent");
+		String golfClub = (String) postMap.get("golfClub");
 		int postId = (int) postMap.get("postId");
-		
+		System.out.println("postId22:"+postId);
+
 		String[] contentList = postContent.split(" ");
-		HashMap<String, Object> map = new HashMap<String, Object>();
-
-		for (String content : contentList) {
-			if (content.startsWith("#")) {
-				String hashtagContent = content.substring(1);
-
-				map.put("postId", postId);
-				map.put("hashtagContent", hashtagContent);
-				
-				postMapper.insertHashtag(map);
-			}
-		}
+		String[] clubList = golfClub.split(" ");
+		
+		splitAndInsertTag(contentList,0,postId);
+		splitAndInsertTag(clubList,1,postId);
 	}
 
 	@Override
@@ -116,6 +112,28 @@ public class PostServiceImple implements PostService {
 	@Override
 	public HashMap<String, Object> getPostByPostId(int postId) {
 		return postMapper.getPostByPostId(postId);
+	}
+	
+	// 문자열 분리 후, 해시태그에 삽입
+	public void splitAndInsertTag(String[] list,int flag,int postId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
+		for (String str : list) {
+			if (str.startsWith("#")) {
+				String s = str.substring(1);
+				System.out.println("content:"+s);
+
+				map.put("postId", postId);
+				if(flag==0) {
+					map.put("hashtagContent", s);
+					postMapper.insertContentHashTag(map);
+				}
+				if(flag==1) {
+					map.put("golfClubHashtag", s);
+					postMapper.insertGolfClubHashTag(map);
+				}
+			}
+		}
 	}
 
 }

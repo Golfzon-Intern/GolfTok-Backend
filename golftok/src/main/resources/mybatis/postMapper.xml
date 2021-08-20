@@ -127,10 +127,15 @@
 	<!-- 동영상(게시물) 올리기 -->
 	<insert id="insertPost" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="postId" order="BEFORE">
-			select MAX(post_id)+1 from tok_posts
+			select 
+				MAX(post_id)+1 
+			from 
+				tok_posts
 		</selectKey>
-		insert into tok_posts values
-			(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations},#{postThumbnail},#{golf_club})
+		insert into 
+			tok_posts 
+		values
+			(#{postId},#{userId},#{postContent},#{videoRoot},getdate(),0,0,#{locations},#{postThumbnail},#{golfClub})
 	</insert>
 	
 	<!-- 이 전 게시물 id 받아오기 -->
@@ -241,13 +246,32 @@
 			post_id=#{postId}
 	</select>
 	
-	<!-- hashtag 삽입 -->
-	<insert id="insertHashtag" parameterType="HashMap">
+	<!-- Content hashtag 삽입 -->
+	<insert id="insertContentHashTag" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="hashtagId" order="BEFORE">
-			select MAX(hashtag_id)+1 from hashtag
+			select 
+				MAX(hashtag_id)+1 
+			from 
+				hashtag
 		</selectKey>
-		insert into hashtag values
-		(#{hashtagId},#{postId},#{hashtagContent})
+		insert into 
+			hashtag 
+		values
+			(#{hashtagId},#{postId},#{hashtagContent})
+	</insert>
+	
+	<!-- golfClub 해시태그 삽입 -->
+	<insert id="insertGolfClubHashTag" parameterType="HashMap">
+		<selectKey resultType="integer" keyProperty="hashtagId" order="BEFORE">
+			select 
+				MAX(hashtag_id)+1 
+			from 
+				hashtag
+		</selectKey>
+		insert into 
+			hashtag 
+		values
+			(#{hashtagId},#{postId},#{golfClubHashtag})
 	</insert>
 	
 	<!-- userId,postContent로 postId 가져오기 -->

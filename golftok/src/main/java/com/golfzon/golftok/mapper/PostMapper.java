@@ -31,7 +31,7 @@ public interface PostMapper {
 
 	public List<HashMap<String, Object>> getAllUserPosts(int userId);
 
-	public void insertHashtag(HashMap<String, Object> map);
+	public void insertContentHashTag(HashMap<String, Object> map);
 
 	public int getPostIdByContentAndId(HashMap<String, Object> postMap);
 
@@ -50,4 +50,6 @@ public interface PostMapper {
 	public Integer getNextPostId(HashMap<String, Object> detailMap);
 
 	public HashMap<String, Object> getPostByPostId(int postId);
+
+	public void insertGolfClubHashTag(HashMap<String, Object> map);
 }

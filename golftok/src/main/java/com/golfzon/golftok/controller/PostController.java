@@ -127,6 +127,7 @@ public class PostController {
 	public void insertPost(@RequestBody HashMap<String, Object> map, Principal principal,
 			HttpServletResponse response) throws IOException {
 		String postContent = (String) map.get("postContent");
+		String golfClub = (String)map.get("golfClub");
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
 
@@ -137,10 +138,12 @@ public class PostController {
 		} else {
 			HashMap<String, Object> postMap = new HashMap<String, Object>();
 			postMap.put("postContent", postContent);
+			postMap.put("golfClub",golfClub);
 			postMap.put("userId", userId);
 
 			int postId = postService.getPostIdByContentAndId(postMap);
 			postMap.put("postId", postId);
+			System.out.println("postId11:"+postId);
 
 			postService.insertHashTag(postMap);
 		}
