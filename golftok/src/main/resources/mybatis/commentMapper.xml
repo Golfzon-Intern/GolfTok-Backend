@@ -107,10 +107,12 @@
 	<!-- 댓글 작성 -->
 	<insert id="inputComment" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="commentId" order="BEFORE">
-			select MAX(comment_id)+1 from comments
+			select 
+				MAX(comment_id)+1 
+			from 
+				comments
 		</selectKey>
-		insert 
-			into comments values
+		insert into comments values
 			(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,
 			<if test="commentGroup==0">#{commentId}</if>
 			<if test="commentGroup!=0">#{commentGroup}</if>,
@@ -122,7 +124,7 @@
 		select 
 			count(*) 
 		from 
-			comments
+			comments with(nolock)
 		where 
 			comment_group=#{commentGroup}
 	</select>
@@ -153,7 +155,7 @@
 		select 
 			post_id 
 		from 
-			comments
+			comments with(nolock)
 		where 
 			comment_id=#{commentId}
 	</select>
@@ -163,7 +165,7 @@
 		select 
 			group_layer 
 		from 
-			comments
+			comments with(nolock)
 		where 
 			comment_id=#{commentId}
 	</select>
@@ -173,7 +175,7 @@
 		select 
 			group_order 
 		from 
-			comments
+			comments with(nolock)
 		where 
 			comment_id=#{commentId}
 	</select>
@@ -183,7 +185,7 @@
 		select 
 			comment_group 
 		from 
-			comments
+			comments with(nolock)
 		where 
 			comment_id=#{commentId}
 	</select>
@@ -195,7 +197,7 @@
 		from 
 			comments
 		where 
-		comment_group=#{commentGroup}
+			comment_group=#{commentGroup}
 	</delete>
 	
 	<!-- 대댓글 삭제 1 : 대댓글 삭제 -->
@@ -247,7 +249,7 @@
 		select 
 			like_count
 		from 
-			comments
+			comments with(nolock)
 		where 
 			comment_id=#{commentId}
 	</select>
@@ -257,8 +259,8 @@
 		select
 			top 1
 			comment_id
-		from 
-			comments
+		from  
+			comments with(nolock)
 		order by
 			comment_id DESC
 	</select>
@@ -289,7 +291,7 @@
 		select
 			count(*)
 		from 
-			comments
+			comments with(nolock)
 		where
 			post_id=#{postId}
 	</select>

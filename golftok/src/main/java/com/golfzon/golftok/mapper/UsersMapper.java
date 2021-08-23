@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.golfzon.golftok.model.Criteria;
-import com.golfzon.golftok.model.Follow;
 import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
 
@@ -39,5 +37,8 @@ public interface UsersMapper {
 	List<HashMap<String, Object>> getAllMyFollowing(int userId);
 	List<TokPosts> getFollowingPost(HashMap<String, Object> map);
 	int getFollowing(HashMap<String, Object> map);
+	int unfollowing(HashMap<String, Object> map);
+	int decreaseFollower(int friendId);
+	int decreaseFollowing(int userId);
 
 }

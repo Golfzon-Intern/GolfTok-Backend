@@ -1,27 +1,17 @@
 package com.golfzon.golftok.controller;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jettison.json.JSONException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,10 +52,6 @@ public class PostController {
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
-		//allPostList = postService.getAllPosts(criteria);
-		//map.put("allPostList", allPostList);
-
-		
 		// 로그인 되지 않았을 때 랜덤 게시물
 		if (principal == null) {
 			List<HashMap<String, Object>> allPostList = postService.getAllPosts(criteria);
@@ -143,7 +129,7 @@ public class PostController {
 
 			int postId = postService.getPostIdByContentAndId(postMap);
 			postMap.put("postId", postId);
-			System.out.println("postId11:"+postId);
+			
 
 			postService.insertHashTag(postMap);
 		}
@@ -204,8 +190,6 @@ public class PostController {
 			throws IOException {
 		if (postService.deletePost(postId) == 0) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN); // 403 에러
-		} else {
-			System.out.println("Success!!!");
 		}
 	}
 

@@ -1,17 +1,13 @@
 package com.golfzon.golftok.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.golfzon.golftok.mapper.CommentMapper;
-import com.golfzon.golftok.model.Comments;
 
 @Service
 @Transactional
@@ -35,13 +31,12 @@ public class CommentServiceImple implements CommentService{
 		}else { // 대댓글 입력
 
 			String commentGroup = (String) map.get("commentGroup");
-			//System.out.println("commentGroup:"+commentGroup);
+			
 			// id값을 설정하기 위해 groupOrder값을 임시로 넣는다
 			map.put("groupOrder","-1");
 			commentMapper.inputComment(map);
 			
 			String commentCount = Integer.toString(commentMapper.getCommentCount(commentGroup)-1);
-			//System.out.println("commentCount:"+commentCount);
 			
 			// 임시 저장되어있던 -1을 알맞은 값으로 변경
 			map.put("groupOrder",commentCount);
@@ -76,11 +71,7 @@ public class CommentServiceImple implements CommentService{
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("groupOrder",commentMapper.getGroupOrderByCommentId(commentId));
 			map.put("commentGroup", commentGroup);
-			
-			// 현재 댓글 + 상위 대댓글의 개수 구하기
-			//int deleteCommentCount = commentMapper.countUpperChildrenComment(map);
-			//System.out.println("deleteCommentCount:"+deleteCommentCount);
-			
+
 			// 대댓글 삭제
 			commentMapper.deleteChildrenComment(map);
 			// 대댓글 정렬
@@ -134,28 +125,4 @@ public class CommentServiceImple implements CommentService{
 	public int getCommentCountByPostId(int postId) {
 		return commentMapper.getCommentCountByPostId(postId);
 	}
-	
-
-	
-	/*
-	 * @Override public List<HashMap<String, Object>> getParentComments(int postId)
-	 * { List<HashMap<String, Object>> allCommentList =
-	 * commentMapper.getParentComments(postId); List<HashMap<String, Object>>
-	 * parentCommentList = new ArrayList<HashMap<String,Object>>();
-	 * List<HashMap<String, Object>> chilrenCommentList = new
-	 * ArrayList<HashMap<String,Object>>(); List<HashMap<String, Object>>
-	 * newCommentList =new ArrayList<HashMap<String,Object>>();
-	 * 
-	 * for(HashMap<String, Object> comment : allCommentList) { // 부모, 자식 분리 (부모:0,
-	 * 자식:1) if((int)comment.get("groupLayer")==0) { parentCommentList.add(comment);
-	 * }else { chilrenCommentList.add(comment); } }
-	 * 
-	 * // 부모 먼저 넣기 for(HashMap<String, Object> pComment: parentCommentList) {
-	 * newCommentList.add(pComment); // 해당 부모의 자식 넣기 for(HashMap<String, Object>
-	 * cComment:chilrenCommentList) {
-	 * if(pComment.get("commentGroup").equals(cComment.get("commentGroup"))) {
-	 * newCommentList.add(cComment); } } }
-	 * 
-	 * return newCommentList; }
-	 */
 }

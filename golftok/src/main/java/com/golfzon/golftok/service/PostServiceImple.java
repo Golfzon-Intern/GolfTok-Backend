@@ -65,7 +65,6 @@ public class PostServiceImple implements PostService {
 		String postContent = (String) postMap.get("postContent");
 		String golfClub = (String) postMap.get("golfClub");
 		int postId = (int) postMap.get("postId");
-		System.out.println("postId22:"+postId);
 
 		String[] contentList = postContent.split(" ");
 		String[] clubList = golfClub.split(" ");

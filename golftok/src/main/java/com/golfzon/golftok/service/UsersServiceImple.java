@@ -3,6 +3,7 @@ package com.golfzon.golftok.service;
 import java.util.HashMap;
 import java.util.List;
 
+import org.python.antlr.PythonParser.return_stmt_return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.golfzon.golftok.mapper.UsersMapper;
 import com.golfzon.golftok.model.Criteria;
-import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
 
 @Service
@@ -150,5 +150,23 @@ public class UsersServiceImple implements UsersService{
 	@Override
 	public int getFollowing(HashMap<String, Object> map) {
 		return userMapper.getFollowing(map);
+	}
+
+
+	@Override
+	public int unfollowing(HashMap<String, Object> map) {
+		return userMapper.unfollowing(map);
+	}
+
+
+	@Override
+	public int decreaseFollower(int friendId) {
+		return userMapper.decreaseFollower(friendId);
+	}
+
+
+	@Override
+	public int decreaseFollowing(int userId) {
+		return userMapper.decreaseFollowing(userId);
 	}
 }

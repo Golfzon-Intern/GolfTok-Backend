@@ -71,10 +71,13 @@
 	<!-- 게시물 좋아요 테이블에 삽입 -->
 	<insert id="insertPostLike" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="postLikeId" order="BEFORE">
-			select MAX(post_like_id)+1 from post_like
+			select 
+				MAX(post_like_id)+1 
+			from 
+				post_like
 		</selectKey>
 		insert into post_like values
-		(#{postLikeId},#{postId},#{userId})
+			(#{postLikeId},#{postId},#{userId})
 	</insert>
 	
 	<!-- 게시물 좋아요 취소 -->
@@ -113,7 +116,7 @@
 		select 
 			ISNULL(MAX(comment_like_id),0) as flag
 		from 
-			comment_like
+			comment_like with(nolock)
 		where 
 			user_id=#{userId} and
 			comment_id=#{commentId}
@@ -122,10 +125,13 @@
 	<!-- 댓글 좋아요 테이블에 추가 -->
 	<insert id="insertCommentLike" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="commentLikeId" order="BEFORE">
-			select MAX(comment_like_id)+1 from comment_like
+			select 
+				MAX(comment_like_id)+1 
+			from 
+				comment_like
 		</selectKey>
 		insert into comment_like values
-		(#{commentLikeId},#{commentId},#{userId})
+			(#{commentLikeId},#{commentId},#{userId})
 	</insert>
 	
 	<!-- 댓글 좋아요 수+1 -->

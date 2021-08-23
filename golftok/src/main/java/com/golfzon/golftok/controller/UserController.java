@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.golfzon.golftok.model.Criteria;
-import com.golfzon.golftok.model.TokPosts;
-import com.golfzon.golftok.model.TokUsers;
 import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
@@ -86,6 +85,7 @@ public class UserController {
 		followingMap.put("friendId", friendId);
 		
 		int following = userService.getFollowing(followingMap);
+		System.out.println("following:"+following);
 		map.put("following", following);
 		
 		return map;
@@ -105,6 +105,23 @@ public class UserController {
 
 		userService.increaseFollower(friendId);
 		userService.increaseFollowing(userId);
+	}
+
+	// 팔로잉 취소하기
+	@DeleteMapping("following")
+	@ResponseStatus(code = HttpStatus.OK)
+	public void unfollowing(@RequestParam(value = "friendId") int friendId, Principal principal) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		String userName = principal.getName();
+		int userId = userService.getUserIdByUserName(userName);
+	
+		map.put("userId", userId);
+		map.put("friendId", friendId);
+
+		userService.unfollowing(map);
+
+		userService.decreaseFollower(friendId);
+		userService.decreaseFollowing(userId);
 	}
 
 	// 내가 팔로잉 중인 계정 5개 보기 (사이드 메뉴)
@@ -178,7 +195,6 @@ public class UserController {
 			int userId = userService.getUserIdByUserName(userName);
 			
 			HashMap<String, Object> user = userService.getUserByUserId(userId);
-			System.out.println(user.toString());
 			HashMap<String, Object> recommendMap = new HashMap<String, Object>();
 			
 			recommendMap.put("userId", user.get("userId"));

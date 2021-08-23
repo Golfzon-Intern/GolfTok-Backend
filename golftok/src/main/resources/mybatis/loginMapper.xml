@@ -22,7 +22,10 @@
 	<!-- 회원가입 -->
 	<insert id="registerUser" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="userId" order="BEFORE">
-			select MAX(user_id)+1 from tok_users
+			select 
+				MAX(user_id)+1 
+			from 
+				tok_users
 		</selectKey>
 		insert into tok_users values
 			(#{userId},#{userName},#{userPassword},#{userNickname},#{userIcon},

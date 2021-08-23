@@ -3,11 +3,7 @@ package com.golfzon.golftok.service;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.golfzon.golftok.model.Criteria;
-import com.golfzon.golftok.model.Follow;
-import com.golfzon.golftok.model.TokPosts;
 import com.golfzon.golftok.model.TokUsers;
 
 public interface UsersService {
@@ -51,4 +47,10 @@ public interface UsersService {
 	List<HashMap<String, Object>> getAllMyFollowing(int userId);
 	
 	int getFollowing(HashMap<String, Object> followingMap);
+
+	int unfollowing(HashMap<String, Object> map);
+
+	int decreaseFollower(int friendId);
+
+	int decreaseFollowing(int userId);
 }

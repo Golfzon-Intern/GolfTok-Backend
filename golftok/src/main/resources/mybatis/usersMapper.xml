@@ -133,7 +133,7 @@
 		select 
 			* 
 		from 
-			tok_users
+			tok_users with(nolock)
 		where 
 			user_name=#{userName}
 	</select>
@@ -153,7 +153,7 @@
 			, handicap
 			, role_model as roleModel
 		from 
-			tok_users
+			tok_users with(nolock)
 		where 
 			user_id=#{userId}
 	</select>
@@ -172,7 +172,7 @@
 			, user_grade as userGrade
 			, handicap
 		from 
-			tok_users
+			tok_users with(nolock)
 		where 
 			user_name=#{userName}
 	</select>
@@ -182,7 +182,7 @@
 		select 
 			user_id 
 		from 
-			tok_users
+			tok_users with(nolock)
 		where 
 			user_name=#{userName}
 	</select>
@@ -192,7 +192,7 @@
 		select 
 			count(*) as flag
 		from 
-			follow
+			follow with(nolock)
 		where
 			user_id=#{userId} and
 			friend_id=#{friendId}
@@ -201,10 +201,23 @@
 	<!-- 팔로우 하기 -->
 	<insert id="following" parameterType="HashMap">
 		<selectKey resultType="integer" keyProperty="followId" order="BEFORE">
-			select MAX(follow_id)+1 from follow
+			select 
+				MAX(follow_id)+1 
+			from 
+				follow
 		</selectKey>
 		insert into follow values
-		(#{followId},#{userId},#{friendId})
+			(#{followId},#{userId},#{friendId})
+	</insert>
+	
+	<!-- 팔로우 취소 -->
+	<insert id="unfollowing" parameterType="HashMap">
+		delete
+		from
+			follow
+		where
+			user_id=#{userId} and
+			friend_id=#{friendId}
 	</insert>
 	
 	
@@ -214,6 +227,16 @@
 			tok_users
 		set 
 			follower_count+=1
+		where 
+			user_id=#{friendId}
+	</update>
+	
+	<!-- 팔로워 수 -1 -->
+	<update id="decreaseFollower" parameterType="int">
+		update 
+			tok_users
+		set 
+			follower_count-=1
 		where 
 			user_id=#{friendId}
 	</update>
@@ -228,12 +251,22 @@
 			user_id=#{userId}
 	</update>
 	
+	<!-- 팔로잉 수 -1 -->
+	<update id="decreaseFollowing" parameterType="int">
+		update 
+			tok_users
+		set 
+			following_count-=1
+		where 
+			user_id=#{userId}
+	</update>
+	
 	<!-- id로 비밀번호 얻기 -->
 	<select id="getPasswordByUserName" parameterType="String" resultType="String">
 		select 
 			user_password 
 		from 
-			tok_users
+			tok_users with(nolock)
 		where 
 			user_name=#{userName}
 	</select>

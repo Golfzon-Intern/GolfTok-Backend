@@ -3,8 +3,6 @@ package com.golfzon.golftok.service;
 import java.util.HashMap;
 import java.util.List;
 
-import com.golfzon.golftok.model.Comments;
-
 public interface CommentService {
 	List<HashMap<String, Object>> getParentComments(int postId);
 	int inputComment(HashMap<String, Object> map);
