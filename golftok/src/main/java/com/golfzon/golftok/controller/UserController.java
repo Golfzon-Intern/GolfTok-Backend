@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.golfzon.golftok.model.Criteria;
+import com.golfzon.golftok.model.TokUsers;
 import com.golfzon.golftok.service.PostService;
 import com.golfzon.golftok.service.UsersService;
 
@@ -55,7 +56,7 @@ public class UserController {
 			Principal principal) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> postList = null;
-		
+
 		// 로그인 된 상태에서 자기 자신의 프로필 페이지 조회
 		if (userId == null) {
 			if (principal != null) {
@@ -78,15 +79,19 @@ public class UserController {
 		HashMap<String, Object> followingMap = new HashMap<String, Object>();
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
-		String userName = principal.getName();
-		int userId = userService.getUserIdByUserName(userName);
+		if(principal!=null) {
+			String userName = principal.getName();
+			int userId = userService.getUserIdByUserName(userName);
 
-		followingMap.put("userId", userId);
-		followingMap.put("friendId", friendId);
-		
-		int following = userService.getFollowing(followingMap);
-		System.out.println("following:"+following);
-		map.put("following", following);
+			followingMap.put("userId", userId);
+			followingMap.put("friendId", friendId);
+			
+			int following = userService.getFollowing(followingMap);
+
+			map.put("following", following);
+		}else {
+			map.put("following", null);
+		}
 		
 		return map;
 	}
@@ -99,6 +104,7 @@ public class UserController {
 		int userId = userService.getUserIdByUserName(userName);
 		int friendId = (int) map.get("friendId");
 
+		System.out.println("userId:"+userId);
 		map.put("userId", userId);
 		// follow 테이블에 insert
 		userService.following(map);
@@ -114,7 +120,7 @@ public class UserController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		String userName = principal.getName();
 		int userId = userService.getUserIdByUserName(userName);
-	
+
 		map.put("userId", userId);
 		map.put("friendId", friendId);
 

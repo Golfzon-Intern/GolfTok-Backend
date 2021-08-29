@@ -52,4 +52,6 @@ public interface PostMapper {
 	public HashMap<String, Object> getPostByPostId(int postId);
 
 	public void insertGolfClubHashTag(HashMap<String, Object> map);
+
+	public List<HashMap<String, Object>> getFiveRecommendedHashtag();
 }

@@ -89,7 +89,7 @@
 				tok_users
 			where 
 				user_grade=#{userGrade} or
-				handicap BETWEEN #{handicap}-5 AND #{handicap}+5
+				handicap BETWEEN #{handicap}-4 AND #{handicap}+4
 		
 			EXCEPT
 		

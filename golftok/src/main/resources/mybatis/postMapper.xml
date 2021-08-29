@@ -283,6 +283,7 @@
 			tok_posts with(nolock)
 		where 
 			post_content=#{postContent} and
+			golf_club=#{golfClub} and
 			user_id=#{userId}
 	</select>
 	
@@ -300,7 +301,7 @@
 				select 
 					post_id
 				from 
-					hashtag
+					hashtag with(nolock)
 				where 
 					hashtag_content=#{keyword}
 			)
@@ -325,6 +326,23 @@
 			tok_posts with(nolock)
 		where
 			user_id=#{userId}
+	</select>
+	
+	<!-- 인기 해시태그 5개 추천 -->
+	<select id="getFiveRecommendedHashtag" resultType="HashMap">
+		select
+			hashtagContent
+		from (
+			select
+				TOP 5
+				hashtag_content as hashtagContent,
+				count(hashtag_content) hashtagCount
+			from
+				hashtag
+			GROUP BY hashtag_content
+			HAVING COUNT(hashtag_content) > 1
+			order by hashtagCount DESC
+		) as A
 	</select>
 
 </mapper>

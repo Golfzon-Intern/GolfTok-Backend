@@ -61,9 +61,7 @@ public class CommentServiceImple implements CommentService{
 		// 대댓글 삭제 -> 삭제 한 대댓글보다 groupOrder 큰 대댓글의 groupOrder 다 1씩 -1 해야 함
 		int groupLayer = commentMapper.getGroupLayerByCommentId(commentId);
 		int commentGroup = commentMapper.getCommentGroupByCommentId(commentId);
-		System.out.println("groupLayer:"+groupLayer);
-		System.out.println("commentGroup:"+commentGroup);
-		
+
 		// 댓글 삭제
 		if(groupLayer==0) {
 			return commentMapper.deleteComment(commentGroup);

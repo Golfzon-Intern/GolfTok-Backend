@@ -11,8 +11,6 @@ import com.golfzon.golftok.mapper.PostMapper;
 import com.golfzon.golftok.model.Criteria;
 import com.golfzon.golftok.model.TokPosts;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-
 @Service
 @Transactional
 public class PostServiceImple implements PostService {
@@ -120,9 +118,8 @@ public class PostServiceImple implements PostService {
 		for (String str : list) {
 			if (str.startsWith("#")) {
 				String s = str.substring(1);
-				System.out.println("content:"+s);
-
 				map.put("postId", postId);
+				
 				if(flag==0) {
 					map.put("hashtagContent", s);
 					postMapper.insertContentHashTag(map);
@@ -133,6 +130,11 @@ public class PostServiceImple implements PostService {
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getFiveRecommendedHashtag() {
+		return postMapper.getFiveRecommendedHashtag();
 	}
 
 }

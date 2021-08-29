@@ -129,7 +129,6 @@ public class PostController {
 
 			int postId = postService.getPostIdByContentAndId(postMap);
 			postMap.put("postId", postId);
-			
 
 			postService.insertHashTag(postMap);
 		}
@@ -178,8 +177,6 @@ public class PostController {
 	public void updatePost(@RequestBody HashMap<String, Object> map, HttpServletResponse response) throws IOException {
 		if (postService.updatePost(map) == 0) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404
-		} else {
-			System.out.println("Success!!!");
 		}
 	}
 
@@ -201,6 +198,16 @@ public class PostController {
 
 		map.put("postList", postList);
 
+		return map;
+	}
+	
+	// 인기 해시태그 5개 추천
+	@GetMapping("hashtag")
+	public HashMap<String, Object> recommendHashtag() {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		List<HashMap<String, Object>> hashtagList = postService.getFiveRecommendedHashtag();
+		map.put("hashtagList", hashtagList);
+		
 		return map;
 	}
 }

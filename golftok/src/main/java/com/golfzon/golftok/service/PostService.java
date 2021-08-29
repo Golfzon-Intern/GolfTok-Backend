@@ -39,4 +39,6 @@ public interface PostService {
 
 	public HashMap<String, Object> getPostByPostId(int postId);
 
+	public List<HashMap<String, Object>> getFiveRecommendedHashtag();
+
 }

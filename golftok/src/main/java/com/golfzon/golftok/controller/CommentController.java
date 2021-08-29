@@ -36,6 +36,7 @@ public class CommentController {
 	public HashMap<String, Object> commentList(@RequestParam("postId") int postId){
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> commentList = commentService.getParentComments(postId);
+
 		map.put("parentList", commentList);
 		return map;
 	}
@@ -64,7 +65,7 @@ public class CommentController {
 		}
 		
 		int commentId = commentService.getLatestComment();
-		
+			
 		HashMap<String, Object> commentMap = new HashMap<String, Object>();
 		HashMap<String, Object> tempCommentMap = new HashMap<String, Object>();
 		tempCommentMap.put("commentId", commentId);
@@ -72,7 +73,7 @@ public class CommentController {
 		
 		HashMap<String, Object> comment = commentService.getCommentByCommentId(tempCommentMap);
 		commentMap.put("comment", comment);
-		
+
 		return commentMap;
 	}
 
@@ -104,6 +105,7 @@ public class CommentController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		int commentCount = commentService.getCommentCountByPostId(postId);
+
 		map.put("commentCount", commentCount);
 		
 		return map;
