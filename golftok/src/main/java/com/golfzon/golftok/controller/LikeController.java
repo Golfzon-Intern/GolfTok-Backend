@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.golfzon.golftok.model.Comments;
 import com.golfzon.golftok.service.CommentService;
 import com.golfzon.golftok.service.LikeService;
 import com.golfzon.golftok.service.PostService;

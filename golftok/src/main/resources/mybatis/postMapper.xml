@@ -328,7 +328,7 @@
 			user_id=#{userId}
 	</select>
 	
-	<!-- 인기 해시태그 5개 추천 -->
+	<!-- 일주일 간의 인기 해시태그 5개 추천 -->
 	<select id="getFiveRecommendedHashtag" resultType="HashMap">
 		select
 			hashtagContent
@@ -338,11 +338,19 @@
 				hashtag_content as hashtagContent,
 				count(hashtag_content) hashtagCount
 			from
-				hashtag
+				(
+					select
+						hashtag_content
+					from
+						hashtag h with(nolock)
+						inner join 
+						tok_posts as p with(nolock) on h.[post_id]=p.[post_id]
+					where
+						upload_date<![CDATA[ >= ]]>(select DATEADD(dd,-7,getdate()))
+				) as A
 			GROUP BY hashtag_content
-			HAVING COUNT(hashtag_content) > 1
+			HAVING COUNT(hashtag_content) <![CDATA[ >= ]]> 1
 			order by hashtagCount DESC
-		) as A
+		) as B
 	</select>
-
 </mapper>

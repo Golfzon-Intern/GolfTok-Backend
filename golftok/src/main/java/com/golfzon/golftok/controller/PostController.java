@@ -43,8 +43,6 @@ public class PostController {
 	public HashMap<String, Object> getPostList(Principal principal,
 			@RequestParam(value = "currentPageNo") int currentPageNo, Criteria criteria)
 			throws InterruptedException, IOException, ParseException, JSONException {
-
-		// paging 설정
 		criteria.setRecordsPerPage(15);
 		criteria.setCurrentPageNo(currentPageNo);
 		// 해당페이지 시작 인덱스 설정
@@ -56,10 +54,7 @@ public class PostController {
 		if (principal == null) {
 			List<HashMap<String, Object>> allPostList = postService.getAllPosts(criteria);
 			map.put("allPostList", allPostList);
-		} else { // 로그인 됐을 시, 사용자 기반 추천
-			String userName = principal.getName();
-			int userId = userService.getUserIdByUserName(userName);
-			
+		} else { // 로그인 됐을 시, 사용자 기반 추천	
 			ProcessBuilder pb = new ProcessBuilder("python", "-u",
 					"C://Users//owner//PycharmProjects//golftok//content_test.py");
 			Process p = pb.start();
@@ -201,7 +196,7 @@ public class PostController {
 		return map;
 	}
 	
-	// 인기 해시태그 5개 추천
+	// 일주일 간의 인기 해시태그 5개 추천
 	@GetMapping("hashtag")
 	public HashMap<String, Object> recommendHashtag() {
 		HashMap<String, Object> map = new HashMap<String, Object>();
