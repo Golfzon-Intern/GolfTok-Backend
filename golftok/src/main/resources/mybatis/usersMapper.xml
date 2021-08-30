@@ -298,7 +298,7 @@
 				select 
 					friend_id
 				from 
-					follow
+					follow with(nolock)
 				where 
 					user_id=#{userId}
 			)
