@@ -131,7 +131,7 @@
 			select 
 				MAX(post_id)+1 
 			from 
-				tok_posts
+				tok_posts with(nolock)
 		</selectKey>
 		insert into 
 			tok_posts 
@@ -253,7 +253,7 @@
 			select 
 				MAX(hashtag_id)+1 
 			from 
-				hashtag
+				hashtag with(nolock)
 		</selectKey>
 		insert into 
 			hashtag 
@@ -267,7 +267,7 @@
 			select 
 				MAX(hashtag_id)+1 
 			from 
-				hashtag
+				hashtag with(nolock)
 		</selectKey>
 		insert into 
 			hashtag 

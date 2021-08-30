@@ -110,7 +110,7 @@
 			select 
 				MAX(comment_id)+1 
 			from 
-				comments
+				comments with(nolock)
 		</selectKey>
 		insert into comments values
 			(#{commentId},#{postId},#{userId},#{commentText},getdate(),0,

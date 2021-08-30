@@ -86,7 +86,7 @@
 				, user_icon as userIcon
 				, user_grade as userGrade
 			from 
-				tok_users
+				tok_users with(nolock)
 			where 
 				user_grade=#{userGrade} or
 				handicap BETWEEN #{handicap}-4 AND #{handicap}+4
@@ -204,7 +204,7 @@
 			select 
 				MAX(follow_id)+1 
 			from 
-				follow
+				follow with(nolock)
 		</selectKey>
 		insert into follow values
 			(#{followId},#{userId},#{friendId})

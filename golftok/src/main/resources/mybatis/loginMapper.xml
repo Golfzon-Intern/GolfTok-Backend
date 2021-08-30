@@ -25,7 +25,7 @@
 			select 
 				MAX(user_id)+1 
 			from 
-				tok_users
+				tok_users with(nolock)
 		</selectKey>
 		insert into tok_users values
 			(#{userId},#{userName},#{userPassword},#{userNickname},#{userIcon},

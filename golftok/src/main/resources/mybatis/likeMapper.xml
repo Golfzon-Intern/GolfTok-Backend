@@ -62,7 +62,7 @@
 		select 
 			ISNULL(MAX(post_like_id),0) as flag
 		from 
-			post_like
+			post_like with(nolock)
 		where 
 			user_id=#{userId} and
 			post_id=#{postId}
@@ -74,7 +74,7 @@
 			select 
 				MAX(post_like_id)+1 
 			from 
-				post_like
+				post_like with(nolock)
 		</selectKey>
 		insert into post_like values
 			(#{postLikeId},#{postId},#{userId})
@@ -128,7 +128,7 @@
 			select 
 				MAX(comment_like_id)+1 
 			from 
-				comment_like
+				comment_like with(nolock)
 		</selectKey>
 		insert into comment_like values
 			(#{commentLikeId},#{commentId},#{userId})
